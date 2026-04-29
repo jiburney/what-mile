@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Mile? — Roadmap</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-bg: #f7f4ef;
+      --color-surface: #ffffff;
+      --color-border: rgba(0,0,0,0.12);
+      --color-border-strong: rgba(0,0,0,0.25);
+      --color-text: #1a1a18;
+      --color-text-muted: #6b6b63;
+      --radius-md: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg: #1a1a18;
+        --color-surface: #242422;
+        --color-border: rgba(255,255,255,0.1);
+        --color-border-strong: rgba(255,255,255,0.22);
+        --color-text: #f0ede8;
+        --color-text-muted: #9a9a92;
+      }
+    }
+    body {
+      font-family: var(--font);
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 2rem 1.5rem 4rem;
+      max-width: 720px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+    .subtitle { font-size: 14px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
+    .controls { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+    .filter-btn {
+      font-size: 12px; padding: 4px 12px; border-radius: 20px;
+      border: 0.5px solid var(--color-border-strong);
+      background: transparent; color: var(--color-text-muted);
+      cursor: pointer; font-family: var(--font);
+    }
+    .filter-btn.active {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border-color: var(--color-border-strong);
+    }
+    .section { margin-bottom: 2rem; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); white-space: nowrap; }
+    .section-line { flex: 1; height: 0.5px; background: var(--color-border); }
+    .items { display: flex; flex-direction: column; gap: 8px; }
+    .item {
+      display: grid; grid-template-columns: 20px 1fr auto;
+      align-items: start; gap: 10px; padding: 10px 14px;
+      background: var(--color-surface);
+      border: 0.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .item.done { opacity: 0.6; }
+    .check {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid var(--color-border-strong);
+      flex-shrink: 0; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .check.complete { background: #1D9E75; border-color: #1D9E75; }
+    .check.complete::after {
+      content: ''; display: block; width: 5px; height: 8px;
+      border: 1.5px solid white; border-top: none; border-left: none;
+      transform: rotate(45deg) translate(-1px,-1px);
+    }
+    .check.in-progress { background: #FAC775; border-color: #BA7517; }
+    .item-body { display: flex; flex-direction: column; gap: 3px; }
+    .item-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--color-text); }
+    .item-note { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; }
+    .tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; align-self: start; margin-top: 2px; }
+    .tag-done   { background: #E1F5EE; color: #0F6E56; }
+    .tag-next   { background: #FAEEDA; color: #854F0B; }
+    .tag-soon   { background: #E6F1FB; color: #185FA5; }
+    .tag-later  { background: #F1EFE8; color: #5F5E5A; }
+    .tag-vision { background: #EEEDFE; color: #534AB7; }
+    @media (prefers-color-scheme: dark) {
+      .tag-done   { background: #085041; color: #9FE1CB; }
+      .tag-next   { background: #633806; color: #FAC775; }
+      .tag-soon   { background: #042C53; color: #B5D4F4; }
+      .tag-later  { background: #444441; color: #D3D1C7; }
+      .tag-vision { background: #3C3489; color: #CECBF6; }
+    }
+  </style>
+</head>
+<body>
+  <h1>What Mile? — Roadmap</h1>
+  <p class="subtitle">Feature tracker · last updated April 2026</p>
+
+  <div class="controls">
+    <button class="filter-btn active" onclick="filter('all', this)">All</button>
+    <button class="filter-btn" onclick="filter('done', this)">Done</button>
+    <button class="filter-btn" onclick="filter('next', this)">Up next</button>
+    <button class="filter-btn" onclick="filter('soon', this)">Soon</button>
+    <button class="filter-btn" onclick="filter('later', this)">Later</button>
+    <button class="filter-btn" onclick="filter('vision', this)">Vision</button>
+  </div>
+
+  <div id="roadmap-body"></div>
+
+  <script>
+    const SECTIONS = [
+      { section: 'Done', status: 'done', items: [
+        { title: 'Core game loop', note: 'Photo → guess → score → summary, 5 rounds, Leaflet map with AT route overlay', tag: 'done' },
+        { title: 'Scoring tiers', note: 'Thru-Hiker / LASHer / Section Hiker / Day Hiker based on distance off', tag: 'done' },
+        { title: 'Photo ingest script', note: 'EXIF GPS extraction, Nominatim geocoding, Claude vision fallback, --descriptions flag', tag: 'done' },
+        { title: 'Initial photo pool', note: '~45 images, mostly Georgia section', tag: 'done' },
+        { title: 'Production deploy', note: 'Live at what-mile.vercel.app via Vercel', tag: 'done' },
+        { title: 'Mobile-first layout', note: 'Full-screen portrait layout, landscape side-by-side', tag: 'done' },
+        { title: 'Anonymize image filenames', note: 'All files renamed to UUIDs. Ingest script updated to assign UUIDs going forward.', tag: 'done' },
+      ]},
+      { section: 'Up next', status: 'next', items: [
+        { title: 'Photo triage pipeline', note: 'Three-stage hybrid pipeline: local heuristics (blur/screenshots/duplicates) → face detection via @vladmandic/face-api → Claude Haiku for trail photo quality. Sorts into ready/ review/ skip/. Resumable via state file. Ingest remains a separate manual step.', tag: 'next', inProgress: true },
+      ]},
+      { section: 'Soon', status: 'soon', items: [
+        { title: 'Daily Challenge mode', note: 'Same 5 photos for everyone each day, seed-based selection, per-day leaderboard with initials (Wordle-style)', tag: 'soon' },
+        { title: 'Anonymous results storage', note: 'Vercel KV to store daily scores and image play frequency. No account required.', tag: 'soon' },
+        { title: 'Analytics', note: 'Visitor tracking (Vercel Analytics), image play counts, return visitor rate, per-photo score distribution', tag: 'soon' },
+      ]},
+      { section: 'Later', status: 'later', items: [
+        { title: 'Expand photo pool', note: 'Add coverage beyond Georgia — currently heavily skewed to the southern terminus', tag: 'later' },
+        { title: 'Photo hints system', note: 'Nearest shelter, nearest trail town, second photo within 100 miles, etc.', tag: 'later' },
+        { title: 'Date-of-year metadata', note: 'Surface the day/season a photo was taken to show the trail through changing seasons', tag: 'later' },
+        { title: 'Photographer credit', note: 'Trail name + year shown publicly, real name stored privately on backend', tag: 'later' },
+        { title: 'Custom domain', note: 'Domain already purchased — point to Vercel deploy', tag: 'later' },
+      ]},
+      { section: 'Vision', status: 'vision', items: [
+        { title: 'Community photo submissions', note: 'Let other hikers submit photos. Review queue, trail name + year credit, private real name storage.', tag: 'vision' },
+        { title: 'Faces & photo removal flow', note: 'Allow people in photos with a formal takedown/removal request process', tag: 'vision' },
+        { title: 'Social nostalgia layer', note: 'See photos from your hike year, recognize people from the trail — the core emotional hook', tag: 'vision' },
+        { title: 'Accounts & all-time leaderboard', note: 'Optional accounts unlock personal history and cross-day score tracking', tag: 'vision' },
+        { title: 'Multi-trail support', note: 'PCT, CDT, Long Trail, etc. — same game engine, different trail GeoJSON', tag: 'vision' },
+      ]},
+    ];
+
+    const LABELS = { done: 'Done', next: 'Up next', soon: 'Soon', later: 'Later', vision: 'Vision' };
+    let current = 'all';
+
+    function filter(f, btn) {
+      current = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    }
+
+    function render() {
+      const body = document.getElementById('roadmap-body');
+      body.innerHTML = '';
+      SECTIONS.forEach(({ section, items }) => {
+        const filtered = current === 'all' ? items : items.filter(i => i.tag === current);
+        if (!filtered.length) return;
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.innerHTML = `<div class="section-header"><span class="section-label">${section}</span><div class="section-line"></div></div><div class="items"></div>`;
+        const list = sec.querySelector('.items');
+        filtered.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'item' + (item.tag === 'done' ? ' done' : '');
+          const checkClass = item.tag === 'done' ? 'complete' : item.inProgress ? 'in-progress' : '';
+          el.innerHTML = `
+            <div class="check ${checkClass}"></div>
+            <div class="item-body">
+              <span class="item-title">${item.title}</span>
+              <span class="item-note">${item.note}</span>
+            </div>
+            <span class="tag tag-${item.tag}">${LABELS[item.tag]}</span>`;
+          list.appendChild(el);
+        });
+        body.appendChild(sec);
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>

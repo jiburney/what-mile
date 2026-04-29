@@ -1,0 +1,464 @@
+{
+  "images": [
+    {
+      "id": "springer-mountain",
+      "filename": "e16d2646-4cbe-4d6b-a2e4-129d17461f0d.jpg",
+      "locationName": "Springer Mountain, GA",
+      "coordinates": [
+        34.6277,
+        -84.1938
+      ],
+      "description": "Day 1. Stood at the Springer Mountain plaque on a cold, grey morning — bare trees, flat rock slabs underfoot, and 2,190 miles of trail ahead of me."
+    },
+    {
+      "id": "blood-mountain",
+      "filename": "3cb2084c-7020-4632-bb4f-cef2f9532790.jpg",
+      "locationName": "Blood Mountain, GA",
+      "coordinates": [
+        34.627,
+        -83.9349
+      ],
+      "description": "Dropped down from the summit to get a shot of the Blood Mountain shelter — stone walls, slate roof, classic old structure tucked in the scrubby trees. Bluebird sky and no wind, about as good as it gets up here in the cold."
+    },
+    {
+      "id": "max-patch",
+      "filename": "07970782-3f3a-4066-b3e6-3d9fb92d1578.jpg",
+      "locationName": "Max Patch, NC",
+      "coordinates": [
+        35.7832,
+        -82.9587
+      ],
+      "description": "Miles of open ridge stretching out ahead, the trail just a thin dirt line cutting through the grass with the whole southern Appalachians laid out beyond it. One of those rare bluebird days where you almost forget your feet hurt."
+    },
+    {
+      "id": "roan-highlands",
+      "filename": "4c5af882-b64c-44f0-864d-60d07680e93e.jpg",
+      "locationName": "Roan Highlands, TN/NC",
+      "coordinates": [
+        36.1039,
+        -82.1156
+      ],
+      "description": "Day 74 — finally above treeline on the balds near Roan, trail just rolling out ahead of me like it owns the place. Big sky, good legs, couldn't ask for more."
+    },
+    {
+      "id": "mcafee-knob",
+      "filename": "454c136f-3b92-40a6-a166-4abb69fbd8f3.jpg",
+      "locationName": "McAfee Knob, VA",
+      "coordinates": [
+        37.3933,
+        -80.0988
+      ],
+      "description": "Mile 714ish — McAfee Knob living up to the hype. Hazy day but you can still see forever out over the valley, and that overhanging rock ledge is even more impressive when you're standing right next to it."
+    },
+    {
+      "id": "harpers-ferry",
+      "filename": "a1d52a26-25fa-4525-b5b7-20b6ae554197.jpg",
+      "locationName": "Harpers Ferry, WV",
+      "coordinates": [
+        39.3232,
+        -77.7449
+      ],
+      "description": "Mile 1,024 — Finally broke through the trees above Harpers Ferry and got this view of the confluence. Two rivers, one tiny town, and a railroad bridge that's been there longer than the trail itself — not a bad reward for the climb."
+    },
+    {
+      "id": "delaware-water-gap",
+      "filename": "b382a136-bd55-48ee-99a5-e3106c28ccea.jpg",
+      "locationName": "Delaware Water Gap, PA",
+      "coordinates": [
+        41.002,
+        -74.9762
+      ],
+      "description": "Crossed the Delaware River into New Jersey today on this bridge — the painted state border marker on the wall made it feel real. Pennsylvania is officially behind me."
+    },
+    {
+      "id": "bear-mountain",
+      "filename": "e266a88a-6e06-4901-a0f9-1d2c0ec5464c.jpg",
+      "locationName": "Bear Mountain, NY",
+      "coordinates": [
+        41.3148,
+        -73.9859
+      ],
+      "description": "Rocky outcrop lookout somewhere near Bear Mountain — you can just make out the Hudson through the haze on the left. Clouds were rolling in but the heat wasn't letting up, classic Jersey/NY summer grind."
+    },
+    {
+      "id": "mount-greylock",
+      "filename": "b740d21f-6254-4d6d-8875-fb5312d5e633.jpg",
+      "locationName": "Mount Greylock, MA",
+      "coordinates": [
+        42.6376,
+        -73.1662
+      ],
+      "description": "Caught sunset from the summit of Greylock just as the war memorial beacon flickered on — that glowing orb at the top never gets old. Sky went full pink and orange over the treeline while a few other hikers lingered around the tower, none of us really ready to head back down."
+    },
+    {
+      "id": "mount-katahdin",
+      "filename": "836ac7fa-3167-4855-9cc9-b1f1de515112.jpg",
+      "locationName": "Mount Katahdin, ME",
+      "coordinates": [
+        45.9044,
+        -68.9213
+      ],
+      "description": "Made it to the Katahdin summit sign — rocky scramble up top, clear skies for miles in every direction. Hard to believe this is where the trail ends."
+    },
+    {
+      "id": "dawson-county-ga",
+      "filename": "5edbdca1-d949-4310-9827-d0d95ce33005.jpg",
+      "locationName": "Dawson County, GA",
+      "coordinates": [
+        34.5577,
+        -84.2492
+      ],
+      "description": "Day 1 starts here — walked under the arch at Amicalola Falls with 2,190 miles of trail standing between me and Katahdin. Sky's grey, trees are bare, and my pack already feels heavier than it did in the parking lot."
+    },
+    {
+      "id": "dawson-county-ga-2",
+      "filename": "16501b8d-f169-4c6c-9967-6c1bfdbb8abc.jpg",
+      "locationName": "Dawson County, GA",
+      "coordinates": [
+        34.5662,
+        -84.2454
+      ],
+      "description": "Stumbled across this cascade tumbling down the rocks right off the trail — after all the rain we've had, the whole hillside basically turned into a waterfall. Still early enough in spring that the trees haven't filled in yet, so you can actually see the full drop from down below."
+    },
+    {
+      "id": "dawson-county-ga-3",
+      "filename": "5443d0fd-b243-451d-951e-77ab5a5dcbfc.jpg",
+      "locationName": "Dawson County, GA",
+      "coordinates": [
+        34.5683,
+        -84.2449
+      ],
+      "description": "Caught a glimpse of the valley through the bare trees — still early enough in spring that the views open up between the ridges before everything leafs out. Blue skies, rolling mountains stretching out ahead, and a reminder that Georgia's got more climb in her than people give her credit for."
+    },
+    {
+      "id": "dawson-county-ga-4",
+      "filename": "53408e6d-dd5d-4f15-bc1f-ab9fa112a52b.jpg",
+      "locationName": "Dawson County, GA",
+      "coordinates": [
+        34.5673,
+        -84.2441
+      ],
+      "description": "Stopped at a little waterfall overlook somewhere above the valley — bare trees, big sky, and a solid view of the ridgeline stretching out below. Early spring vibes, still cold enough that the rocks are icy but the sun's finally doing something."
+    },
+    {
+      "id": "fannin-county-ga",
+      "filename": "9382f3b7-50ea-4593-b1ac-4abad996d491.jpg",
+      "locationName": "Fannin County, GA",
+      "coordinates": [
+        34.6268,
+        -84.1939
+      ],
+      "description": "Mile 0. Springer Mountain summit plaque — the Georgia end of the Appalachian Trail, bolted right into the bare rock. Every single thru-hiker starts (or ends) right here."
+    },
+    {
+      "id": "appalachian-national-scenic-trail-southern-terminus-ga",
+      "filename": "a6f90da4-4d85-4d76-a627-8c08253cadf8.jpg",
+      "locationName": "Appalachian National Scenic Trail Southern Terminus, GA",
+      "coordinates": [
+        34.6267,
+        -84.1938
+      ],
+      "description": "Mile 0. Standing at the Springer Mountain summit plaque on a cold, bare-bones winter day — this is where it all starts, 2,190 miles of trail stretching north from this one flat rock."
+    },
+    {
+      "id": "fannin-county-ga-2",
+      "filename": "778230e1-3130-47e1-9620-2bd539787c42.jpg",
+      "locationName": "Fannin County, GA",
+      "coordinates": [
+        34.6632,
+        -84.1843
+      ],
+      "description": "Hugging a mossy rock wall on a cold clear day, the trail squeezes between the cliff and a tangle of bare trees — classic north Georgia terrain right here."
+    },
+    {
+      "id": "long-creek-falls-view-ga",
+      "filename": "626ccb0c-1d20-4135-8b28-a2a0a26b8d4b.jpg",
+      "locationName": "Long Creek Falls view, GA",
+      "coordinates": [
+        34.6677,
+        -84.1709
+      ],
+      "description": "Day 3 and stumbled onto Long Creek Falls — way bigger than I expected for early spring. The rock face was dripping everywhere and the mist hit you before you even rounded the bend."
+    },
+    {
+      "id": "hickory-flats-cemetery-ga",
+      "filename": "60e393aa-5ca8-4cef-bd3c-fe1d1ea42f4b.jpg",
+      "locationName": "Hickory Flats Cemetery, GA",
+      "coordinates": [
+        34.6674,
+        -84.1624
+      ],
+      "description": "Stumbled across this old cemetery just off the trail — kinda eerie but peaceful, with grave markers scattered across a mossy clearing backed by bare winter trees. Sky was sharp blue and the sun felt good after a cold morning of hiking."
+    },
+    {
+      "id": "hawk-mountain-shelter-ga",
+      "filename": "0da706ce-96af-4dc8-8681-d4e23fd1a48e.jpg",
+      "locationName": "Hawk Mountain Shelter, GA",
+      "coordinates": [
+        34.6661,
+        -84.1364
+      ],
+      "description": "Day 3 and Hawk Mountain Shelter feels like a proper welcome to Georgia — open-faced, metal roof, fire ring out front already stocked with someone's leftover wood. Trees are still bare up here and the sky's got that cold blue look that means another chilly night ahead."
+    },
+    {
+      "id": "union-county-ga",
+      "filename": "58c07cb3-e244-4f9b-8522-bc11078f3cbd.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.6575,
+        -84.0767
+      ],
+      "description": "Classic early spring in north Georgia — bare trees, leaf litter everywhere, and a skinny dirt trail threading through the woods. Sky's gray and flat but at least it's not raining."
+    },
+    {
+      "id": "union-county-ga-2",
+      "filename": "f4e61125-d46a-40e3-b8f3-a24f292b442e.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.6572,
+        -84.0759
+      ],
+      "description": "Old railroad tie steps climbing up a steep embankment, trees just barely starting to leaf out — still feels more like late winter than spring up here. That loose dirt on the right looked sketch but held fine."
+    },
+    {
+      "id": "union-county-ga-3",
+      "filename": "f3da903a-9267-49d4-8bad-cf838b99b7ae.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.6596,
+        -84.0653
+      ],
+      "description": "Picked my way down a steep, leaf-covered slope with these gnarly leaning trees keeping me company — the kind of section where you're watching your feet more than the scenery. Sky was flat white through the branches, felt like rain was coming."
+    },
+    {
+      "id": "lumpkin-county-ga",
+      "filename": "bdcc3bd3-ba81-4de6-9330-ecea6c601a06.jpg",
+      "locationName": "Lumpkin County, GA",
+      "coordinates": [
+        34.6726,
+        -84.0164
+      ],
+      "description": "Caught a killer view opening up through the bare trees — valley stretching out forever under a bluebird sky. Stopped at this rock outcrop to catch my breath and remind myself why I'm out here doing this."
+    },
+    {
+      "id": "lumpkin-county-ga-2",
+      "filename": "d57c227d-66da-486e-9674-4af0364553a4.jpg",
+      "locationName": "Lumpkin County, GA",
+      "coordinates": [
+        34.6726,
+        -84.0164
+      ],
+      "description": "Killer views opening up heading out of the Georgia hills — you can see forever on a clear day like this. That old stump at the overlook makes a solid spot to drop your pack and take it all in before pushing north."
+    },
+    {
+      "id": "lumpkin-county-ga-3",
+      "filename": "deb34224-1d85-4d6a-b8c8-a1a96ebf265f.jpg",
+      "locationName": "Lumpkin County, GA",
+      "coordinates": [
+        34.6726,
+        -84.0164
+      ],
+      "description": "Stopped at a rocky overlook somewhere above the Georgia valleys — bare trees everywhere but the sky was impossibly blue and you could see forever out to the flatlands. Worth every uphill step to get here."
+    },
+    {
+      "id": "lumpkin-county-ga-4",
+      "filename": "b7523fda-24ab-4a1a-b25c-0153656f494e.jpg",
+      "locationName": "Lumpkin County, GA",
+      "coordinates": [
+        34.6776,
+        -84.0001
+      ],
+      "description": "Woody Gap parking lot on a bluebird day — you can see forever from up here. Topped off my water and hit the road crossing before heading back into the trees."
+    },
+    {
+      "id": "woods-hole-shelter-ga",
+      "filename": "e148bcc1-b4e6-4145-8dd0-abaee5b108d5.jpg",
+      "locationName": "Woods Hole Shelter, GA",
+      "coordinates": [
+        34.7373,
+        -83.9549
+      ],
+      "description": "Day 3 out of Springer and stumbled into Woods Hole just as the sun was dropping behind the ridgeline. Fire ring's ready to go and that lean-to looks like the best hotel I've ever seen."
+    },
+    {
+      "id": "blood-mountain-shelter-ga",
+      "filename": "6b85272f-4bf5-4257-9f54-6162b9a06ec9.jpg",
+      "locationName": "Blood Mountain Shelter, GA",
+      "coordinates": [
+        34.74,
+        -83.9376
+      ],
+      "description": "Miles of rolling Georgia ridgelines stretching out forever under a bluebird sky — the kind of view that makes the climb up Blood Mountain worth every step. Still early enough in the season that the trees haven't leafed out yet, so you can actually see how much ground you've covered."
+    },
+    {
+      "id": "union-county-ga-4",
+      "filename": "2fa921d6-23ef-4459-b382-268d9b97509d.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.7401,
+        -83.9375
+      ],
+      "description": "Made it to the Blood Mountain shelter — highest point on the AT in Georgia at 4,458 ft. Clear bluebird day made the climb totally worth it, and this old stone shelter never gets old."
+    },
+    {
+      "id": "union-county-ga-5",
+      "filename": "03fefbe2-ea87-4024-b257-c8620087b00e.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.7352,
+        -83.9181
+      ],
+      "description": "Stumbled into this stone shelter near Unicoi Gap — stacks of firewood already waiting on both sides, which was a welcome sight. Clear blue sky day but still cold enough to appreciate whoever left that wood."
+    },
+    {
+      "id": "union-county-ga-6",
+      "filename": "5301cbcd-c13b-4c93-8fbe-0c60dea670c9.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.7352,
+        -83.9178
+      ],
+      "description": "Stumbled onto this old stone shelter tucked into the woods on a grey winter day — bare trees, damp ground, and a stack of firewood that looked pretty inviting after a cold stretch of trail."
+    },
+    {
+      "id": "union-county-ga-7",
+      "filename": "cb4c6cc0-de73-45cf-adbf-9e66b719313b.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.7936,
+        -83.8096
+      ],
+      "description": "Squeezing past this massive old trunk right on the bank — you can catch glimpses of the lake through the brush if you time your glance right. Sunny day, light wind, the kind of stretch where you're just picking your way through roots and deadfall along the water's edge."
+    },
+    {
+      "id": "union-county-ga-8",
+      "filename": "067b1797-cecb-4a91-a737-0b53c011eddc.jpg",
+      "locationName": "Union County, GA",
+      "coordinates": [
+        34.8148,
+        -83.806
+      ],
+      "description": "Bare trees reaching up into a clear blue sky somewhere in the Georgia mountains — still deep in winter mode up here. That big mossy trunk tells you these woods have been around a while."
+    },
+    {
+      "id": "towns-county-ga",
+      "filename": "cbd65423-c8fa-4476-beb1-f9108b241ef2.jpg",
+      "locationName": "Towns County, GA",
+      "coordinates": [
+        34.804,
+        -83.7323
+      ],
+      "description": "Hit the Rocky Mtn Trail junction on a crisp, clear day — leaves down, sky blue, and the ridge ahead looking pretty mild for Georgia. Blue blaze on that tree is doing more work than the sign at this point."
+    },
+    {
+      "id": "white-county-ga",
+      "filename": "f9689df0-f92e-4fa4-8ffe-d33f8582821b.jpg",
+      "locationName": "White County, GA",
+      "coordinates": [
+        34.7982,
+        -83.7295
+      ],
+      "description": "Finally broke through the tree line and got rewarded with this big open view — layers of ridges rolling out forever under a bluebird sky. That lone pointy peak sticking up in the distance kept me company for the next few miles."
+    },
+    {
+      "id": "habersham-county-ga",
+      "filename": "6e74a054-df57-4d21-87b8-388d61d9b246.jpg",
+      "locationName": "Habersham County, GA",
+      "coordinates": [
+        34.8041,
+        -83.6768
+      ],
+      "description": "Caught this insane sunset from the shelter on Blood Mountain — sky went full fire and purple right as I was setting up camp. Worth every blister from today's climb."
+    },
+    {
+      "id": "rabun-county-ga",
+      "filename": "bf0e535a-666f-488c-9870-0351b23c19a2.jpg",
+      "locationName": "Rabun County, GA",
+      "coordinates": [
+        34.8921,
+        -83.6425
+      ],
+      "description": "Foggy morning on the trail somewhere in the Georgia mountains — the trees have closed in and you can barely see 50 feet ahead. Ground's soft, leaves everywhere, little patches of green starting to push through the leaf litter."
+    },
+    {
+      "id": "rabun-county-ga-2",
+      "filename": "c8ea452f-73f4-4f40-ab39-2896ab580f5b.jpg",
+      "locationName": "Rabun County, GA",
+      "coordinates": [
+        34.8938,
+        -83.6316
+      ],
+      "description": "Foggy and moody through this section — bare twisted trees on both sides make it feel like the trail just disappears into nothing up ahead. Leaves everywhere, ground's soft, kind of eerie but in the best way."
+    },
+    {
+      "id": "rabun-county-ga-3",
+      "filename": "58ada55b-5bfc-4664-a2db-f107338ad882.jpg",
+      "locationName": "Rabun County, GA",
+      "coordinates": [
+        34.8933,
+        -83.6313
+      ],
+      "description": "Misty morning on a rocky stretch through the bare trees — the trail just kind of disappears into the fog up ahead. Leaves everywhere, stones stacked along the edge, Georgia doing its moody early-season thing."
+    },
+    {
+      "id": "rabun-county-ga-4",
+      "filename": "b9a5923f-c069-4045-a499-173ebab19c14.jpg",
+      "locationName": "Rabun County, GA",
+      "coordinates": [
+        34.9383,
+        -83.602
+      ],
+      "description": "Miles of bare trees and leaf-covered trail somewhere in the Georgia hills — still too early in the season for any real shade, but the cloudy sky was keeping things cool at least."
+    },
+    {
+      "id": "plum-orchard-gap-shelter-ga",
+      "filename": "2d89aee3-19ce-4522-b274-037900993600.jpg",
+      "locationName": "Plum Orchard Gap Shelter, GA",
+      "coordinates": [
+        34.946,
+        -83.5883
+      ],
+      "description": "Day 3 on trail — rolled into Plum Orchard Gap Shelter just as the sky turned that flat gray that makes you real grateful for a roof. Three-sided lean-to with a picnic table, fire ring out front, nothing fancy but exactly what you need after a long day on your feet."
+    },
+    {
+      "id": "clay-county-nc",
+      "filename": "fdae5680-232e-4c49-955f-c8a7c0472983.jpg",
+      "locationName": "Clay County, NC",
+      "coordinates": [
+        34.9933,
+        -83.6001
+      ],
+      "description": "Spotted this NCACA marker nailed to a tree along a white-blazed stretch — classic AT signage keeping you honest out here in the North Carolina hills."
+    },
+    {
+      "id": "clay-county-nc-2",
+      "filename": "c444a281-964b-453f-8b17-91157f969527.jpg",
+      "locationName": "Clay County, NC",
+      "coordinates": [
+        34.9933,
+        -83.6
+      ],
+      "description": "Crossed into NC today — this old blaze on a big beech marks the state line right where the trail gets rocky and loose underfoot. Bare trees everywhere, sky's flat gray, feels like the mountains are just waking up."
+    },
+    {
+      "id": "clay-county-nc-3",
+      "filename": "83e71733-394d-4541-b849-a0a6495c6e69.jpg",
+      "locationName": "Clay County, NC",
+      "coordinates": [
+        34.9943,
+        -83.6001
+      ],
+      "description": "Rolled into Bly Gap just as the trees started opening up a bit — classic early spring woods, everything still bare and brown but you can feel it wanting to wake up. One of those quiet little gaps that doesn't make a big deal of itself, just a sign and some leaf litter and the trail carrying on."
+    },
+    {
+      "id": "clay-county-nc-4",
+      "filename": "01336c32-e0b8-4a3e-82d7-e3f3c9d4e3ad.jpg",
+      "locationName": "Clay County, NC",
+      "coordinates": [
+        34.9943,
+        -83.5994
+      ],
+      "description": "Weird gnarly old tree right off the trail, looks like it's been through some stuff. Sky's been gray all day but at least it's not raining yet."
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+import { useState, useCallback } from 'react';
+import type { GameState, ImageConfig, RoundResult } from '../types';
+import { distanceMiles } from '../utils/distance';
+import { calculateScore } from '../utils/scoring';
+import imageData from '../data/images.json';
+
+const ROUNDS_PER_GAME = 5;
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRounds(images: ImageConfig[]): ImageConfig[] {
+  const shuffled = shuffle(images);
+  return shuffled.slice(0, Math.min(ROUNDS_PER_GAME, shuffled.length));
+}
+
+export function useGame() {
+  const allImages: ImageConfig[] = imageData.images as ImageConfig[];
+  const [queue, setQueue] = useState<ImageConfig[]>([]);
+
+  const [state, setState] = useState<GameState>({
+    phase: 'start',
+    rounds: [],
+    currentRound: 0,
+    currentImage: null,
+    pendingGuess: null,
+  });
+
+  const startGame = useCallback(() => {
+    const selected = pickRounds(allImages);
+    setQueue(selected);
+    setState({
+      phase: 'guessing',
+      rounds: [],
+      currentRound: 0,
+      currentImage: selected[0],
+      pendingGuess: null,
+    });
+  }, [allImages]);
+
+  const setGuess = useCallback((coords: [number, number]) => {
+    setState((s) => ({ ...s, pendingGuess: coords }));
+  }, []);
+
+  const lockInGuess = useCallback(() => {
+    setState((s) => {
+      if (!s.pendingGuess || !s.currentImage) return s;
+      const [gLat, gLng] = s.pendingGuess;
+      const [aLat, aLng] = s.currentImage.coordinates;
+      const dist = distanceMiles(gLat, gLng, aLat, aLng);
+      const { score, tier } = calculateScore(dist);
+      const result: RoundResult = {
+        image: s.currentImage,
+        guess: s.pendingGuess,
+        score,
+        tier,
+        distanceMiles: dist,
+      };
+      return {
+        ...s,
+        phase: 'result',
+        rounds: [...s.rounds, result],
+      };
+    });
+  }, []);
+
+  const nextRound = useCallback(() => {
+    setState((s) => {
+      const nextIndex = s.currentRound + 1;
+      if (nextIndex >= ROUNDS_PER_GAME || nextIndex >= queue.length) {
+        return { ...s, phase: 'summary' };
+      }
+      return {
+        ...s,
+        phase: 'guessing',
+        currentRound: nextIndex,
+        currentImage: queue[nextIndex],
+        pendingGuess: null,
+      };
+    });
+  }, [queue]);
+
+  const totalScore = state.rounds.reduce((sum, r) => sum + r.score, 0);
+  const currentResult = state.rounds[state.rounds.length - 1] ?? null;
+
+  return {
+    state,
+    currentResult,
+    totalScore,
+    startGame,
+    setGuess,
+    lockInGuess,
+    nextRound,
+    totalRounds: ROUNDS_PER_GAME,
+  };
+}
