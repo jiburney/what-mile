@@ -40,7 +40,7 @@ export function useGame() {
       try {
         const { data, error: fetchError } = await supabase
           .from('photos')
-          .select('id, filename, location_name, lat, lng, description, r2_url')
+          .select('id, filename, location_name, lat, lng, description, r2_url, times_shown, is_private')
           .eq('status', 'approved');
 
         if (fetchError) throw fetchError;
@@ -57,6 +57,8 @@ export function useGame() {
           coordinates: [row.lat, row.lng],
           description: row.description ?? undefined,
           r2_url: row.r2_url,
+          times_shown: row.times_shown ?? 0,
+          is_private: row.is_private ?? false,
         }));
 
         setAllImages(images);
