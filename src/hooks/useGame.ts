@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { GameState, ImageConfig, RoundResult } from '../types';
 import { distanceMiles } from '../utils/distance';
 import { calculateScore } from '../utils/scoring';
-import imageData from '../data/images.json';
+import { supabase } from '../lib/supabase';
 
 const ROUNDS_PER_GAME = 5;
 
@@ -21,7 +21,9 @@ function pickRounds(images: ImageConfig[]): ImageConfig[] {
 }
 
 export function useGame() {
-  const allImages: ImageConfig[] = imageData.images as ImageConfig[];
+  const [allImages, setAllImages] = useState<ImageConfig[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [queue, setQueue] = useState<ImageConfig[]>([]);
 
   const [state, setState] = useState<GameState>({
@@ -31,6 +33,42 @@ export function useGame() {
     currentImage: null,
     pendingGuess: null,
   });
+
+  // Fetch approved photos from Supabase on mount
+  useEffect(() => {
+    async function fetchPhotos() {
+      try {
+        const { data, error: fetchError } = await supabase
+          .from('photos')
+          .select('id, filename, location_name, lat, lng, description, r2_url')
+          .eq('status', 'approved');
+
+        if (fetchError) throw fetchError;
+
+        if (!data || data.length === 0) {
+          throw new Error('No approved photos found');
+        }
+
+        // Map Supabase rows to ImageConfig objects
+        const images: ImageConfig[] = data.map((row) => ({
+          id: row.id,
+          filename: row.filename,
+          locationName: row.location_name,
+          coordinates: [row.lat, row.lng],
+          description: row.description ?? undefined,
+          r2_url: row.r2_url,
+        }));
+
+        setAllImages(images);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load photos');
+        setLoading(false);
+      }
+    }
+
+    fetchPhotos();
+  }, []);
 
   const startGame = useCallback(() => {
     const selected = pickRounds(allImages);
@@ -98,5 +136,7 @@ export function useGame() {
     lockInGuess,
     nextRound,
     totalRounds: ROUNDS_PER_GAME,
+    loading,
+    error,
   };
 }

@@ -14,10 +14,35 @@ export default function App() {
     setGuess,
     lockInGuess,
     nextRound,
+    loading,
+    error,
   } = useGame();
 
   const { phase, currentImage, pendingGuess, currentRound, rounds } = state;
   const isLastRound = currentRound + 1 >= totalRounds;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="app-layout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Loading photos...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="app-layout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <div style={{ textAlign: 'center', color: '#d32f2f' }}>
+          <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Error loading photos</div>
+          <div style={{ fontSize: '1rem' }}>{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   if (phase === 'start') {
     return <StartScreen onStart={startGame} />;
@@ -65,7 +90,12 @@ export default function App() {
       {currentImage && (
         <div className="photo-area">
           <img
-            src={`/images/${currentImage.filename}`}
+            src={currentImage.r2_url}
+            alt=""
+            className="photo-bg"
+          />
+          <img
+            src={currentImage.r2_url}
             alt="Somewhere on the Appalachian Trail"
             className="trail-photo"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

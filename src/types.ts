@@ -4,6 +4,7 @@ export interface ImageConfig {
   locationName: string;
   coordinates: [number, number]; // [lat, lng]
   description?: string;
+  r2_url: string;
 }
 
 export interface RoundResult {

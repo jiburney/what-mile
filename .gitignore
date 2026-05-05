@@ -27,3 +27,6 @@ dist-ssr
 # Local environment variables — never commit
 .env
 .env.local
+
+# Photo library — served from cloud storage, not committed to repo
+public/images/

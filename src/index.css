@@ -158,13 +158,25 @@ body { margin: 0; overscroll-behavior: none; }
   flex: 0 0 38%;
   min-height: 0;
   overflow: hidden;
-  background: #111;
+  background: #000;
 }
-.trail-photo {
+.photo-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: blur(20px) brightness(0.4);
+  transform: scale(1.1);
+  z-index: 0;
+}
+.trail-photo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
+  z-index: 1;
 }
 .photo-round-badge {
   position: absolute;
