@@ -128,11 +128,13 @@ export function useGame() {
 
   const totalScore = state.rounds.reduce((sum, r) => sum + r.score, 0);
   const currentResult = state.rounds[state.rounds.length - 1] ?? null;
+  const nextImage = queue[state.currentRound + 1] ?? null;
 
   return {
     state,
     currentResult,
     totalScore,
+    nextImage,
     startGame,
     setGuess,
     lockInGuess,

@@ -10,6 +10,7 @@ export default function App() {
     currentResult,
     totalScore,
     totalRounds,
+    nextImage,
     startGame,
     setGuess,
     lockInGuess,
@@ -89,21 +90,29 @@ export default function App() {
       {/* Photo */}
       {currentImage && (
         <div className="photo-area">
-          <img
-            src={currentImage.r2_url}
-            alt=""
+          {/* Blurred background using CSS background-image to avoid duplicate network request */}
+          <div
             className="photo-bg"
+            style={{ backgroundImage: `url(${currentImage.r2_url})` }}
           />
+          {/* Main photo - only image tag loads the actual file */}
           <img
             src={currentImage.r2_url}
             alt="Somewhere on the Appalachian Trail"
             className="trail-photo"
+            fetchPriority="high"
+            loading="eager"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
           <div className="photo-round-badge">
             Round {currentRound + 1} / {totalRounds}
           </div>
         </div>
+      )}
+
+      {/* Preload next round's photo while player is guessing current one */}
+      {nextImage && phase === 'guessing' && (
+        <link rel="preload" as="image" href={nextImage.r2_url} />
       )}
 
       {/* Map */}

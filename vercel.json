@@ -1,5 +1,16 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite"
+  "framework": "vite",
+  "functions": {
+    "api/upload.ts": {
+      "maxDuration": 60
+    },
+    "api/signed-url.ts": {
+      "maxDuration": 10
+    },
+    "api/photos.ts": {
+      "maxDuration": 10
+    }
+  }
 }
