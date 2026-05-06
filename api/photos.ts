@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from '../lib/supabase-admin';
+import { supabaseAdmin } from './supabase-admin';
 
 const VALID_STATUSES = ['pending', 'review', 'approved', 'skip'];
 

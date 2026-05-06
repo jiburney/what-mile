@@ -4,7 +4,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import sharp from 'sharp';
 import exifr from 'exifr';
 import Anthropic from '@anthropic-ai/sdk';
-import { supabaseAdmin } from '../lib/supabase-admin';
+import { supabaseAdmin } from './supabase-admin';
 import { getTrailSection } from '../src/utils/trail-sections';
 
 // IMPORTANT: Vercel's request body size limit for serverless functions is 4.5MB on Hobby plan.
