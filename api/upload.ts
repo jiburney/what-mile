@@ -4,8 +4,8 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import sharp from 'sharp';
 import exifr from 'exifr';
 import Anthropic from '@anthropic-ai/sdk';
-import { supabaseAdmin } from '../src/lib/supabase-admin.js';
-import { getTrailSection } from '../src/utils/trail-sections.js';
+import { supabaseAdmin } from './supabase-admin.js';
+import { getTrailSection } from './trail-sections.js';
 
 // IMPORTANT: Vercel's request body size limit for serverless functions is 4.5MB on Hobby plan.
 // Photos larger than ~4MB must be compressed client-side before upload (use Canvas API to target ~3MB).
