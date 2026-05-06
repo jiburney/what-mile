@@ -41,6 +41,18 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+// Strip markdown code fences from JSON response
+function cleanJsonResponse(text: string): string {
+  let cleaned = text.trim();
+  // Remove ```json ... ``` or ``` ... ``` wrappers
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+  } else if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```\s*/, '').replace(/\s*```$/, '');
+  }
+  return cleaned.trim();
+}
+
 // Haiku triage classification
 async function triagePhoto(imageBuffer: Buffer): Promise<{ status: string; reason: string }> {
   const base64Image = imageBuffer.toString('base64');
@@ -83,7 +95,8 @@ Respond with ONLY a JSON object, no markdown, no explanation:
     throw new Error('No text response from Haiku');
   }
 
-  const parsed = JSON.parse(textContent.text);
+  const cleanedJson = cleanJsonResponse(textContent.text);
+  const parsed = JSON.parse(cleanedJson);
 
   // Map Haiku status to Supabase status
   const statusMap: Record<string, string> = {
@@ -145,7 +158,8 @@ If you cannot determine coordinates confidently, use null for lat/lng.`,
   }
 
   try {
-    const parsed = JSON.parse(textContent.text);
+    const cleanedJson = cleanJsonResponse(textContent.text);
+    const parsed = JSON.parse(cleanedJson);
 
     // Validate coordinates are within AT bounding box
     const lat = parsed.lat;
