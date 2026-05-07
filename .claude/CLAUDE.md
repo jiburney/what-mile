@@ -167,22 +167,27 @@ Source: OpenStreetMap relation 156553 via Overpass API. Licensed ODbL.
 
 ---
 
-## Local dev
+## Environment variables
 
-```bash
-npm install
-npm run dev
+All environment variables live in a `.env` file at `$WHAT_MILE_ENV` (outside the project directory, never committed to git). This path is set as a shell variable in `~/.zshrc`.
+
+**Critical rule for all `api/` files:** Any file in `api/` that uses `process.env` must include dotenv loading at the top so it works in local development. On Vercel, `process.env` is populated automatically. Locally it needs to be loaded explicitly:
+
+```typescript
+import * as dotenv from 'dotenv'
+
+// Load env vars from .config folder when running locally
+// On Vercel, process.env is populated automatically — WHAT_MILE_ENV is not set there
+if (process.env.WHAT_MILE_ENV) {
+  dotenv.config({ path: process.env.WHAT_MILE_ENV })
+}
 ```
 
-## Deploy
-
-```bash
-vercel
-```
+This must be added to every new `api/` file that uses `process.env`. Do not skip this — omitting it causes 403 errors in local development.
 
 ---
 
-## Conventions
+
 
 - **No descriptive image filenames** in `public/images/` — UUIDs only
 - **`id` field** in `images.json` stays kebab-case (internal use only, never exposed to browser)

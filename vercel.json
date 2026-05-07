@@ -26,6 +26,9 @@
     },
     "api/purge-skips.ts": {
       "maxDuration": 30
+    },
+    "api/remove-photo.ts": {
+      "maxDuration": 30
     }
   }
 }

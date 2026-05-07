@@ -1,6 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import * as dotenv from 'dotenv';
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { supabaseAdmin } from './supabase-admin.js';
+
+// Load env vars from .config folder when running locally
+if (process.env.WHAT_MILE_ENV) {
+  dotenv.config({ path: process.env.WHAT_MILE_ENV });
+}
 
 const r2 = new S3Client({
   region: 'auto',

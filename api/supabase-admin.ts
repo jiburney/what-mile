@@ -1,4 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
+import * as dotenv from 'dotenv'
+
+// Load environment variables from .config folder when running locally
+// On Vercel, process.env is populated automatically at runtime
+if (process.env.WHAT_MILE_ENV) {
+  dotenv.config({ path: process.env.WHAT_MILE_ENV })
+}
 
 // Server-side only Supabase client using service key (bypasses RLS)
 // NEVER import this in frontend components — it uses process.env, not import.meta.env

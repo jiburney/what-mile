@@ -5,8 +5,9 @@ export function getTrailSection(lat: number, lng: number): string {
   // Rough AT corridor longitude bounds: -84.2 (GA start) to -66.9 (ME end)
   // Use longitude as tiebreaker for overlapping latitude ranges (AT runs northeast)
 
-  // Georgia: Springer Mountain to NC border
-  if (lat >= 34.6 && lat < 35.1) return 'Georgia';
+  // Georgia: Amicalola Falls approach to NC border
+  // Note: lower bound is 34.3 to capture Amicalola Falls area (~34.56) and southern approach
+  if (lat >= 34.3 && lat < 35.1) return 'Georgia';
 
   // North Carolina / Tennessee border region (many miles shared)
   if (lat >= 35.1 && lat < 36.6) {

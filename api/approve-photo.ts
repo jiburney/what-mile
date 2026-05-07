@@ -1,7 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import * as dotenv from 'dotenv';
 import { S3Client, CopyObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabaseAdmin } from './supabase-admin.js';
+
+// Load env vars from .config folder when running locally
+if (process.env.WHAT_MILE_ENV) {
+  dotenv.config({ path: process.env.WHAT_MILE_ENV });
+}
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,

@@ -5,10 +5,11 @@ import { UploadView } from './UploadView';
 import { PendingView } from './PendingView';
 import { ReviewView } from './ReviewView';
 import { SkipView } from './SkipView';
+import { LibraryView } from './LibraryView';
 import { usePhotos } from './usePhotos';
 import './admin.css';
 
-type Tab = 'upload' | 'pending' | 'review' | 'skip';
+type Tab = 'upload' | 'pending' | 'review' | 'skip' | 'library';
 
 export function AdminApp() {
   const { session, signOut, loading } = useAdminAuth();
@@ -17,6 +18,7 @@ export function AdminApp() {
   const pendingPhotos = usePhotos('pending', session);
   const reviewPhotos = usePhotos('review', session);
   const skipPhotos = usePhotos('skip', session);
+  const approvedPhotos = usePhotos('approved', session);
 
   if (loading) {
     return (
@@ -85,6 +87,12 @@ export function AdminApp() {
             <span className="admin-tab-count">{skipPhotos.photos.length}</span>
           )}
         </button>
+        <button
+          className={`admin-tab ${activeTab === 'library' ? 'active' : ''}`}
+          onClick={() => setActiveTab('library')}
+        >
+          Library
+        </button>
       </div>
 
       <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -111,6 +119,14 @@ export function AdminApp() {
             loading={skipPhotos.loading}
             session={session}
             refetch={skipPhotos.refetch}
+          />
+        )}
+        {activeTab === 'library' && (
+          <LibraryView
+            photos={approvedPhotos.photos}
+            loading={approvedPhotos.loading}
+            session={session}
+            refetch={approvedPhotos.refetch}
           />
         )}
       </div>

@@ -6,10 +6,12 @@ interface PhotoCardProps {
   photo: AdminPhoto;
   session: Session;
   onAction: () => void;
-  mode: 'pending' | 'review' | 'skip' | 'upload';
+  mode: 'pending' | 'review' | 'skip' | 'upload' | 'library';
+  selected?: boolean;
+  onToggle?: () => void;
 }
 
-export function PhotoCard({ photo, session, onAction, mode }: PhotoCardProps) {
+export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }: PhotoCardProps) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [description, setDescription] = useState(photo.description || '');
@@ -156,6 +158,31 @@ export function PhotoCard({ photo, session, onAction, mode }: PhotoCardProps) {
     }
   };
 
+  const handleRemove = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/remove-photo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ photoId: photo.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove photo from game');
+      }
+
+      onAction();
+    } catch (err) {
+      console.error('Error removing photo:', err);
+      alert('Failed to remove photo from game. See console for details.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return null;
     try {
@@ -166,12 +193,35 @@ export function PhotoCard({ photo, session, onAction, mode }: PhotoCardProps) {
     }
   };
 
+  const handleCardClick = () => {
+    if (mode === 'pending' && onToggle && selected !== undefined) {
+      onToggle();
+    }
+  };
+
+  const showCheckbox = mode === 'pending' && selected !== undefined;
+  const cardClassName = `photo-card${selected ? ' selected' : ''}`;
+
   return (
-    <div className="photo-card">
+    <div className={cardClassName} onClick={handleCardClick}>
       {loading ? (
         <div className="photo-card-img-skeleton" />
       ) : (
-        signedUrl && <img src={signedUrl} alt={photo.locationName} className="photo-card-img" />
+        <div className="photo-card-img-wrapper">
+          {signedUrl && <img src={signedUrl} alt={photo.locationName} className="photo-card-img" />}
+          {showCheckbox && (
+            <input
+              type="checkbox"
+              className="photo-card-checkbox"
+              checked={selected}
+              onChange={(e) => {
+                e.stopPropagation();
+                onToggle?.();
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </div>
       )}
 
       <div className="photo-card-body">
@@ -199,14 +249,20 @@ export function PhotoCard({ photo, session, onAction, mode }: PhotoCardProps) {
             <>
               <button
                 className="btn-approve"
-                onClick={handleApprove}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleApprove();
+                }}
                 disabled={actionLoading}
               >
                 {actionLoading ? 'Approving...' : 'Approve'}
               </button>
               <button
                 className="btn-skip"
-                onClick={handleSkip}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSkip();
+                }}
                 disabled={actionLoading}
               >
                 Skip
@@ -216,10 +272,25 @@ export function PhotoCard({ photo, session, onAction, mode }: PhotoCardProps) {
           {mode === 'skip' && (
             <button
               className="btn-rescue"
-              onClick={handleRescue}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRescue();
+              }}
               disabled={actionLoading}
             >
               {actionLoading ? 'Rescuing...' : 'Rescue'}
+            </button>
+          )}
+          {mode === 'library' && (
+            <button
+              className="btn-skip"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemove();
+              }}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Removing...' : 'Remove from Game'}
             </button>
           )}
         </div>
