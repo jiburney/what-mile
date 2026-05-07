@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import type { GameState, ImageConfig, RoundResult } from '../types';
 import { distanceMiles } from '../utils/distance';
 import { calculateScore } from '../utils/scoring';
-import { supabase } from '../lib/supabase';
+import { supabaseGame } from '../lib/supabase';
 
 const ROUNDS_PER_GAME = 5;
 
@@ -38,7 +38,7 @@ export function useGame() {
   useEffect(() => {
     async function fetchPhotos() {
       try {
-        const { data, error: fetchError } = await supabase
+        const { data, error: fetchError } = await supabaseGame
           .from('photos')
           .select('id, filename, location_name, lat, lng, description, r2_url, times_shown, is_private')
           .eq('status', 'approved');
