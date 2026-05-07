@@ -2,6 +2,12 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ],
   "functions": {
     "api/upload.ts": {
       "maxDuration": 60
@@ -11,6 +17,15 @@
     },
     "api/photos.ts": {
       "maxDuration": 10
+    },
+    "api/approve-photo.ts": {
+      "maxDuration": 60
+    },
+    "api/update-photo.ts": {
+      "maxDuration": 10
+    },
+    "api/purge-skips.ts": {
+      "maxDuration": 30
     }
   }
 }
