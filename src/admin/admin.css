@@ -1,0 +1,359 @@
+/* Admin UI Styles — extends index.css variables */
+
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--cream);
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  background: var(--forest);
+  color: var(--white);
+}
+
+.admin-header-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.admin-tabs {
+  display: flex;
+  background: var(--white);
+  border-bottom: 1px solid var(--parchment);
+}
+
+.admin-tab {
+  flex: 1;
+  padding: 12px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--stone);
+  border-bottom: 2px solid transparent;
+}
+
+.admin-tab.active {
+  color: var(--forest);
+  border-bottom-color: var(--forest);
+}
+
+.admin-tab-count {
+  display: inline-block;
+  background: var(--parchment);
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+
+.admin-tab.active .admin-tab-count {
+  background: var(--forest-lt);
+  color: var(--white);
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.photo-card {
+  background: var(--white);
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.photo-card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  background: var(--parchment);
+}
+
+.photo-card-img-skeleton {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: linear-gradient(90deg, var(--parchment) 25%, var(--cream) 50%, var(--parchment) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.photo-card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.photo-card-location {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.photo-card-meta {
+  font-size: 12px;
+  color: var(--stone);
+}
+
+.photo-card-reason {
+  font-size: 12px;
+  color: var(--bark);
+  font-style: italic;
+}
+
+.photo-card-description {
+  width: 100%;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--ink-soft);
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.photo-card-description:focus {
+  outline: none;
+  border-color: var(--forest-lt);
+}
+
+.photo-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.btn-approve {
+  flex: 1;
+  background: var(--forest);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-approve:hover {
+  background: var(--forest-mid);
+}
+
+.btn-skip {
+  flex: 1;
+  background: var(--parchment);
+  color: var(--ink-soft);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-rescue {
+  flex: 1;
+  background: var(--bark);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-purge {
+  background: var(--bark);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.btn-purge:hover {
+  opacity: 1;
+}
+
+.upload-dropzone {
+  border: 2px dashed var(--parchment);
+  border-radius: var(--radius);
+  padding: 48px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin: 16px;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.dragover {
+  border-color: var(--forest-lt);
+  background: rgba(90,158,58,0.05);
+}
+
+.upload-dropzone-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.upload-dropzone-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.upload-progress {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upload-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius-sm);
+}
+
+.upload-item-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-item-status {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: var(--stone);
+}
+
+.status-ready {
+  color: var(--forest);
+}
+
+.status-review {
+  color: var(--bark);
+}
+
+.status-skip {
+  color: var(--stone);
+}
+
+.admin-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  gap: 12px;
+  color: var(--stone);
+}
+
+.admin-empty-icon {
+  font-size: 48px;
+}
+
+.admin-empty-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.admin-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  background: var(--cream);
+}
+
+.admin-login-card {
+  background: var(--white);
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius);
+  padding: 32px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.admin-login-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--forest);
+  text-align: center;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--forest-lt);
+}
+
+.admin-error {
+  font-size: 13px;
+  color: #c0392b;
+  text-align: center;
+}
+
+.skip-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 0;
+}
+
+.skip-view-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}

@@ -1,0 +1,229 @@
+import { useState, useEffect } from 'react';
+import type { Session } from '@supabase/supabase-js';
+import type { AdminPhoto } from '../types';
+
+interface PhotoCardProps {
+  photo: AdminPhoto;
+  session: Session;
+  onAction: () => void;
+  mode: 'pending' | 'review' | 'skip' | 'upload';
+}
+
+export function PhotoCard({ photo, session, onAction, mode }: PhotoCardProps) {
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [description, setDescription] = useState(photo.description || '');
+  const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSignedUrl = async () => {
+      if (!photo.is_private) {
+        // Public photo — use direct URL
+        setSignedUrl(photo.r2_url);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/signed-url?key=${encodeURIComponent(photo.r2_url)}`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch signed URL');
+        }
+
+        const data = await response.json();
+        setSignedUrl(data.url);
+      } catch (err) {
+        console.error('Error fetching signed URL:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSignedUrl();
+  }, [photo.r2_url, photo.is_private, session.access_token]);
+
+  const handleDescriptionBlur = async () => {
+    if (description === (photo.description || '')) return;
+
+    try {
+      const response = await fetch('/api/update-photo', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          photoId: photo.id,
+          description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update description');
+      }
+
+      // Update successful — photo.description will be updated on next refetch
+    } catch (err) {
+      console.error('Error updating description:', err);
+      // Revert to original
+      setDescription(photo.description || '');
+    }
+  };
+
+  const handleApprove = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/approve-photo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ photoId: photo.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to approve photo');
+      }
+
+      onAction();
+    } catch (err) {
+      console.error('Error approving photo:', err);
+      alert('Failed to approve photo. See console for details.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleSkip = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/update-photo', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          photoId: photo.id,
+          status: 'skip',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to skip photo');
+      }
+
+      onAction();
+    } catch (err) {
+      console.error('Error skipping photo:', err);
+      alert('Failed to skip photo. See console for details.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRescue = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/update-photo', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          photoId: photo.id,
+          status: 'pending',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to rescue photo');
+      }
+
+      onAction();
+    } catch (err) {
+      console.error('Error rescuing photo:', err);
+      alert('Failed to rescue photo. See console for details.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return null;
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    } catch {
+      return null;
+    }
+  };
+
+  return (
+    <div className="photo-card">
+      {loading ? (
+        <div className="photo-card-img-skeleton" />
+      ) : (
+        signedUrl && <img src={signedUrl} alt={photo.locationName} className="photo-card-img" />
+      )}
+
+      <div className="photo-card-body">
+        <div className="photo-card-location">{photo.locationName}</div>
+        <div className="photo-card-meta">
+          {photo.trail_section && <span>{photo.trail_section}</span>}
+          {photo.trail_section && formatDate(photo.taken_at) && <span> • </span>}
+          {formatDate(photo.taken_at)}
+        </div>
+        {photo.status === 'skip' && (
+          <div className="photo-card-reason">{photo.description || 'Skipped by triage'}</div>
+        )}
+        <textarea
+          className="photo-card-description"
+          placeholder="Description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          onBlur={handleDescriptionBlur}
+        />
+      </div>
+
+      {mode !== 'upload' && (
+        <div className="photo-card-actions">
+          {(mode === 'pending' || mode === 'review') && (
+            <>
+              <button
+                className="btn-approve"
+                onClick={handleApprove}
+                disabled={actionLoading}
+              >
+                {actionLoading ? 'Approving...' : 'Approve'}
+              </button>
+              <button
+                className="btn-skip"
+                onClick={handleSkip}
+                disabled={actionLoading}
+              >
+                Skip
+              </button>
+            </>
+          )}
+          {mode === 'skip' && (
+            <button
+              className="btn-rescue"
+              onClick={handleRescue}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Rescuing...' : 'Rescue'}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
