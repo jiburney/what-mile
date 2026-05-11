@@ -14,6 +14,8 @@ export function PendingView({ photos, loading, session, refetch }: PendingViewPr
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [approving, setApproving] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [skipping, setSkipping] = useState(false);
+  const [skipProgress, setSkipProgress] = useState(0);
 
   // Initialize selection with all photos when photos change
   useEffect(() => {
@@ -81,6 +83,47 @@ export function PendingView({ photos, loading, session, refetch }: PendingViewPr
     refetch();
   };
 
+  const handleSkipSelected = async () => {
+    const selectedPhotos = photos.filter((p) => selectedIds.has(p.id));
+    if (selectedPhotos.length === 0) return;
+
+    const confirmed = window.confirm(
+      `Skip ${selectedPhotos.length} selected photo${selectedPhotos.length !== 1 ? 's' : ''}?`
+    );
+
+    if (!confirmed) return;
+
+    setSkipping(true);
+    setSkipProgress(0);
+
+    for (let i = 0; i < selectedPhotos.length; i++) {
+      try {
+        const response = await fetch('/api/skip-photo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ photoId: selectedPhotos[i].id }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to skip photo');
+        }
+
+        setSkipProgress(i + 1);
+      } catch (err) {
+        console.error(`Error skipping photo ${selectedPhotos[i].id}:`, err);
+        alert(`Failed to skip photo ${i + 1}. See console for details.`);
+        break;
+      }
+    }
+
+    setSkipping(false);
+    setSkipProgress(0);
+    refetch();
+  };
+
   if (loading) {
     return (
       <div className="admin-empty">
@@ -111,12 +154,22 @@ export function PendingView({ photos, loading, session, refetch }: PendingViewPr
         </button>
         <button
           className="btn-approve-selected"
+          style={{ marginLeft: 'auto' }}
           onClick={handleApproveSelected}
-          disabled={approving || selectedCount === 0}
+          disabled={approving || skipping || selectedCount === 0}
         >
           {approving
             ? `Approving ${progress}/${selectedCount}...`
             : `Approve Selected (${selectedCount})`}
+        </button>
+        <button
+          className="btn-skip-selected"
+          onClick={handleSkipSelected}
+          disabled={skipping || approving || selectedCount === 0}
+        >
+          {skipping
+            ? `Skipping ${skipProgress}/${selectedCount}...`
+            : `Skip Selected (${selectedCount})`}
         </button>
       </div>
       <div className="photo-grid">

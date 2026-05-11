@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import type { AdminPhoto } from '../types';
 
@@ -16,6 +16,15 @@ export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }
   const [loading, setLoading] = useState(true);
   const [description, setDescription] = useState(photo.description || '');
   const [actionLoading, setActionLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    setIsOverflowing(el.scrollHeight > el.clientHeight);
+  }, [description, expanded]);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
@@ -105,16 +114,13 @@ export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }
   const handleSkip = async () => {
     setActionLoading(true);
     try {
-      const response = await fetch('/api/update-photo', {
-        method: 'PATCH',
+      const response = await fetch('/api/skip-photo', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({
-          photoId: photo.id,
-          status: 'skip',
-        }),
+        body: JSON.stringify({ photoId: photo.id }),
       });
 
       if (!response.ok) {
@@ -235,12 +241,26 @@ export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }
           <div className="photo-card-reason">{photo.description || 'Skipped by triage'}</div>
         )}
         <textarea
+          ref={textareaRef}
           className="photo-card-description"
           placeholder="Description (optional)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           onBlur={handleDescriptionBlur}
+          style={{ minHeight: expanded ? '200px' : '60px' }}
         />
+        {(isOverflowing || expanded) && (
+          <button
+            type="button"
+            className="photo-card-expand"
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpanded((prev) => !prev);
+            }}
+          >
+            {expanded ? 'Show less' : 'Show more'}
+          </button>
+        )}
       </div>
 
       {mode !== 'upload' && (
