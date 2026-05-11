@@ -1,0 +1,15 @@
+echo "Running pre-commit checks..."
+
+npm run test
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed. Commit blocked."
+  exit 1
+fi
+
+npm run build
+if [ $? -ne 0 ]; then
+  echo "❌ Build failed. Commit blocked."
+  exit 1
+fi
+
+echo "✅ All checks passed."

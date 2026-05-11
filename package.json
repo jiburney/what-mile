@@ -8,8 +8,12 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "download-trail": "node scripts/download-trail.mjs",
-    "ingest-photos": "node scripts/ingest-photos.mjs"
+    "ingest-photos": "node scripts/ingest-photos.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1039.0",
@@ -28,6 +32,9 @@
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "@eslint/js": "^9.39.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/formidable": "^3.5.1",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
@@ -39,9 +46,12 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "exifr": "^7.1.3",
     "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
     "sharp": "^0.34.5",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vitest": "^4.1.6"
   }
 }
