@@ -267,6 +267,69 @@
   color: var(--ink-soft);
 }
 
+.upload-folder-link {
+  padding: 0 16px 8px;
+  text-align: center;
+}
+
+.btn-folder-select {
+  background: none;
+  border: none;
+  color: var(--forest);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.btn-folder-select:hover {
+  text-decoration: underline;
+}
+
+.upload-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.upload-progress-bar-wrap {
+  height: 6px;
+  background: var(--parchment);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.upload-progress-bar-fill {
+  height: 100%;
+  background: var(--forest-lt);
+  transition: width 0.2s ease;
+}
+
+.btn-cancel {
+  background: none;
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--stone);
+  cursor: pointer;
+}
+
+.upload-summary {
+  margin: 0 16px;
+  padding: 12px 14px;
+  background: var(--white);
+  border: 1px solid var(--parchment);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
 .upload-progress {
   padding: 0 16px 16px;
   display: flex;

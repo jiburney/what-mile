@@ -12,6 +12,16 @@ interface UploadStatus {
   message?: string;
 }
 
+interface BatchSummary {
+  total: number;
+  completed: number;
+  pending: number;
+  review: number;
+  skip: number;
+  error: number;
+  cancelled: boolean;
+}
+
 async function compressImage(file: File): Promise<Blob> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -41,10 +51,55 @@ async function compressImage(file: File): Promise<Blob> {
   });
 }
 
+// Recursively walk a drag-and-drop FileSystemEntry, returning every image file.
+// readEntries() only returns ~100 entries per call, so we loop until empty.
+async function getFilesFromEntry(entry: FileSystemEntry): Promise<File[]> {
+  if (entry.isFile) {
+    const fileEntry = entry as FileSystemFileEntry;
+    const file = await new Promise<File>((resolve, reject) =>
+      fileEntry.file(resolve, reject)
+    );
+    return file.type.startsWith('image/') ? [file] : [];
+  }
+
+  if (entry.isDirectory) {
+    const dirEntry = entry as FileSystemDirectoryEntry;
+    const reader = dirEntry.createReader();
+    const allChildren: FileSystemEntry[] = [];
+    let batch: FileSystemEntry[];
+    do {
+      batch = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+        reader.readEntries(resolve, reject)
+      );
+      allChildren.push(...batch);
+    } while (batch.length > 0);
+
+    const nested = await Promise.all(allChildren.map(getFilesFromEntry));
+    return nested.flat();
+  }
+
+  return [];
+}
+
+function formatRemaining(ms: number): string {
+  const totalSec = Math.max(0, Math.round(ms / 1000));
+  if (totalSec < 60) return `~${totalSec} sec remaining`;
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return `~${min} min ${sec} sec remaining`;
+}
+
 export function UploadView({}: UploadViewProps) {
   const [dragOver, setDragOver] = useState(false);
   const [uploads, setUploads] = useState<UploadStatus[]>([]);
+  const [totalFiles, setTotalFiles] = useState(0);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState<string>('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [batchSummary, setBatchSummary] = useState<BatchSummary | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
+  const isCancelled = useRef(false);
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -55,52 +110,81 @@ export function UploadView({}: UploadViewProps) {
     setDragOver(false);
   };
 
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragOver(false);
-    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
+
+    const items = Array.from(e.dataTransfer.items);
+    const hasEntryApi = items.length > 0 && typeof items[0].webkitGetAsEntry === 'function';
+
+    let files: File[];
+    if (hasEntryApi) {
+      const entries = items
+        .map((item) => item.webkitGetAsEntry())
+        .filter((entry): entry is FileSystemEntry => entry !== null);
+      const nested = await Promise.all(entries.map(getFilesFromEntry));
+      files = nested.flat();
+    } else {
+      files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/'));
+    }
+
     if (files.length > 0) {
       handleFiles(files);
     }
   };
 
   const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
+    const files = e.target.files
+      ? Array.from(e.target.files).filter((f) => f.type.startsWith('image/'))
+      : [];
     if (files.length > 0) {
       handleFiles(files);
     }
+    // Reset so the same file can be reselected later.
+    e.target.value = '';
   };
 
   const handleFiles = async (files: File[]) => {
+    if (isUploading) return;
+
+    isCancelled.current = false;
+    setIsUploading(true);
+    setBatchSummary(null);
+    setTotalFiles(files.length);
+    setCompletedCount(0);
+    setTimeRemaining('Calculating…');
+
     const statuses: UploadStatus[] = files.map((f) => ({
       filename: f.name,
       status: 'compressing',
     }));
     setUploads(statuses);
 
+    const startTime = Date.now();
+    let localCompleted = 0;
     let pendingCount = 0;
     let reviewCount = 0;
     let skipCount = 0;
+    let errorCount = 0;
 
     for (let i = 0; i < files.length; i++) {
+      if (isCancelled.current) break;
       const file = files[i];
 
       try {
-        // Update status: compressing
         setUploads((prev) =>
           prev.map((u, idx) => (idx === i ? { ...u, status: 'compressing' } : u))
         );
 
         const compressed = await compressImage(file);
 
-        // Update status: uploading
         setUploads((prev) =>
           prev.map((u, idx) => (idx === i ? { ...u, status: 'uploading' } : u))
         );
 
         const formData = new FormData();
         formData.append('file', compressed, file.name);
-        formData.append('source', 'owner'); // or 'community' — for now hardcode owner
+        formData.append('source', 'owner');
 
         const response = await fetch('/api/upload', {
           method: 'POST',
@@ -118,7 +202,6 @@ export function UploadView({}: UploadViewProps) {
         else if (triageStatus === 'review') reviewCount++;
         else if (triageStatus === 'skip') skipCount++;
 
-        // Update status: triaged
         setUploads((prev) =>
           prev.map((u, idx) =>
             idx === i
@@ -132,6 +215,7 @@ export function UploadView({}: UploadViewProps) {
         );
       } catch (err) {
         console.error(`Error uploading ${file.name}:`, err);
+        errorCount++;
         setUploads((prev) =>
           prev.map((u, idx) =>
             idx === i
@@ -144,14 +228,34 @@ export function UploadView({}: UploadViewProps) {
           )
         );
       }
+
+      localCompleted++;
+      setCompletedCount(localCompleted);
+
+      if (localCompleted < 2) {
+        setTimeRemaining('Calculating…');
+      } else {
+        const elapsed = Date.now() - startTime;
+        const avgMs = elapsed / localCompleted;
+        const remainingMs = avgMs * (files.length - localCompleted);
+        setTimeRemaining(formatRemaining(remainingMs));
+      }
     }
 
-    // Show summary
-    if (files.length > 0) {
-      alert(
-        `Upload complete!\n\n${pendingCount} ready for approval\n${reviewCount} need review\n${skipCount} skipped`
-      );
-    }
+    setBatchSummary({
+      total: files.length,
+      completed: localCompleted,
+      pending: pendingCount,
+      review: reviewCount,
+      skip: skipCount,
+      error: errorCount,
+      cancelled: isCancelled.current,
+    });
+    setIsUploading(false);
+  };
+
+  const handleCancel = () => {
+    isCancelled.current = true;
   };
 
   const getStatusClass = (status: string) => {
@@ -170,6 +274,8 @@ export function UploadView({}: UploadViewProps) {
     if (status === 'error') return 'Error';
     return status;
   };
+
+  const progressPct = totalFiles > 0 ? (completedCount / totalFiles) * 100 : 0;
 
   return (
     <div style={{ height: '100%', overflowY: 'auto' }}>
@@ -194,6 +300,43 @@ export function UploadView({}: UploadViewProps) {
         />
       </div>
 
+      <div className="upload-folder-link">
+        <button
+          type="button"
+          className="btn-folder-select"
+          onClick={() => folderInputRef.current?.click()}
+        >
+          or select a folder
+        </button>
+        <input
+          ref={folderInputRef}
+          type="file"
+          multiple
+          style={{ display: 'none' }}
+          onChange={handleFileInput}
+          {...({ webkitdirectory: '', directory: '' } as Record<string, string>)}
+        />
+      </div>
+
+      {isUploading && (
+        <div className="upload-progress-header">
+          <div style={{ flex: 1 }}>
+            <div style={{ marginBottom: 6 }}>
+              {completedCount} of {totalFiles} — {timeRemaining}
+            </div>
+            <div className="upload-progress-bar-wrap">
+              <div
+                className="upload-progress-bar-fill"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+          </div>
+          <button type="button" className="btn-cancel" onClick={handleCancel}>
+            Cancel
+          </button>
+        </div>
+      )}
+
       {uploads.length > 0 && (
         <div className="upload-progress">
           {uploads.map((upload, idx) => (
@@ -204,6 +347,14 @@ export function UploadView({}: UploadViewProps) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {batchSummary && (
+        <div className="upload-summary">
+          {batchSummary.cancelled
+            ? `Cancelled after ${batchSummary.completed} of ${batchSummary.total} — ${batchSummary.pending} ready, ${batchSummary.review} need review, ${batchSummary.skip} skipped`
+            : `Batch complete — ${batchSummary.pending} ready, ${batchSummary.review} need review, ${batchSummary.skip} skipped`}
         </div>
       )}
     </div>
