@@ -27,6 +27,9 @@
     },
     "api/remove-photo.ts": {
       "maxDuration": 30
+    },
+    "api/health.ts": {
+      "maxDuration": 15
     }
   }
 }
