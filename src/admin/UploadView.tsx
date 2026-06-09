@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
 
@@ -20,6 +20,14 @@ interface BatchSummary {
   skip: number;
   error: number;
   cancelled: boolean;
+}
+
+type ServiceStatus = 'idle' | 'loading' | 'ok' | 'error' | 'no_credits';
+
+interface HealthState {
+  r2: ServiceStatus;
+  supabase: ServiceStatus;
+  anthropic: ServiceStatus;
 }
 
 async function compressImage(file: File): Promise<Blob> {
@@ -89,7 +97,7 @@ function formatRemaining(ms: number): string {
   return `~${min} min ${sec} sec remaining`;
 }
 
-export function UploadView({}: UploadViewProps) {
+export function UploadView({ session }: UploadViewProps) {
   const [dragOver, setDragOver] = useState(false);
   const [uploads, setUploads] = useState<UploadStatus[]>([]);
   const [totalFiles, setTotalFiles] = useState(0);
@@ -97,9 +105,52 @@ export function UploadView({}: UploadViewProps) {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
   const [batchSummary, setBatchSummary] = useState<BatchSummary | null>(null);
+  const [health, setHealth] = useState<HealthState>({
+    r2: 'idle',
+    supabase: 'idle',
+    anthropic: 'idle',
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const isCancelled = useRef(false);
+
+  const checkHealth = async () => {
+    setHealth({ r2: 'loading', supabase: 'loading', anthropic: 'loading' });
+
+    try {
+      const response = await fetch('/api/health', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        setHealth({ r2: 'error', supabase: 'error', anthropic: 'error' });
+        return;
+      }
+
+      const result = await response.json();
+      setHealth({
+        r2: result.r2,
+        supabase: result.supabase,
+        anthropic: result.anthropic,
+      });
+    } catch (error) {
+      console.error('Health check failed:', error);
+      setHealth({ r2: 'error', supabase: 'error', anthropic: 'error' });
+    }
+  };
+
+  useEffect(() => {
+    checkHealth();
+  }, []);
+
+  const getDotClass = (status: ServiceStatus) => {
+    if (status === 'ok') return 'ok';
+    if (status === 'error') return 'error';
+    if (status === 'no_credits') return 'warning';
+    return 'loading'; // idle or loading
+  };
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -192,7 +243,9 @@ export function UploadView({}: UploadViewProps) {
         });
 
         if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
+          const errorData = await response.json().catch(() => ({}));
+          const stepInfo = errorData.step ? ` [${errorData.step}]` : '';
+          throw new Error(`${errorData.error || 'Upload failed'}${stepInfo}`);
         }
 
         const result = await response.json();
@@ -279,6 +332,28 @@ export function UploadView({}: UploadViewProps) {
 
   return (
     <div style={{ height: '100%', overflowY: 'auto' }}>
+      <div className="health-bar">
+        <div className="health-indicator">
+          <span className={`health-dot health-dot-${getDotClass(health.r2)}`} />
+          R2
+        </div>
+        <div className="health-indicator">
+          <span className={`health-dot health-dot-${getDotClass(health.supabase)}`} />
+          Supabase
+        </div>
+        <div className="health-indicator">
+          <span className={`health-dot health-dot-${getDotClass(health.anthropic)}`} />
+          Anthropic{health.anthropic === 'no_credits' ? ' (no credits)' : ''}
+        </div>
+        <button
+          className="btn-health-refresh"
+          onClick={checkHealth}
+          disabled={health.r2 === 'loading'}
+        >
+          ↻ Refresh
+        </button>
+      </div>
+
       <div
         className={`upload-dropzone ${dragOver ? 'dragover' : ''}`}
         onDragOver={handleDragOver}

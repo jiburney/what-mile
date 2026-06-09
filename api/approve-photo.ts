@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Auth check
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized', step: 'auth' });
   }
 
   const token = authHeader.substring(7);
@@ -38,12 +38,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized', step: 'auth' });
     }
 
     const { photoId } = req.body;
     if (!photoId) {
-      return res.status(400).json({ error: 'Missing photoId' });
+      return res.status(400).json({ error: 'Missing photoId', step: 'validation' });
     }
 
     // Fetch photo from Supabase
@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .single();
 
     if (fetchError || !photo) {
-      return res.status(404).json({ error: 'Photo not found' });
+      return res.status(404).json({ error: 'Photo not found', step: 'db_fetch' });
     }
 
     // Generate description via Haiku
@@ -112,14 +112,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Copy from private bucket to public bucket
-    await r2.send(
-      new CopyObjectCommand({
-        Bucket: process.env.R2_PUBLIC_BUCKET_NAME,
-        CopySource: `${process.env.R2_PRIVATE_BUCKET_NAME}/${photo.r2_url}`,
-        Key: `approved/${photo.filename}`,
-        ContentType: 'image/webp',
-      })
-    );
+    try {
+      await r2.send(
+        new CopyObjectCommand({
+          Bucket: process.env.R2_PUBLIC_BUCKET_NAME,
+          CopySource: `${process.env.R2_PRIVATE_BUCKET_NAME}/${photo.r2_url}`,
+          Key: `approved/${photo.filename}`,
+          ContentType: 'image/webp',
+        })
+      );
+    } catch (copyError) {
+      console.error('R2 copy error:', copyError);
+      return res.status(500).json({ error: 'Failed to copy photo to public storage', step: 'r2_copy' });
+    }
 
     // Update Supabase
     const publicUrl = `${process.env.VITE_R2_PUBLIC_URL}/approved/${photo.filename}`;
@@ -135,7 +140,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (updateError) {
       console.error('Supabase update error:', updateError);
-      throw updateError;
+      return res.status(500).json({ error: 'Database update failed', step: 'db_update' });
     }
 
     // Delete from private bucket
@@ -152,6 +157,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error) {
     console.error('Approve photo error:', error);
-    return res.status(500).json({ error: 'Failed to approve photo' });
+    return res.status(500).json({ error: 'Failed to approve photo', step: 'unknown' });
   }
 }

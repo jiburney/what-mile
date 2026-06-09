@@ -25,7 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Auth check
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized', step: 'auth' });
   }
 
   const token = authHeader.substring(7);
@@ -33,12 +33,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized', step: 'auth' });
     }
 
     const { photoId } = req.body;
     if (!photoId) {
-      return res.status(400).json({ error: 'Missing photoId' });
+      return res.status(400).json({ error: 'Missing photoId', step: 'validation' });
     }
 
     // Fetch photo from Supabase
@@ -49,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .single();
 
     if (fetchError || !photo) {
-      return res.status(404).json({ error: 'Photo not found' });
+      return res.status(404).json({ error: 'Photo not found', step: 'db_fetch' });
     }
 
     // Only pending or review photos can be skipped via this endpoint.
@@ -57,12 +57,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (photo.status !== 'pending' && photo.status !== 'review') {
       return res.status(400).json({
         error: `Cannot skip a photo with status '${photo.status}'`,
+        step: 'validation',
       });
     }
 
     const sourceKey: string = photo.r2_url;
     if (!sourceKey || typeof sourceKey !== 'string') {
-      return res.status(400).json({ error: 'Invalid r2_url on photo row' });
+      return res.status(400).json({ error: 'Invalid r2_url on photo row', step: 'validation' });
     }
 
     const destKey = `skip/${photo.filename}`;
@@ -81,7 +82,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         );
       } catch (copyError) {
         console.error('R2 copy error:', copyError);
-        return res.status(500).json({ error: 'Failed to move photo to skip folder' });
+        return res.status(500).json({ error: 'Failed to move photo to skip folder', step: 'r2_copy' });
       }
 
       // Delete the source. Mirrors remove-photo.ts: if this fails the copy
@@ -108,12 +109,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (updateError) {
       console.error('Supabase update error:', updateError);
-      throw updateError;
+      return res.status(500).json({ error: 'Database update failed', step: 'db_update' });
     }
 
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Skip photo error:', error);
-    return res.status(500).json({ error: 'Failed to skip photo' });
+    return res.status(500).json({ error: 'Failed to skip photo', step: 'unknown' });
   }
 }

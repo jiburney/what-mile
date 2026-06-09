@@ -23,6 +23,31 @@ const r2 = new S3Client({
   },
 });
 
+// Retry helper for transient failures
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number,
+  shouldRetry: (err: unknown) => boolean
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (!shouldRetry(err) || attempt === maxRetries) throw err;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+    }
+  }
+  throw new Error('Unreachable');
+}
+
+function isTransientError(err: unknown): boolean {
+  if (err && typeof err === 'object' && 'status' in err) {
+    const status = (err as { status: number }).status;
+    return status === 429 || status >= 500;
+  }
+  return true; // Retry unknown/network errors
+}
+
 // Simple in-memory rate limiting: 20 uploads per IP per hour
 const uploadCounts = new Map<string, { count: number; resetAt: number }>();
 
@@ -192,7 +217,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.socket.remoteAddress || 'unknown';
 
   if (!checkRateLimit(ip)) {
-    return res.status(429).json({ error: 'Rate limit exceeded. Maximum 20 uploads per hour.' });
+    return res.status(429).json({ error: 'Rate limit exceeded. Maximum 20 uploads per hour.', step: 'validation' });
   }
 
   let uploadedKey: string | null = null;
@@ -204,12 +229,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const source = fields.source?.[0] as 'owner' | 'community' | undefined;
     if (!source || !['owner', 'community'].includes(source)) {
-      return res.status(400).json({ error: 'Invalid or missing source field' });
+      return res.status(400).json({ error: 'Invalid or missing source field', step: 'validation' });
     }
 
     const fileArray = files.file;
     if (!fileArray || fileArray.length === 0) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      return res.status(400).json({ error: 'No file uploaded', step: 'validation' });
     }
 
     const file = fileArray[0];
@@ -219,7 +244,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
     if (!file.mimetype || !allowedTypes.includes(file.mimetype)) {
-      return res.status(400).json({ error: 'Invalid file type. Only images allowed.' });
+      return res.status(400).json({ error: 'Invalid file type. Only images allowed.', step: 'validation' });
     }
 
     console.log(`Processing upload: ${originalFilename} (${fileSize} bytes)`);
@@ -236,34 +261,56 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log(`EXIF: lat=${lat}, lng=${lng}, taken_at=${taken_at}`);
 
     // Process image: auto-rotate, resize, convert to WebP, strip EXIF
-    const processed = await sharp(file.filepath)
-      .rotate() // auto-rotate based on EXIF orientation
-      .resize(1200, 1200, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 85 })
-      .toBuffer();
+    let processed: Buffer;
+    try {
+      processed = await sharp(file.filepath)
+        .rotate() // auto-rotate based on EXIF orientation
+        .resize(1200, 1200, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 85 })
+        .toBuffer();
+    } catch (sharpError) {
+      console.error('Sharp processing error:', sharpError);
+      return res.status(500).json({ error: 'Image processing failed', step: 'sharp' });
+    }
 
     // Generate UUID filename
     const filename = `${crypto.randomUUID()}.webp`;
     uploadedKey = `pending/${filename}`;
 
     // Upload to R2 private bucket
-    await r2.send(
-      new PutObjectCommand({
-        Bucket: process.env.R2_PRIVATE_BUCKET_NAME,
-        Key: uploadedKey,
-        Body: processed,
-        ContentType: 'image/webp',
-      })
-    );
+    try {
+      await r2.send(
+        new PutObjectCommand({
+          Bucket: process.env.R2_PRIVATE_BUCKET_NAME,
+          Key: uploadedKey,
+          Body: processed,
+          ContentType: 'image/webp',
+        })
+      );
+      console.log(`Uploaded to R2: ${uploadedKey}`);
+    } catch (r2Error) {
+      console.error('R2 upload error:', r2Error);
+      return res.status(500).json({ error: 'Storage upload failed', step: 'r2_upload' });
+    }
 
-    console.log(`Uploaded to R2: ${uploadedKey}`);
-
-    // Run Haiku triage
-    const { status: triageStatus, reason } = await triagePhoto(processed);
-    console.log(`Triage result: ${triageStatus} - ${reason}`);
+    // Run Haiku triage with retry and fallback
+    let triageStatus = 'review';
+    let reason = 'Triage unavailable — defaulted to review';
+    try {
+      const result = await withRetry(
+        () => triagePhoto(processed),
+        2,
+        isTransientError
+      );
+      triageStatus = result.status;
+      reason = result.reason;
+      console.log(`Triage result: ${triageStatus} - ${reason}`);
+    } catch (triageError) {
+      console.error('Triage failed, defaulting to review:', triageError);
+    }
 
     // If no GPS coords, try to infer location from image
     let locationName: string | null = null;
@@ -311,7 +358,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           Key: uploadedKey,
         })
       );
-      throw dbError;
+      return res.status(500).json({ error: 'Database insert failed', step: 'db_insert' });
     }
 
     console.log(`Success: photo ${data.id} created with status ${triageStatus}`);
@@ -339,7 +386,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    return res.status(500).json({ error: 'Upload failed. Please try again.' });
+    return res.status(500).json({ error: 'Upload failed. Please try again.', step: 'unknown' });
   }
 }
 
