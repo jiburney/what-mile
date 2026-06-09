@@ -192,7 +192,9 @@ export function UploadView({}: UploadViewProps) {
         });
 
         if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
+          const errorData = await response.json().catch(() => ({}));
+          const stepInfo = errorData.step ? ` [${errorData.step}]` : '';
+          throw new Error(`${errorData.error || 'Upload failed'}${stepInfo}`);
         }
 
         const result = await response.json();

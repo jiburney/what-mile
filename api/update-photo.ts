@@ -9,7 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Auth check
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized', step: 'auth' });
   }
 
   const token = authHeader.substring(7);
@@ -17,12 +17,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     if (authError || !user) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized', step: 'auth' });
     }
 
     const { photoId, description, status } = req.body;
     if (!photoId) {
-      return res.status(400).json({ error: 'Missing photoId' });
+      return res.status(400).json({ error: 'Missing photoId', step: 'validation' });
     }
 
     // Build update object
@@ -31,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (status !== undefined) updates.status = status;
 
     if (Object.keys(updates).length === 0) {
-      return res.status(400).json({ error: 'No fields to update' });
+      return res.status(400).json({ error: 'No fields to update', step: 'validation' });
     }
 
     // Update photo
@@ -42,12 +42,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (updateError) {
       console.error('Update error:', updateError);
-      throw updateError;
+      return res.status(500).json({ error: 'Database update failed', step: 'db_update' });
     }
 
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Update photo error:', error);
-    return res.status(500).json({ error: 'Failed to update photo' });
+    return res.status(500).json({ error: 'Failed to update photo', step: 'unknown' });
   }
 }
