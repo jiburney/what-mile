@@ -13,7 +13,7 @@ export function AdminLogin() {
   const [loading, setLoading] = useState(false);
 
   const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-  const needsPasswordGate = !!adminPassword;
+  const needsPasswordGate = !!adminPassword && !import.meta.env.DEV;
 
   const handlePasswordGate = (e: FormEvent) => {
     e.preventDefault();
