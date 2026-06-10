@@ -12,6 +12,7 @@ import { getTrailSection } from './trail-sections.js';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
+  maxRetries: 4,
 });
 
 const r2 = new S3Client({
@@ -48,7 +49,8 @@ function isTransientError(err: unknown): boolean {
   return true; // Retry unknown/network errors
 }
 
-// Simple in-memory rate limiting: 20 uploads per IP per hour
+// Simple in-memory rate limiting
+const MAX_UPLOADS_PER_HOUR = 500;
 const uploadCounts = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(ip: string): boolean {
@@ -60,7 +62,7 @@ function checkRateLimit(ip: string): boolean {
     return true;
   }
 
-  if (record.count >= 20) return false;
+  if (record.count >= MAX_UPLOADS_PER_HOUR) return false;
 
   record.count++;
   return true;
@@ -143,25 +145,26 @@ async function inferLocation(imageBuffer: Buffer): Promise<{
   lng: number | null;
   description: string | null;
 }> {
-  const base64Image = imageBuffer.toString('base64');
+  try {
+    const base64Image = imageBuffer.toString('base64');
 
-  const message = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 300,
-    messages: [{
-      role: 'user',
-      content: [
-        {
-          type: 'image',
-          source: {
-            type: 'base64',
-            media_type: 'image/webp',
-            data: base64Image,
+    const message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
+      messages: [{
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: 'image/webp',
+              data: base64Image,
+            },
           },
-        },
-        {
-          type: 'text',
-          text: `This is a photo from the Appalachian Trail. Analyze the image and provide:
+          {
+            type: 'text',
+            text: `This is a photo from the Appalachian Trail. Analyze the image and provide:
 1. A specific location name (state + landmark if identifiable, or general description)
 2. Your best estimate of GPS coordinates (latitude, longitude)
 3. A one-sentence description of what's visible
@@ -172,39 +175,44 @@ Respond with ONLY a JSON object:
 {"locationName": "...", "lat": number, "lng": number, "description": "..."}
 
 If you cannot determine coordinates confidently, use null for lat/lng.`,
-        },
-      ],
-    }],
-  });
+          },
+        ],
+      }],
+    });
 
-  const textContent = message.content.find((block) => block.type === 'text');
-  if (!textContent || textContent.type !== 'text') {
-    return { locationName: null, lat: null, lng: null, description: null };
-  }
-
-  try {
-    const cleanedJson = cleanJsonResponse(textContent.text);
-    const parsed = JSON.parse(cleanedJson);
-
-    // Validate coordinates are within AT bounding box
-    const lat = parsed.lat;
-    const lng = parsed.lng;
-
-    if (lat !== null && lng !== null) {
-      const inBounds = lat >= 34.6 && lat <= 47.5 && lng >= -84.2 && lng <= -66.9;
-      if (!inBounds) {
-        // Outside AT corridor — reject inference
-        return { locationName: parsed.locationName || null, lat: null, lng: null, description: parsed.description || null };
-      }
+    const textContent = message.content.find((block) => block.type === 'text');
+    if (!textContent || textContent.type !== 'text') {
+      return { locationName: null, lat: null, lng: null, description: null };
     }
 
-    return {
-      locationName: parsed.locationName || null,
-      lat: lat || null,
-      lng: lng || null,
-      description: parsed.description || null,
-    };
-  } catch {
+    try {
+      const cleanedJson = cleanJsonResponse(textContent.text);
+      const parsed = JSON.parse(cleanedJson);
+
+      // Validate coordinates are within AT bounding box
+      const lat = parsed.lat;
+      const lng = parsed.lng;
+
+      if (lat !== null && lng !== null) {
+        const inBounds = lat >= 34.6 && lat <= 47.5 && lng >= -84.2 && lng <= -66.9;
+        if (!inBounds) {
+          // Outside AT corridor — reject inference
+          return { locationName: parsed.locationName || null, lat: null, lng: null, description: parsed.description || null };
+        }
+      }
+
+      return {
+        locationName: parsed.locationName || null,
+        lat: lat || null,
+        lng: lng || null,
+        description: parsed.description || null,
+      };
+    } catch {
+      return { locationName: null, lat: null, lng: null, description: null };
+    }
+  } catch (error) {
+    // API call failed (rate limit or other error) — return nulls instead of throwing
+    console.error('Location inference failed:', error);
     return { locationName: null, lat: null, lng: null, description: null };
   }
 }
@@ -217,7 +225,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.socket.remoteAddress || 'unknown';
 
   if (!checkRateLimit(ip)) {
-    return res.status(429).json({ error: 'Rate limit exceeded. Maximum 20 uploads per hour.', step: 'validation' });
+    return res.status(429).json({ error: `Rate limit exceeded. Maximum ${MAX_UPLOADS_PER_HOUR} uploads per hour.`, step: 'validation' });
   }
 
   let uploadedKey: string | null = null;
@@ -298,7 +306,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Run Haiku triage with retry and fallback
     let triageStatus = 'review';
-    let reason = 'Triage unavailable — defaulted to review';
+    let reason = 'Triage skipped (rate limited) — needs manual review';
     try {
       const result = await withRetry(
         () => triagePhoto(processed),

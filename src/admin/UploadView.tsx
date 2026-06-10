@@ -293,6 +293,11 @@ export function UploadView({ session }: UploadViewProps) {
         const remainingMs = avgMs * (files.length - localCompleted);
         setTimeRemaining(formatRemaining(remainingMs));
       }
+
+      // Add 250ms delay between uploads (skip on last file or if cancelled)
+      if (localCompleted < files.length && !isCancelled.current) {
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
     }
 
     setBatchSummary({
