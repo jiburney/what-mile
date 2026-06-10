@@ -62,7 +62,7 @@ function checkRateLimit(ip: string): boolean {
     return true;
   }
 
-  if (record.count >= MAX_UPLOADS_PER_HOUR) return false;
+  if (record.count >= 500) return false;
 
   record.count++;
   return true;

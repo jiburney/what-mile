@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import type { AdminPhoto } from '../types';
-import { PhotoCard } from './PhotoCard';
+import { LibraryTile } from './LibraryTile';
+import { Lightbox } from './Lightbox';
 
 interface LibraryViewProps {
   photos: AdminPhoto[];
@@ -10,11 +11,15 @@ interface LibraryViewProps {
   refetch: () => void;
 }
 
+const PAGE_SIZE = 48;
+
 export function LibraryView({ photos, loading, session, refetch }: LibraryViewProps) {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sectionFilter, setSectionFilter] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
+  const [page, setPage] = useState(1);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // Debounce search input
   useEffect(() => {
@@ -24,6 +29,11 @@ export function LibraryView({ photos, loading, session, refetch }: LibraryViewPr
 
     return () => clearTimeout(timer);
   }, [search]);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, sectionFilter, sortBy]);
 
   // Derive unique sections from photos
   const sections = useMemo(() => {
@@ -74,6 +84,46 @@ export function LibraryView({ photos, loading, session, refetch }: LibraryViewPr
 
     return result;
   }, [photos, debouncedSearch, sectionFilter, sortBy]);
+
+  // Paginate filtered results
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginatedPhotos = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filtered.slice(start, start + PAGE_SIZE);
+  }, [filtered, page]);
+
+  // Clamp page if it exceeds total pages after a refetch
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [totalPages, page]);
+
+  const handleTileClick = (index: number) => {
+    // Convert tile index to filtered array index
+    const globalIndex = (page - 1) * PAGE_SIZE + index;
+    setLightboxIndex(globalIndex);
+  };
+
+  const handleLightboxClose = () => {
+    setLightboxIndex(null);
+  };
+
+  const handleLightboxPrev = () => {
+    if (lightboxIndex !== null && lightboxIndex > (page - 1) * PAGE_SIZE) {
+      setLightboxIndex(lightboxIndex - 1);
+    }
+  };
+
+  const handleLightboxNext = () => {
+    if (lightboxIndex !== null && lightboxIndex < page * PAGE_SIZE - 1 && lightboxIndex < filtered.length - 1) {
+      setLightboxIndex(lightboxIndex + 1);
+    }
+  };
+
+  const handlePhotoRemoved = () => {
+    refetch();
+  };
 
   if (loading) {
     return (
@@ -138,17 +188,53 @@ export function LibraryView({ photos, loading, session, refetch }: LibraryViewPr
       )}
 
       {filtered.length > 0 && (
-        <div className="photo-grid library-grid">
-          {filtered.map((photo) => (
-            <PhotoCard
-              key={photo.id}
-              photo={photo}
-              session={session}
-              onAction={refetch}
-              mode="library"
-            />
-          ))}
-        </div>
+        <>
+          <div className="library-tile-grid">
+            {paginatedPhotos.map((photo, index) => (
+              <LibraryTile
+                key={photo.id}
+                photo={photo}
+                session={session}
+                onClick={() => handleTileClick(index)}
+              />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="library-pagination">
+              <button
+                className="library-pagination-btn"
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+              >
+                Prev
+              </button>
+              <span className="library-pagination-text">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                className="library-pagination-btn"
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {lightboxIndex !== null && filtered[lightboxIndex] && (
+        <Lightbox
+          photo={filtered[lightboxIndex]}
+          session={session}
+          onClose={handleLightboxClose}
+          onPrev={handleLightboxPrev}
+          onNext={handleLightboxNext}
+          hasPrev={lightboxIndex > (page - 1) * PAGE_SIZE}
+          hasNext={lightboxIndex < Math.min(page * PAGE_SIZE - 1, filtered.length - 1)}
+          onRemoved={handlePhotoRemoved}
+        />
       )}
     </div>
   );
