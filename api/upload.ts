@@ -138,84 +138,6 @@ Respond with ONLY a JSON object, no markdown, no explanation:
   };
 }
 
-// Infer location from image when no GPS data exists
-async function inferLocation(imageBuffer: Buffer): Promise<{
-  locationName: string | null;
-  lat: number | null;
-  lng: number | null;
-  description: string | null;
-}> {
-  try {
-    const base64Image = imageBuffer.toString('base64');
-
-    const message = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: {
-              type: 'base64',
-              media_type: 'image/webp',
-              data: base64Image,
-            },
-          },
-          {
-            type: 'text',
-            text: `This is a photo from the Appalachian Trail. Analyze the image and provide:
-1. A specific location name (state + landmark if identifiable, or general description)
-2. Your best estimate of GPS coordinates (latitude, longitude)
-3. A one-sentence description of what's visible
-
-The AT runs from Georgia (lat ~34.6) to Maine (lat ~47.5), generally northeast along the spine of the Appalachian Mountains.
-
-Respond with ONLY a JSON object:
-{"locationName": "...", "lat": number, "lng": number, "description": "..."}
-
-If you cannot determine coordinates confidently, use null for lat/lng.`,
-          },
-        ],
-      }],
-    });
-
-    const textContent = message.content.find((block) => block.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
-      return { locationName: null, lat: null, lng: null, description: null };
-    }
-
-    try {
-      const cleanedJson = cleanJsonResponse(textContent.text);
-      const parsed = JSON.parse(cleanedJson);
-
-      // Validate coordinates are within AT bounding box
-      const lat = parsed.lat;
-      const lng = parsed.lng;
-
-      if (lat !== null && lng !== null) {
-        const inBounds = lat >= 34.6 && lat <= 47.5 && lng >= -84.2 && lng <= -66.9;
-        if (!inBounds) {
-          // Outside AT corridor — reject inference
-          return { locationName: parsed.locationName || null, lat: null, lng: null, description: parsed.description || null };
-        }
-      }
-
-      return {
-        locationName: parsed.locationName || null,
-        lat: lat || null,
-        lng: lng || null,
-        description: parsed.description || null,
-      };
-    } catch {
-      return { locationName: null, lat: null, lng: null, description: null };
-    }
-  } catch (error) {
-    // API call failed (rate limit or other error) — return nulls instead of throwing
-    console.error('Location inference failed:', error);
-    return { locationName: null, lat: null, lng: null, description: null };
-  }
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -240,6 +162,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Invalid or missing source field', step: 'validation' });
     }
 
+    // Check for duplicate via content hash
+    const contentHash = fields.content_hash?.[0];
+    if (contentHash) {
+      const { data: existing } = await supabaseAdmin
+        .from('photos')
+        .select('id')
+        .eq('content_hash', contentHash)
+        .maybeSingle();
+
+      if (existing) {
+        console.log(`Duplicate detected: content_hash=${contentHash}`);
+        return res.status(200).json({
+          success: true,
+          status: 'duplicate',
+          message: 'Already uploaded',
+        });
+      }
+    }
+
     const fileArray = files.file;
     if (!fileArray || fileArray.length === 0) {
       return res.status(400).json({ error: 'No file uploaded', step: 'validation' });
@@ -257,16 +198,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     console.log(`Processing upload: ${originalFilename} (${fileSize} bytes)`);
 
-    // Extract EXIF data BEFORE Sharp processing (Sharp strips EXIF)
-    const exifData = await exifr.parse(file.filepath, {
-      pick: ['latitude', 'longitude', 'DateTimeOriginal'],
-    });
+    // Prefer client-side EXIF extraction (from original file before compression)
+    let lat: number | null = null;
+    let lng: number | null = null;
+    let taken_at: Date | null = null;
 
-    let lat = exifData?.latitude ?? null;
-    let lng = exifData?.longitude ?? null;
-    const taken_at = exifData?.DateTimeOriginal ?? null;
+    const clientLat = parseFloat(fields.lat?.[0] || '');
+    const clientLng = parseFloat(fields.lng?.[0] || '');
+    const clientTakenAt = fields.taken_at?.[0];
 
-    console.log(`EXIF: lat=${lat}, lng=${lng}, taken_at=${taken_at}`);
+    if (Number.isFinite(clientLat)) lat = clientLat;
+    if (Number.isFinite(clientLng)) lng = clientLng;
+    if (clientTakenAt) taken_at = new Date(clientTakenAt);
+
+    // Fallback: server-side EXIF extraction when client didn't provide coords
+    if (lat === null || lng === null || taken_at === null) {
+      const exifData = await exifr.parse(file.filepath, {
+        pick: ['latitude', 'longitude', 'DateTimeOriginal'],
+      });
+
+      if (lat === null) lat = exifData?.latitude ?? null;
+      if (lng === null) lng = exifData?.longitude ?? null;
+      if (taken_at === null) taken_at = exifData?.DateTimeOriginal ?? null;
+    }
+
+    console.log(`GPS: lat=${lat}, lng=${lng}, taken_at=${taken_at}`);
+
+    // Skip photos without GPS data
+    if (lat === null || lng === null || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+      console.log('No GPS data — skipping upload');
+      return res.status(200).json({
+        status: 'skip',
+        message: 'No GPS data — skipped',
+      });
+    }
 
     // Process image: auto-rotate, resize, convert to WebP, strip EXIF
     let processed: Buffer;
@@ -320,20 +285,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error('Triage failed, defaulting to review:', triageError);
     }
 
-    // If no GPS coords, try to infer location from image
-    let locationName: string | null = null;
-    let description: string | null = null;
-
-    if (lat === null || lng === null) {
-      console.log('No GPS data, attempting location inference...');
-      const inference = await inferLocation(processed);
-      locationName = inference.locationName;
-      lat = inference.lat;
-      lng = inference.lng;
-      description = inference.description;
-      console.log(`Inference: ${locationName}, lat=${lat}, lng=${lng}`);
-    }
-
     // Determine trail section
     const trail_section = lat !== null && lng !== null ? getTrailSection(lat, lng) : null;
 
@@ -343,16 +294,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .insert({
         filename,
         r2_url: uploadedKey,
-        location_name: locationName || 'Unknown',
+        location_name: 'Unknown',
         lat,
         lng,
         taken_at: taken_at?.toISOString() ?? null,
         trail_section,
-        description,
+        description: null,
         status: triageStatus,
         source,
         is_private: true,
         times_shown: 0,
+        content_hash: contentHash || null,
       })
       .select('id')
       .single();
