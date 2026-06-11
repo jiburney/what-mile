@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import exifr from 'exifr';
 
 interface UploadViewProps {
   session: Session;
@@ -8,7 +9,7 @@ interface UploadViewProps {
 
 interface UploadStatus {
   filename: string;
-  status: 'compressing' | 'uploading' | 'pending' | 'review' | 'skip' | 'error';
+  status: 'compressing' | 'uploading' | 'pending' | 'review' | 'skip' | 'error' | 'duplicate';
   message?: string;
 }
 
@@ -19,6 +20,7 @@ interface BatchSummary {
   review: number;
   skip: number;
   error: number;
+  duplicate: number;
   cancelled: boolean;
 }
 
@@ -31,7 +33,7 @@ interface HealthState {
 }
 
 async function compressImage(file: File): Promise<Blob> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
@@ -54,6 +56,10 @@ async function compressImage(file: File): Promise<Blob> {
         'image/jpeg',
         0.85
       );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Could not decode image (unsupported format?)'));
     };
     img.src = url;
   });
@@ -217,6 +223,7 @@ export function UploadView({ session }: UploadViewProps) {
     let reviewCount = 0;
     let skipCount = 0;
     let errorCount = 0;
+    let duplicateCount = 0;
 
     for (let i = 0; i < files.length; i++) {
       if (isCancelled.current) break;
@@ -227,6 +234,18 @@ export function UploadView({ session }: UploadViewProps) {
           prev.map((u, idx) => (idx === i ? { ...u, status: 'compressing' } : u))
         );
 
+        // Extract EXIF from original file BEFORE compression
+        const exif = await exifr
+          .parse(file, { pick: ['latitude', 'longitude', 'DateTimeOriginal'] })
+          .catch(() => null);
+
+        // Compute content hash from original file bytes
+        const buf = await file.arrayBuffer();
+        const digest = await crypto.subtle.digest('SHA-256', buf);
+        const hash = [...new Uint8Array(digest)]
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('');
+
         const compressed = await compressImage(file);
 
         setUploads((prev) =>
@@ -236,6 +255,18 @@ export function UploadView({ session }: UploadViewProps) {
         const formData = new FormData();
         formData.append('file', compressed, file.name);
         formData.append('source', 'owner');
+        formData.append('content_hash', hash);
+
+        // Append EXIF data if present
+        if (typeof exif?.latitude === 'number') {
+          formData.append('lat', String(exif.latitude));
+        }
+        if (typeof exif?.longitude === 'number') {
+          formData.append('lng', String(exif.longitude));
+        }
+        if (exif?.DateTimeOriginal instanceof Date) {
+          formData.append('taken_at', exif.DateTimeOriginal.toISOString());
+        }
 
         const response = await fetch('/api/upload', {
           method: 'POST',
@@ -254,6 +285,7 @@ export function UploadView({ session }: UploadViewProps) {
         if (triageStatus === 'pending') pendingCount++;
         else if (triageStatus === 'review') reviewCount++;
         else if (triageStatus === 'skip') skipCount++;
+        else if (triageStatus === 'duplicate') duplicateCount++;
 
         setUploads((prev) =>
           prev.map((u, idx) =>
@@ -307,6 +339,7 @@ export function UploadView({ session }: UploadViewProps) {
       review: reviewCount,
       skip: skipCount,
       error: errorCount,
+      duplicate: duplicateCount,
       cancelled: isCancelled.current,
     });
     setIsUploading(false);
@@ -319,7 +352,7 @@ export function UploadView({ session }: UploadViewProps) {
   const getStatusClass = (status: string) => {
     if (status === 'pending') return 'status-ready';
     if (status === 'review') return 'status-review';
-    if (status === 'skip' || status === 'error') return 'status-skip';
+    if (status === 'skip' || status === 'error' || status === 'duplicate') return 'status-skip';
     return 'status-pending';
   };
 
@@ -330,6 +363,7 @@ export function UploadView({ session }: UploadViewProps) {
     if (status === 'review') return 'Review';
     if (status === 'skip') return 'Skipped';
     if (status === 'error') return 'Error';
+    if (status === 'duplicate') return 'Duplicate';
     return status;
   };
 
@@ -433,8 +467,8 @@ export function UploadView({ session }: UploadViewProps) {
       {batchSummary && (
         <div className="upload-summary">
           {batchSummary.cancelled
-            ? `Cancelled after ${batchSummary.completed} of ${batchSummary.total} — ${batchSummary.pending} ready, ${batchSummary.review} need review, ${batchSummary.skip} skipped`
-            : `Batch complete — ${batchSummary.pending} ready, ${batchSummary.review} need review, ${batchSummary.skip} skipped`}
+            ? `Cancelled after ${batchSummary.completed} of ${batchSummary.total} — ${batchSummary.pending} ready, ${batchSummary.review} need review, ${batchSummary.skip} skipped, ${batchSummary.duplicate} duplicate`
+            : `Batch complete — ${batchSummary.pending} ready, ${batchSummary.review} need review, ${batchSummary.skip} skipped, ${batchSummary.duplicate} duplicate`}
         </div>
       )}
     </div>

@@ -240,6 +240,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Invalid or missing source field', step: 'validation' });
     }
 
+    // Check for duplicate via content hash
+    const contentHash = fields.content_hash?.[0];
+    if (contentHash) {
+      const { data: existing } = await supabaseAdmin
+        .from('photos')
+        .select('id')
+        .eq('content_hash', contentHash)
+        .maybeSingle();
+
+      if (existing) {
+        console.log(`Duplicate detected: content_hash=${contentHash}`);
+        return res.status(200).json({
+          success: true,
+          status: 'duplicate',
+          message: 'Already uploaded',
+        });
+      }
+    }
+
     const fileArray = files.file;
     if (!fileArray || fileArray.length === 0) {
       return res.status(400).json({ error: 'No file uploaded', step: 'validation' });
@@ -257,16 +276,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     console.log(`Processing upload: ${originalFilename} (${fileSize} bytes)`);
 
-    // Extract EXIF data BEFORE Sharp processing (Sharp strips EXIF)
-    const exifData = await exifr.parse(file.filepath, {
-      pick: ['latitude', 'longitude', 'DateTimeOriginal'],
-    });
+    // Prefer client-side EXIF extraction (from original file before compression)
+    let lat: number | null = null;
+    let lng: number | null = null;
+    let taken_at: Date | null = null;
 
-    let lat = exifData?.latitude ?? null;
-    let lng = exifData?.longitude ?? null;
-    const taken_at = exifData?.DateTimeOriginal ?? null;
+    const clientLat = parseFloat(fields.lat?.[0] || '');
+    const clientLng = parseFloat(fields.lng?.[0] || '');
+    const clientTakenAt = fields.taken_at?.[0];
 
-    console.log(`EXIF: lat=${lat}, lng=${lng}, taken_at=${taken_at}`);
+    if (Number.isFinite(clientLat)) lat = clientLat;
+    if (Number.isFinite(clientLng)) lng = clientLng;
+    if (clientTakenAt) taken_at = new Date(clientTakenAt);
+
+    // Fallback: server-side EXIF extraction when client didn't provide coords
+    if (lat === null || lng === null || taken_at === null) {
+      const exifData = await exifr.parse(file.filepath, {
+        pick: ['latitude', 'longitude', 'DateTimeOriginal'],
+      });
+
+      if (lat === null) lat = exifData?.latitude ?? null;
+      if (lng === null) lng = exifData?.longitude ?? null;
+      if (taken_at === null) taken_at = exifData?.DateTimeOriginal ?? null;
+    }
+
+    console.log(`GPS: lat=${lat}, lng=${lng}, taken_at=${taken_at}`);
 
     // Process image: auto-rotate, resize, convert to WebP, strip EXIF
     let processed: Buffer;
@@ -353,6 +387,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         source,
         is_private: true,
         times_shown: 0,
+        content_hash: contentHash || null,
       })
       .select('id')
       .single();
