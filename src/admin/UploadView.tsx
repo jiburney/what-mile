@@ -235,9 +235,7 @@ export function UploadView({ session }: UploadViewProps) {
         );
 
         // Extract EXIF from original file BEFORE compression
-        const exif = await exifr
-          .parse(file, { pick: ['latitude', 'longitude', 'DateTimeOriginal'] })
-          .catch(() => null);
+        const exif = await exifr.parse(file).catch(() => null);
 
         // Compute content hash from original file bytes
         const buf = await file.arrayBuffer();
