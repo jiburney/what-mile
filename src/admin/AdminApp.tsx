@@ -7,9 +7,25 @@ import { ReviewView } from './ReviewView';
 import { SkipView } from './SkipView';
 import { LibraryView } from './LibraryView';
 import { usePhotos } from './usePhotos';
+import { UploadProvider, useUpload } from './UploadContext';
 import './admin.css';
 
 type Tab = 'upload' | 'pending' | 'review' | 'skip' | 'library';
+
+// Lives inside UploadProvider so it can read live upload progress for the tab badge.
+function UploadTabLabel() {
+  const { isUploading, completedCount, totalFiles } = useUpload();
+  return (
+    <>
+      Upload
+      {isUploading && (
+        <span className="admin-tab-count">
+          {completedCount}/{totalFiles}
+        </span>
+      )}
+    </>
+  );
+}
 
 export function AdminApp() {
   const { session, signOut, loading } = useAdminAuth();
@@ -35,6 +51,7 @@ export function AdminApp() {
   }
 
   return (
+    <UploadProvider>
     <div className="admin-layout">
       <header className="admin-header">
         <div className="admin-header-title">What Mile? Admin</div>
@@ -58,7 +75,7 @@ export function AdminApp() {
           className={`admin-tab ${activeTab === 'upload' ? 'active' : ''}`}
           onClick={() => setActiveTab('upload')}
         >
-          Upload
+          <UploadTabLabel />
         </button>
         <button
           className={`admin-tab ${activeTab === 'pending' ? 'active' : ''}`}
@@ -131,5 +148,6 @@ export function AdminApp() {
         )}
       </div>
     </div>
+    </UploadProvider>
   );
 }
