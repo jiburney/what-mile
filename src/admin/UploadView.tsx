@@ -36,7 +36,21 @@ async function compressImage(file: File): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
+    let settled = false;
+
+    // Backstop: some formats (notably HEIC/HEIF in Chrome/Firefox) fire neither
+    // onload nor onerror, leaving this promise unsettled and hanging the batch.
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      URL.revokeObjectURL(url);
+      reject(new Error('Image decode timed out (unsupported format?)'));
+    }, 15000);
+
     img.onload = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
       const canvas = document.createElement('canvas');
       let { width, height } = img;
       const maxDim = 2000;
@@ -51,13 +65,20 @@ async function compressImage(file: File): Promise<Blob> {
       canvas.toBlob(
         (blob) => {
           URL.revokeObjectURL(url);
-          resolve(blob!);
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Image encode failed'));
+          }
         },
         'image/jpeg',
         0.85
       );
     };
     img.onerror = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
       URL.revokeObjectURL(url);
       reject(new Error('Could not decode image (unsupported format?)'));
     };
@@ -230,6 +251,11 @@ export function UploadView({ session }: UploadViewProps) {
       const file = files[i];
 
       try {
+        const lower = file.name.toLowerCase();
+        if (lower.endsWith('.heic') || lower.endsWith('.heif') || file.type === 'image/heic' || file.type === 'image/heif') {
+          throw new Error('HEIC/HEIF not supported in-browser — re-export as JPEG');
+        }
+
         setUploads((prev) =>
           prev.map((u, idx) => (idx === i ? { ...u, status: 'compressing' } : u))
         );
