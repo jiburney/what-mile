@@ -1,0 +1,2242 @@
+[
+  {
+    "name": "Amicalola Falls (Max Epperson) Shelter",
+    "lat": 34.5581419145024,
+    "lng": -84.2483642466352,
+    "nobo_mile": 0,
+    "sobo_mile": 2197.4,
+    "offtrail_m": 9105
+  },
+  {
+    "name": "Black Gap Shelter",
+    "lat": 34.6174944479287,
+    "lng": -84.1984888435022,
+    "nobo_mile": 3.4,
+    "sobo_mile": 2194,
+    "offtrail_m": 1101
+  },
+  {
+    "name": "Springer Mtn Shelter",
+    "lat": 34.6293409996435,
+    "lng": -84.1927865895147,
+    "nobo_mile": 5.7,
+    "sobo_mile": 2191.7,
+    "offtrail_m": 152
+  },
+  {
+    "name": "Stover Creek Shelter",
+    "lat": 34.6503096378882,
+    "lng": -84.1972051979806,
+    "nobo_mile": 9.8,
+    "sobo_mile": 2187.6,
+    "offtrail_m": 60
+  },
+  {
+    "name": "Gooch Mtn Shelter",
+    "lat": 34.6557011156941,
+    "lng": -84.0499610095149,
+    "nobo_mile": 10.8,
+    "sobo_mile": 2186.6,
+    "offtrail_m": 85
+  },
+  {
+    "name": "Hawk Mtn Shelter",
+    "lat": 34.6661689845728,
+    "lng": -84.1363615182086,
+    "nobo_mile": 12.9,
+    "sobo_mile": 2184.5,
+    "offtrail_m": 177
+  },
+  {
+    "name": "Whitley Gap Shelter",
+    "lat": 34.712622146975,
+    "lng": -83.8343709090009,
+    "nobo_mile": 21.9,
+    "sobo_mile": 2175.5,
+    "offtrail_m": 1449
+  },
+  {
+    "name": "Woods Hole Shelter",
+    "lat": 34.737297222539,
+    "lng": -83.9549438144879,
+    "nobo_mile": 26.7,
+    "sobo_mile": 2170.7,
+    "offtrail_m": 319
+  },
+  {
+    "name": "Blood Mtn Shelter",
+    "lat": 34.7400462167928,
+    "lng": -83.9374185425438,
+    "nobo_mile": 27.2,
+    "sobo_mile": 2170.2,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Low Gap Shelter",
+    "lat": 34.7762269397565,
+    "lng": -83.8245568407295,
+    "nobo_mile": 34.3,
+    "sobo_mile": 2163.1,
+    "offtrail_m": 89
+  },
+  {
+    "name": "Tray Mtn Shelter",
+    "lat": 34.8041402403188,
+    "lng": -83.6767445572224,
+    "nobo_mile": 39.7,
+    "sobo_mile": 2157.7,
+    "offtrail_m": 92
+  },
+  {
+    "name": "Blue Mtn Shelter",
+    "lat": 34.8172223676155,
+    "lng": -83.7667099321925,
+    "nobo_mile": 42.2,
+    "sobo_mile": 2155.2,
+    "offtrail_m": 71
+  },
+  {
+    "name": "Deep Gap Shelter",
+    "lat": 34.8825129180083,
+    "lng": -83.6459634756761,
+    "nobo_mile": 54.9,
+    "sobo_mile": 2142.5,
+    "offtrail_m": 336
+  },
+  {
+    "name": "Plumorchard Shelter",
+    "lat": 34.9459873635843,
+    "lng": -83.5882931254456,
+    "nobo_mile": 67.3,
+    "sobo_mile": 2130.1,
+    "offtrail_m": 204
+  },
+  {
+    "name": "Carter Gap Shelter",
+    "lat": 34.9990148593646,
+    "lng": -83.4941535039597,
+    "nobo_mile": 77.6,
+    "sobo_mile": 2119.8,
+    "offtrail_m": 33
+  },
+  {
+    "name": "Muskrat Creek Shelter",
+    "lat": 35.020701062552,
+    "lng": -83.5813444456769,
+    "nobo_mile": 81.8,
+    "sobo_mile": 2115.6,
+    "offtrail_m": 32
+  },
+  {
+    "name": "Standing Indian Shelter",
+    "lat": 35.041980892308,
+    "lng": -83.5480554441672,
+    "nobo_mile": 85.9,
+    "sobo_mile": 2111.5,
+    "offtrail_m": 41
+  },
+  {
+    "name": "Long Branch Shelter",
+    "lat": 35.0700327471285,
+    "lng": -83.4981339431798,
+    "nobo_mile": 91.4,
+    "sobo_mile": 2106,
+    "offtrail_m": 101
+  },
+  {
+    "name": "Rock Gap Shelter",
+    "lat": 35.0915548566799,
+    "lng": -83.5230354756942,
+    "nobo_mile": 95.6,
+    "sobo_mile": 2101.8,
+    "offtrail_m": 39
+  },
+  {
+    "name": "Siler Bald Shelter",
+    "lat": 35.1442770698109,
+    "lng": -83.5724650111773,
+    "nobo_mile": 105.8,
+    "sobo_mile": 2091.6,
+    "offtrail_m": 293
+  },
+  {
+    "name": "Wayah Shelter",
+    "lat": 35.1879356183556,
+    "lng": -83.5620720116594,
+    "nobo_mile": 114.3,
+    "sobo_mile": 2083.1,
+    "offtrail_m": 47
+  },
+  {
+    "name": "Cold Spring Shelter",
+    "lat": 35.2312093694895,
+    "lng": -83.5599625565483,
+    "nobo_mile": 122.7,
+    "sobo_mile": 2074.7,
+    "offtrail_m": 4
+  },
+  {
+    "name": "Wesser Bald Shelter",
+    "lat": 35.2825446713454,
+    "lng": -83.582223275042,
+    "nobo_mile": 132.7,
+    "sobo_mile": 2064.7,
+    "offtrail_m": 44
+  },
+  {
+    "name": "A. Rufus Morgan Shelter",
+    "lat": 35.3243223067549,
+    "lng": -83.5901337257922,
+    "nobo_mile": 140.9,
+    "sobo_mile": 2056.5,
+    "offtrail_m": 55
+  },
+  {
+    "name": "Sassafras Gap Shelter",
+    "lat": 35.3306256180617,
+    "lng": -83.6667263735599,
+    "nobo_mile": 142.1,
+    "sobo_mile": 2055.3,
+    "offtrail_m": 87
+  },
+  {
+    "name": "Brown Fork Gap Shelter",
+    "lat": 35.3742705545102,
+    "lng": -83.7338382357386,
+    "nobo_mile": 150.6,
+    "sobo_mile": 2046.8,
+    "offtrail_m": 125
+  },
+  {
+    "name": "Cable Gap Shelter",
+    "lat": 35.4152633794731,
+    "lng": -83.7734414997279,
+    "nobo_mile": 158.5,
+    "sobo_mile": 2038.9,
+    "offtrail_m": 7
+  },
+  {
+    "name": "Fontana Dam Shelter",
+    "lat": 35.4485132285711,
+    "lng": -83.7939355216823,
+    "nobo_mile": 165,
+    "sobo_mile": 2032.4,
+    "offtrail_m": 31
+  },
+  {
+    "name": "Mollies Ridge Shelter",
+    "lat": 35.5458897227909,
+    "lng": -83.7935612323556,
+    "nobo_mile": 183.9,
+    "sobo_mile": 2013.5,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Spence Field Shelter",
+    "lat": 35.5618508425235,
+    "lng": -83.7326377634892,
+    "nobo_mile": 187,
+    "sobo_mile": 2010.4,
+    "offtrail_m": 203
+  },
+  {
+    "name": "Russell Field Shelter",
+    "lat": 35.5618264111726,
+    "lng": -83.7664646933819,
+    "nobo_mile": 187,
+    "sobo_mile": 2010.4,
+    "offtrail_m": 17
+  },
+  {
+    "name": "Silers Bald Shelter",
+    "lat": 35.5642393285438,
+    "lng": -83.56827726652,
+    "nobo_mile": 187.5,
+    "sobo_mile": 2009.9,
+    "offtrail_m": 0
+  },
+  {
+    "name": "Double Spring Gap Shelter",
+    "lat": 35.5652041487627,
+    "lng": -83.5425627250447,
+    "nobo_mile": 187.7,
+    "sobo_mile": 2009.7,
+    "offtrail_m": 2
+  },
+  {
+    "name": "Derrick Knob Shelter",
+    "lat": 35.5664910940931,
+    "lng": -83.6418510511978,
+    "nobo_mile": 187.9,
+    "sobo_mile": 2009.5,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Mt. Collins Shelter",
+    "lat": 35.5940513615869,
+    "lng": -83.470969372775,
+    "nobo_mile": 193.3,
+    "sobo_mile": 2004.1,
+    "offtrail_m": 384
+  },
+  {
+    "name": "Icewater Spring Shelter",
+    "lat": 35.6297945533599,
+    "lng": -83.3862740600572,
+    "nobo_mile": 200.3,
+    "sobo_mile": 1997.1,
+    "offtrail_m": 26
+  },
+  {
+    "name": "Pecks Corner Shelter",
+    "lat": 35.650816231802,
+    "lng": -83.3084648334682,
+    "nobo_mile": 204.3,
+    "sobo_mile": 1993.1,
+    "offtrail_m": 235
+  },
+  {
+    "name": "Tri-Corner Knob Shelter",
+    "lat": 35.6938710507927,
+    "lng": -83.2565593417815,
+    "nobo_mile": 212.7,
+    "sobo_mile": 1984.7,
+    "offtrail_m": 43
+  },
+  {
+    "name": "Cosby Knob Shelter",
+    "lat": 35.7283082248884,
+    "lng": -83.1820044119193,
+    "nobo_mile": 219.4,
+    "sobo_mile": 1978,
+    "offtrail_m": 42
+  },
+  {
+    "name": "Davenport Gap Shelter",
+    "lat": 35.7692675317018,
+    "lng": -83.1234691781434,
+    "nobo_mile": 227.4,
+    "sobo_mile": 1970,
+    "offtrail_m": 40
+  },
+  {
+    "name": "Groundhog Creek Shelter",
+    "lat": 35.7817900871442,
+    "lng": -83.0262135912679,
+    "nobo_mile": 229.8,
+    "sobo_mile": 1967.6,
+    "offtrail_m": 146
+  },
+  {
+    "name": "Roaring Fork Shelter",
+    "lat": 35.8049366129596,
+    "lng": -82.9499290341787,
+    "nobo_mile": 234.3,
+    "sobo_mile": 1963.1,
+    "offtrail_m": 30
+  },
+  {
+    "name": "Walnut Mtn Shelter",
+    "lat": 35.8365197030434,
+    "lng": -82.9365042011029,
+    "nobo_mile": 240.5,
+    "sobo_mile": 1956.9,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Deer Park Mtn Shelter",
+    "lat": 35.8759611501971,
+    "lng": -82.8612391822666,
+    "nobo_mile": 248.1,
+    "sobo_mile": 1949.3,
+    "offtrail_m": 81
+  },
+  {
+    "name": "Spring Mtn Shelter",
+    "lat": 35.9518212097326,
+    "lng": -82.7901231788161,
+    "nobo_mile": 262.9,
+    "sobo_mile": 1934.5,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Hogback Ridge Shelter",
+    "lat": 35.9640675892814,
+    "lng": -82.5871426365904,
+    "nobo_mile": 265.3,
+    "sobo_mile": 1932.1,
+    "offtrail_m": 146
+  },
+  {
+    "name": "Bald Mtn Shelter",
+    "lat": 36.000131553053,
+    "lng": -82.4781362474999,
+    "nobo_mile": 272.3,
+    "sobo_mile": 1925.1,
+    "offtrail_m": 73
+  },
+  {
+    "name": "Little Laurel Shelter",
+    "lat": 36.0151276649836,
+    "lng": -82.7360176596336,
+    "nobo_mile": 275.2,
+    "sobo_mile": 1922.2,
+    "offtrail_m": 11
+  },
+  {
+    "name": "Flint Mtn Shelter",
+    "lat": 36.034886787586,
+    "lng": -82.5966689146365,
+    "nobo_mile": 279,
+    "sobo_mile": 1918.4,
+    "offtrail_m": 19
+  },
+  {
+    "name": "Jerry Cabin Shelter",
+    "lat": 36.0565601936815,
+    "lng": -82.6571440838151,
+    "nobo_mile": 283.2,
+    "sobo_mile": 1914.2,
+    "offtrail_m": 3
+  },
+  {
+    "name": "No Business Knob Shelter",
+    "lat": 36.0666262455948,
+    "lng": -82.4335937132828,
+    "nobo_mile": 285.2,
+    "sobo_mile": 1912.2,
+    "offtrail_m": 0
+  },
+  {
+    "name": "Curley Maple Gap Shelter",
+    "lat": 36.1042651108331,
+    "lng": -82.3970585477139,
+    "nobo_mile": 292.5,
+    "sobo_mile": 1904.9,
+    "offtrail_m": 8
+  },
+  {
+    "name": "Roan High Knob Shelter",
+    "lat": 36.1051534928141,
+    "lng": -82.1222188452737,
+    "nobo_mile": 292.7,
+    "sobo_mile": 1904.7,
+    "offtrail_m": 70
+  },
+  {
+    "name": "Stan Murray Shelter",
+    "lat": 36.112417547533,
+    "lng": -82.0657167329317,
+    "nobo_mile": 294.1,
+    "sobo_mile": 1903.3,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Overmountain Shelter",
+    "lat": 36.1235660402936,
+    "lng": -82.0543169122088,
+    "nobo_mile": 296.3,
+    "sobo_mile": 1901.1,
+    "offtrail_m": 154
+  },
+  {
+    "name": "Cherry Gap Shelter",
+    "lat": 36.1293244952617,
+    "lng": -82.2640613807949,
+    "nobo_mile": 297.4,
+    "sobo_mile": 1900,
+    "offtrail_m": 20
+  },
+  {
+    "name": "Clyde Smith Shelter",
+    "lat": 36.1485401942834,
+    "lng": -82.1612812804515,
+    "nobo_mile": 301.1,
+    "sobo_mile": 1896.3,
+    "offtrail_m": 82
+  },
+  {
+    "name": "Moreland Gap Shelter",
+    "lat": 36.2201253589832,
+    "lng": -82.0883180420663,
+    "nobo_mile": 315,
+    "sobo_mile": 1882.4,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Mountaineer Falls Shelter",
+    "lat": 36.2201567770181,
+    "lng": -81.9856852455705,
+    "nobo_mile": 315.1,
+    "sobo_mile": 1882.3,
+    "offtrail_m": 40
+  },
+  {
+    "name": "Laurel Fork Shelter",
+    "lat": 36.2787455402293,
+    "lng": -82.1362020858076,
+    "nobo_mile": 326.4,
+    "sobo_mile": 1871,
+    "offtrail_m": 73
+  },
+  {
+    "name": "Vandeventer Shelter",
+    "lat": 36.3670741105381,
+    "lng": -82.0587689031204,
+    "nobo_mile": 343.6,
+    "sobo_mile": 1853.8,
+    "offtrail_m": 6
+  },
+  {
+    "name": "Iron Mtn Shelter",
+    "lat": 36.4354270943256,
+    "lng": -81.9909822870912,
+    "nobo_mile": 356.9,
+    "sobo_mile": 1840.5,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Double Springs Shelter",
+    "lat": 36.5091325777125,
+    "lng": -81.9860961831117,
+    "nobo_mile": 371.3,
+    "sobo_mile": 1826.1,
+    "offtrail_m": 11
+  },
+  {
+    "name": "McQueen's Knob (Emergency) Shelter",
+    "lat": 36.5722451203206,
+    "lng": -81.9202059773338,
+    "nobo_mile": 383.5,
+    "sobo_mile": 1813.9,
+    "offtrail_m": 9
+  },
+  {
+    "name": "Abingdon Gap Shelter",
+    "lat": 36.5809107008343,
+    "lng": -81.9018021783788,
+    "nobo_mile": 385.2,
+    "sobo_mile": 1812.2,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Saunders Shelter",
+    "lat": 36.6379792840492,
+    "lng": -81.7133277866494,
+    "nobo_mile": 396.3,
+    "sobo_mile": 1801.1,
+    "offtrail_m": 189
+  },
+  {
+    "name": "Lost Mtn Shelter",
+    "lat": 36.6442203786042,
+    "lng": -81.6559355668958,
+    "nobo_mile": 397.5,
+    "sobo_mile": 1799.9,
+    "offtrail_m": 28
+  },
+  {
+    "name": "Wise Shelter",
+    "lat": 36.6540310338407,
+    "lng": -81.4984172014299,
+    "nobo_mile": 399.4,
+    "sobo_mile": 1798,
+    "offtrail_m": 16
+  },
+  {
+    "name": "Thomas Knob Shelter",
+    "lat": 36.6566394649279,
+    "lng": -81.5352191975886,
+    "nobo_mile": 399.9,
+    "sobo_mile": 1797.5,
+    "offtrail_m": 5
+  },
+  {
+    "name": "Old Orchard Shelter",
+    "lat": 36.683274582368,
+    "lng": -81.5110270099757,
+    "nobo_mile": 405.1,
+    "sobo_mile": 1792.3,
+    "offtrail_m": 6
+  },
+  {
+    "name": "Hurricane Mtn Shelter",
+    "lat": 36.7154571330504,
+    "lng": -81.5095719564996,
+    "nobo_mile": 411.4,
+    "sobo_mile": 1786,
+    "offtrail_m": 71
+  },
+  {
+    "name": "Trimpi Shelter",
+    "lat": 36.7492409931536,
+    "lng": -81.4803866558309,
+    "nobo_mile": 417.9,
+    "sobo_mile": 1779.5,
+    "offtrail_m": 141
+  },
+  {
+    "name": "Partnership Shelter",
+    "lat": 36.8095334968401,
+    "lng": -81.4224194321682,
+    "nobo_mile": 429.7,
+    "sobo_mile": 1767.7,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Chatfield Memorial Shelter",
+    "lat": 36.8500045874971,
+    "lng": -81.3631870389083,
+    "nobo_mile": 437.5,
+    "sobo_mile": 1759.9,
+    "offtrail_m": 6
+  },
+  {
+    "name": "Knot Maul Branch Shelter",
+    "lat": 37.0007773757694,
+    "lng": -81.4044886505653,
+    "nobo_mile": 466.9,
+    "sobo_mile": 1730.5,
+    "offtrail_m": 13
+  },
+  {
+    "name": "Chestnut Knob Shelter",
+    "lat": 37.0577799786312,
+    "lng": -81.3993770365679,
+    "nobo_mile": 477.9,
+    "sobo_mile": 1719.5,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Jenkins Shelter",
+    "lat": 37.0934674109719,
+    "lng": -81.2476708032731,
+    "nobo_mile": 484.9,
+    "sobo_mile": 1712.5,
+    "offtrail_m": 70
+  },
+  {
+    "name": "Helveys Mill Shelter",
+    "lat": 37.1307931523551,
+    "lng": -81.1029839431296,
+    "nobo_mile": 492.1,
+    "sobo_mile": 1705.3,
+    "offtrail_m": 378
+  },
+  {
+    "name": "Jenny Knob Shelter",
+    "lat": 37.1550458941868,
+    "lng": -80.9801310746916,
+    "nobo_mile": 496.9,
+    "sobo_mile": 1700.5,
+    "offtrail_m": 83
+  },
+  {
+    "name": "Wapiti Shelter",
+    "lat": 37.2238851284428,
+    "lng": -80.8240502449619,
+    "nobo_mile": 510.2,
+    "sobo_mile": 1687.2,
+    "offtrail_m": 65
+  },
+  {
+    "name": "Doc's Knob Shelter",
+    "lat": 37.2703890484693,
+    "lng": -80.8361248414794,
+    "nobo_mile": 519.3,
+    "sobo_mile": 1678.1,
+    "offtrail_m": 38
+  },
+  {
+    "name": "Sarver Hollow Shelter",
+    "lat": 37.3547485773706,
+    "lng": -80.337338645122,
+    "nobo_mile": 535.7,
+    "sobo_mile": 1661.7,
+    "offtrail_m": 240
+  },
+  {
+    "name": "Laurel Creek Shelter",
+    "lat": 37.3589759899536,
+    "lng": -80.4209624606665,
+    "nobo_mile": 536.5,
+    "sobo_mile": 1660.9,
+    "offtrail_m": 36
+  },
+  {
+    "name": "Rice Field Shelter",
+    "lat": 37.3748429098691,
+    "lng": -80.7583766665347,
+    "nobo_mile": 539.6,
+    "sobo_mile": 1657.8,
+    "offtrail_m": 67
+  },
+  {
+    "name": "Pickle Branch Shelter",
+    "lat": 37.3802019125562,
+    "lng": -80.184600369466,
+    "nobo_mile": 540.6,
+    "sobo_mile": 1656.8,
+    "offtrail_m": 443
+  },
+  {
+    "name": "Johns Spring Shelter",
+    "lat": 37.3854008999352,
+    "lng": -80.0739895292817,
+    "nobo_mile": 541.6,
+    "sobo_mile": 1655.8,
+    "offtrail_m": 15
+  },
+  {
+    "name": "Niday Shelter",
+    "lat": 37.3877067689829,
+    "lng": -80.2640884929885,
+    "nobo_mile": 542.1,
+    "sobo_mile": 1655.3,
+    "offtrail_m": 33
+  },
+  {
+    "name": "Catawba Mtn Shelter",
+    "lat": 37.388206388165,
+    "lng": -80.0571641453548,
+    "nobo_mile": 542.2,
+    "sobo_mile": 1655.2,
+    "offtrail_m": 39
+  },
+  {
+    "name": "Campbell Shelter",
+    "lat": 37.3908512967964,
+    "lng": -80.0291704530325,
+    "nobo_mile": 542.7,
+    "sobo_mile": 1654.7,
+    "offtrail_m": 32
+  },
+  {
+    "name": "War Spur Shelter",
+    "lat": 37.3976094937679,
+    "lng": -80.4738182100297,
+    "nobo_mile": 544,
+    "sobo_mile": 1653.4,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Fullhardt Knob Shelter",
+    "lat": 37.3985455981847,
+    "lng": -79.853689024283,
+    "nobo_mile": 544.2,
+    "sobo_mile": 1653.2,
+    "offtrail_m": 61
+  },
+  {
+    "name": "Bailey Gap Shelter",
+    "lat": 37.4010356083958,
+    "lng": -80.5769841094127,
+    "nobo_mile": 544.7,
+    "sobo_mile": 1652.7,
+    "offtrail_m": 22
+  },
+  {
+    "name": "Wilson Creek Shelter",
+    "lat": 37.4193965190962,
+    "lng": -79.7855911808813,
+    "nobo_mile": 548.3,
+    "sobo_mile": 1649.1,
+    "offtrail_m": 26
+  },
+  {
+    "name": "Pine Swamp Branch Shelter",
+    "lat": 37.4220796014431,
+    "lng": -80.608457726227,
+    "nobo_mile": 548.8,
+    "sobo_mile": 1648.6,
+    "offtrail_m": 16
+  },
+  {
+    "name": "Lamberts Meadow Shelter",
+    "lat": 37.4346369653829,
+    "lng": -79.987562447096,
+    "nobo_mile": 551.2,
+    "sobo_mile": 1646.2,
+    "offtrail_m": 32
+  },
+  {
+    "name": "Bobblets Gap Shelter",
+    "lat": 37.4671836401579,
+    "lng": -79.7011758081475,
+    "nobo_mile": 557.6,
+    "sobo_mile": 1639.8,
+    "offtrail_m": 106
+  },
+  {
+    "name": "Cornelius Creek Shelter",
+    "lat": 37.4939818285973,
+    "lng": -79.5470828439267,
+    "nobo_mile": 562.8,
+    "sobo_mile": 1634.6,
+    "offtrail_m": 66
+  },
+  {
+    "name": "Cove Mtn (VA) Shelter",
+    "lat": 37.511714153232,
+    "lng": -79.6507448035299,
+    "nobo_mile": 566.2,
+    "sobo_mile": 1631.2,
+    "offtrail_m": 33
+  },
+  {
+    "name": "Thunder Hill Shelter",
+    "lat": 37.5274778261264,
+    "lng": -79.5039369338316,
+    "nobo_mile": 569.3,
+    "sobo_mile": 1628.1,
+    "offtrail_m": 52
+  },
+  {
+    "name": "Bryant Ridge Shelter",
+    "lat": 37.5301700795306,
+    "lng": -79.5855643328316,
+    "nobo_mile": 569.8,
+    "sobo_mile": 1627.6,
+    "offtrail_m": 11
+  },
+  {
+    "name": "Matts Creek Shelter",
+    "lat": 37.5995291963825,
+    "lng": -79.4131787115754,
+    "nobo_mile": 583.3,
+    "sobo_mile": 1614.1,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Johns Hollow Shelter",
+    "lat": 37.6129294429488,
+    "lng": -79.3918124628809,
+    "nobo_mile": 585.9,
+    "sobo_mile": 1611.5,
+    "offtrail_m": 63
+  },
+  {
+    "name": "Punchbowl Shelter",
+    "lat": 37.6778012712758,
+    "lng": -79.3385049205839,
+    "nobo_mile": 598.5,
+    "sobo_mile": 1598.9,
+    "offtrail_m": 260
+  },
+  {
+    "name": "Brown Mtn Creek Shelter",
+    "lat": 37.7093770164379,
+    "lng": -79.26824659708,
+    "nobo_mile": 604.7,
+    "sobo_mile": 1592.7,
+    "offtrail_m": 19
+  },
+  {
+    "name": "Cow Camp Gap Shelter",
+    "lat": 37.7450047598586,
+    "lng": -79.212686925297,
+    "nobo_mile": 611.6,
+    "sobo_mile": 1585.8,
+    "offtrail_m": 352
+  },
+  {
+    "name": "The Priest Shelter",
+    "lat": 37.817792488199,
+    "lng": -79.0703709532653,
+    "nobo_mile": 625.7,
+    "sobo_mile": 1571.7,
+    "offtrail_m": 119
+  },
+  {
+    "name": "Seeley-Woodworth Shelter",
+    "lat": 37.8190051111953,
+    "lng": -79.1549095091739,
+    "nobo_mile": 626,
+    "sobo_mile": 1571.4,
+    "offtrail_m": 69
+  },
+  {
+    "name": "Harpers Creek Shelter",
+    "lat": 37.8562199527262,
+    "lng": -79.0005316282562,
+    "nobo_mile": 633.2,
+    "sobo_mile": 1564.2,
+    "offtrail_m": 86
+  },
+  {
+    "name": "Maupin Field Shelter",
+    "lat": 37.8849202838461,
+    "lng": -78.9936726469117,
+    "nobo_mile": 638.8,
+    "sobo_mile": 1558.6,
+    "offtrail_m": 123
+  },
+  {
+    "name": "Paul C. Wolfe Shelter",
+    "lat": 37.985299725532,
+    "lng": -78.8836887643891,
+    "nobo_mile": 658.3,
+    "sobo_mile": 1539.1,
+    "offtrail_m": 10
+  },
+  {
+    "name": "Calf Mtn Shelter",
+    "lat": 38.0855262446883,
+    "lng": -78.7858364855528,
+    "nobo_mile": 677.8,
+    "sobo_mile": 1519.6,
+    "offtrail_m": 356
+  },
+  {
+    "name": "Blackrock Hut Shelter",
+    "lat": 38.2142016624584,
+    "lng": -78.7431921404098,
+    "nobo_mile": 702.8,
+    "sobo_mile": 1494.6,
+    "offtrail_m": 99
+  },
+  {
+    "name": "Pinefield Hut Shelter",
+    "lat": 38.290527601672,
+    "lng": -78.6460327552956,
+    "nobo_mile": 717.7,
+    "sobo_mile": 1479.7,
+    "offtrail_m": 105
+  },
+  {
+    "name": "Hightop Hut Shelter",
+    "lat": 38.33314710367,
+    "lng": -78.5585899210544,
+    "nobo_mile": 725.9,
+    "sobo_mile": 1471.5,
+    "offtrail_m": 152
+  },
+  {
+    "name": "Bearfence Mtn Hut Shelter",
+    "lat": 38.4441269975091,
+    "lng": -78.4704796348348,
+    "nobo_mile": 747.5,
+    "sobo_mile": 1449.9,
+    "offtrail_m": 106
+  },
+  {
+    "name": "Rock Spring Hut Shelter",
+    "lat": 38.5534976639702,
+    "lng": -78.4085826985909,
+    "nobo_mile": 768.8,
+    "sobo_mile": 1428.6,
+    "offtrail_m": 107
+  },
+  {
+    "name": "Byrds Nest 3 Hut Shelter",
+    "lat": 38.6344076835336,
+    "lng": -78.3240426775842,
+    "nobo_mile": 784.5,
+    "sobo_mile": 1412.9,
+    "offtrail_m": 28
+  },
+  {
+    "name": "Pass Mtn Hut Shelter",
+    "lat": 38.6765676922058,
+    "lng": -78.3191826787315,
+    "nobo_mile": 792.7,
+    "sobo_mile": 1404.7,
+    "offtrail_m": 211
+  },
+  {
+    "name": "Gravel Springs Hut Shelter",
+    "lat": 38.7638477130428,
+    "lng": -78.2339126578899,
+    "nobo_mile": 809.7,
+    "sobo_mile": 1387.7,
+    "offtrail_m": 152
+  },
+  {
+    "name": "Tom Floyd Wayside Shelter",
+    "lat": 38.8504277331212,
+    "lng": -78.163952641726,
+    "nobo_mile": 826.5,
+    "sobo_mile": 1370.9,
+    "offtrail_m": 57
+  },
+  {
+    "name": "Jim and Molly Denton Shelter",
+    "lat": 38.8901577442109,
+    "lng": -78.0830626192081,
+    "nobo_mile": 834.3,
+    "sobo_mile": 1363.1,
+    "offtrail_m": 63
+  },
+  {
+    "name": "Manassas Gap Shelter",
+    "lat": 38.930702202279,
+    "lng": -78.0326855771738,
+    "nobo_mile": 842.1,
+    "sobo_mile": 1355.3,
+    "offtrail_m": 70
+  },
+  {
+    "name": "Whiskey Hollow Shelter",
+    "lat": 38.9692477664073,
+    "lng": -77.9961425952931,
+    "nobo_mile": 849.6,
+    "sobo_mile": 1347.8,
+    "offtrail_m": 278
+  },
+  {
+    "name": "Rod Hollow Shelter",
+    "lat": 39.0476044510779,
+    "lng": -77.9443738762155,
+    "nobo_mile": 864.9,
+    "sobo_mile": 1332.5,
+    "offtrail_m": 195
+  },
+  {
+    "name": "Sam Moore Shelter",
+    "lat": 39.0906377919072,
+    "lng": -77.8865725710199,
+    "nobo_mile": 873.3,
+    "sobo_mile": 1324.1,
+    "offtrail_m": 110
+  },
+  {
+    "name": "David Lesser Memorial Shelter",
+    "lat": 39.2272069722859,
+    "lng": -77.7794003034405,
+    "nobo_mile": 899.8,
+    "sobo_mile": 1297.6,
+    "offtrail_m": 73
+  },
+  {
+    "name": "Ed Garvey Shelter",
+    "lat": 39.3597957382016,
+    "lng": -77.6619741974039,
+    "nobo_mile": 925.6,
+    "sobo_mile": 1271.8,
+    "offtrail_m": 69
+  },
+  {
+    "name": "Crampton Gap Shelter",
+    "lat": 39.412579618638,
+    "lng": -77.6372995301103,
+    "nobo_mile": 935.9,
+    "sobo_mile": 1261.5,
+    "offtrail_m": 288
+  },
+  {
+    "name": "Rocky Run Shelter 1",
+    "lat": 39.4609319654662,
+    "lng": -77.6311846453176,
+    "nobo_mile": 945.3,
+    "sobo_mile": 1252.1,
+    "offtrail_m": 238
+  },
+  {
+    "name": "Rocky Run Shelter 2",
+    "lat": 39.4621514157124,
+    "lng": -77.6310705253607,
+    "nobo_mile": 945.5,
+    "sobo_mile": 1251.9,
+    "offtrail_m": 182
+  },
+  {
+    "name": "Pine Knob Shelter",
+    "lat": 39.5424338697341,
+    "lng": -77.602179596541,
+    "nobo_mile": 961.1,
+    "sobo_mile": 1236.3,
+    "offtrail_m": 205
+  },
+  {
+    "name": "Ensign Cowall Shelter",
+    "lat": 39.6309989190378,
+    "lng": -77.5559725438698,
+    "nobo_mile": 978.3,
+    "sobo_mile": 1219.1,
+    "offtrail_m": 36
+  },
+  {
+    "name": "Raven Rock Shelter",
+    "lat": 39.6733279214087,
+    "lng": -77.5298824974781,
+    "nobo_mile": 986.6,
+    "sobo_mile": 1210.8,
+    "offtrail_m": 122
+  },
+  {
+    "name": "Deer Lick Shelter 2",
+    "lat": 39.766217941469,
+    "lng": -77.4849624895033,
+    "nobo_mile": 1004.6,
+    "sobo_mile": 1192.8,
+    "offtrail_m": 15
+  },
+  {
+    "name": "Deer Lick Shelter 1",
+    "lat": 39.7660479414351,
+    "lng": -77.4849724894954,
+    "nobo_mile": 1004.6,
+    "sobo_mile": 1192.8,
+    "offtrail_m": 22
+  },
+  {
+    "name": "Tumbling Run Shelter 1",
+    "lat": 39.8049949493694,
+    "lng": -77.4781224899009,
+    "nobo_mile": 1012.2,
+    "sobo_mile": 1185.2,
+    "offtrail_m": 32
+  },
+  {
+    "name": "Tumbling Run Shelter 2",
+    "lat": 39.8049589493674,
+    "lng": -77.4779924898579,
+    "nobo_mile": 1012.2,
+    "sobo_mile": 1185.2,
+    "offtrail_m": 20
+  },
+  {
+    "name": "Rocky Mtn Shelter 2",
+    "lat": 39.8668582006449,
+    "lng": -77.5009130410826,
+    "nobo_mile": 1024.2,
+    "sobo_mile": 1173.2,
+    "offtrail_m": 149
+  },
+  {
+    "name": "Rocky Mtn Shelter 1",
+    "lat": 39.8685103609694,
+    "lng": -77.5009130411912,
+    "nobo_mile": 1024.5,
+    "sobo_mile": 1172.9,
+    "offtrail_m": 93
+  },
+  {
+    "name": "Quarry Gap Shelter",
+    "lat": 39.9322079740426,
+    "lng": -77.4863525008321,
+    "nobo_mile": 1036.9,
+    "sobo_mile": 1160.5,
+    "offtrail_m": 22
+  },
+  {
+    "name": "Birch Run Shelter",
+    "lat": 39.9851069470169,
+    "lng": -77.419762202484,
+    "nobo_mile": 1047.2,
+    "sobo_mile": 1150.2,
+    "offtrail_m": 28
+  },
+  {
+    "name": "Toms Run Shelter",
+    "lat": 40.0338409990247,
+    "lng": -77.3567524669699,
+    "nobo_mile": 1056.7,
+    "sobo_mile": 1140.7,
+    "offtrail_m": 13
+  },
+  {
+    "name": "James Fry at Tagg Run Shelter",
+    "lat": 40.0629446715795,
+    "lng": -77.2064345317738,
+    "nobo_mile": 1062.3,
+    "sobo_mile": 1135.1,
+    "offtrail_m": 367
+  },
+  {
+    "name": "Alec Kennedy Shelter",
+    "lat": 40.1117696021022,
+    "lng": -77.1043695789647,
+    "nobo_mile": 1071.8,
+    "sobo_mile": 1125.6,
+    "offtrail_m": 151
+  },
+  {
+    "name": "Darlington Shelter",
+    "lat": 40.301988061916,
+    "lng": -77.087232400163,
+    "nobo_mile": 1108.8,
+    "sobo_mile": 1088.6,
+    "offtrail_m": 140
+  },
+  {
+    "name": "Cove Mtn (PA) Shelter",
+    "lat": 40.3635783636734,
+    "lng": -77.0675968680901,
+    "nobo_mile": 1120.8,
+    "sobo_mile": 1076.6,
+    "offtrail_m": 171
+  },
+  {
+    "name": "Clarks Ferry Shelter",
+    "lat": 40.3922371931146,
+    "lng": -76.9940828168708,
+    "nobo_mile": 1126.4,
+    "sobo_mile": 1071,
+    "offtrail_m": 46
+  },
+  {
+    "name": "Peters Mtn Shelter",
+    "lat": 40.4258410941088,
+    "lng": -76.8794463430126,
+    "nobo_mile": 1132.9,
+    "sobo_mile": 1064.5,
+    "offtrail_m": 46
+  },
+  {
+    "name": "William Penn Shelter",
+    "lat": 40.4955929566057,
+    "lng": -76.4144469959263,
+    "nobo_mile": 1146.5,
+    "sobo_mile": 1050.9,
+    "offtrail_m": 94
+  },
+  {
+    "name": "Rausch Gap Shelter",
+    "lat": 40.4986481190571,
+    "lng": -76.6004722598733,
+    "nobo_mile": 1147.1,
+    "sobo_mile": 1050.3,
+    "offtrail_m": 139
+  },
+  {
+    "name": "501 Shelter",
+    "lat": 40.5131735476123,
+    "lng": -76.3468372757138,
+    "nobo_mile": 1149.9,
+    "sobo_mile": 1047.5,
+    "offtrail_m": 190
+  },
+  {
+    "name": "Eagles Nest Shelter",
+    "lat": 40.5493602740458,
+    "lng": -76.152757373693,
+    "nobo_mile": 1156.9,
+    "sobo_mile": 1040.5,
+    "offtrail_m": 406
+  },
+  {
+    "name": "Windsor Furnace Shelter",
+    "lat": 40.590548162053,
+    "lng": -75.9416020574952,
+    "nobo_mile": 1164.9,
+    "sobo_mile": 1032.5,
+    "offtrail_m": 158
+  },
+  {
+    "name": "Eckville Shelter",
+    "lat": 40.6337481698296,
+    "lng": -75.9582620655836,
+    "nobo_mile": 1173.3,
+    "sobo_mile": 1024.1,
+    "offtrail_m": 199
+  },
+  {
+    "name": "Allentown Shelter",
+    "lat": 40.6830681826113,
+    "lng": -75.8736120419469,
+    "nobo_mile": 1182.9,
+    "sobo_mile": 1014.5,
+    "offtrail_m": 35
+  },
+  {
+    "name": "Bake Oven Knob Shelter",
+    "lat": 40.7541195159125,
+    "lng": -75.7274306731575,
+    "nobo_mile": 1196.7,
+    "sobo_mile": 1000.7,
+    "offtrail_m": 15
+  },
+  {
+    "name": "George W. Outerbridge Shelter",
+    "lat": 40.7822282114814,
+    "lng": -75.6177819671349,
+    "nobo_mile": 1202.2,
+    "sobo_mile": 995.2,
+    "offtrail_m": 32
+  },
+  {
+    "name": "Leroy A. Smith Shelter",
+    "lat": 40.8393982321987,
+    "lng": -75.3597818887332,
+    "nobo_mile": 1213.3,
+    "sobo_mile": 984.1,
+    "offtrail_m": 103
+  },
+  {
+    "name": "Kirkridge Shelter",
+    "lat": 40.936728257483,
+    "lng": -75.186801839864,
+    "nobo_mile": 1232.2,
+    "sobo_mile": 965.2,
+    "offtrail_m": 39
+  },
+  {
+    "name": "Brink Rd Shelter",
+    "lat": 41.1531483121739,
+    "lng": -74.8383617424421,
+    "nobo_mile": 1274.3,
+    "sobo_mile": 923.1,
+    "offtrail_m": 228
+  },
+  {
+    "name": "Gren Anderson Shelter",
+    "lat": 41.1994909462427,
+    "lng": -74.753051758103,
+    "nobo_mile": 1283.3,
+    "sobo_mile": 914.1,
+    "offtrail_m": 167
+  },
+  {
+    "name": "Wawayanda Shelter",
+    "lat": 41.2022243336739,
+    "lng": -74.3981387135015,
+    "nobo_mile": 1283.9,
+    "sobo_mile": 913.5,
+    "offtrail_m": 64
+  },
+  {
+    "name": "Mashipacong Shelter",
+    "lat": 41.2521670138377,
+    "lng": -74.6863604491151,
+    "nobo_mile": 1293.6,
+    "sobo_mile": 903.8,
+    "offtrail_m": 7
+  },
+  {
+    "name": "Fingerboard Shelter",
+    "lat": 41.2633154900365,
+    "lng": -74.1040415349067,
+    "nobo_mile": 1295.7,
+    "sobo_mile": 901.7,
+    "offtrail_m": 68
+  },
+  {
+    "name": "Wildcat Shelter",
+    "lat": 41.2682730241093,
+    "lng": -74.268199595965,
+    "nobo_mile": 1296.7,
+    "sobo_mile": 900.7,
+    "offtrail_m": 121
+  },
+  {
+    "name": "Pochuck Mtn Shelter",
+    "lat": 41.2712682167523,
+    "lng": -74.5153467364952,
+    "nobo_mile": 1297.3,
+    "sobo_mile": 900.1,
+    "offtrail_m": 55
+  },
+  {
+    "name": "Rutherford Shelter",
+    "lat": 41.2771533419527,
+    "lng": -74.6781006990723,
+    "nobo_mile": 1298.4,
+    "sobo_mile": 899,
+    "offtrail_m": 304
+  },
+  {
+    "name": "William Brien Memorial Shelter",
+    "lat": 41.2796083647783,
+    "lng": -74.0593575005635,
+    "nobo_mile": 1298.9,
+    "sobo_mile": 898.5,
+    "offtrail_m": 11
+  },
+  {
+    "name": "West Mtn Shelter",
+    "lat": 41.2824483671144,
+    "lng": -74.0091944846104,
+    "nobo_mile": 1299.5,
+    "sobo_mile": 897.9,
+    "offtrail_m": 1616
+  },
+  {
+    "name": "High Point Shelter",
+    "lat": 41.3157661041319,
+    "lng": -74.6576754810058,
+    "nobo_mile": 1305.9,
+    "sobo_mile": 891.5,
+    "offtrail_m": 125
+  },
+  {
+    "name": "RPH Shelter",
+    "lat": 41.5145112775159,
+    "lng": -73.792809708467,
+    "nobo_mile": 1344.6,
+    "sobo_mile": 852.8,
+    "offtrail_m": 33
+  },
+  {
+    "name": "Morgan Stewart Shelter",
+    "lat": 41.5645469826936,
+    "lng": -73.6921678801338,
+    "nobo_mile": 1354.3,
+    "sobo_mile": 843.1,
+    "offtrail_m": 7
+  },
+  {
+    "name": "Telephone Pioneers Shelter",
+    "lat": 41.6038496228141,
+    "lng": -73.6192698290583,
+    "nobo_mile": 1362,
+    "sobo_mile": 835.4,
+    "offtrail_m": 130
+  },
+  {
+    "name": "Wiley Shelter",
+    "lat": 41.6378894023925,
+    "lng": -73.5327946232479,
+    "nobo_mile": 1368.6,
+    "sobo_mile": 828.8,
+    "offtrail_m": 23
+  },
+  {
+    "name": "Ten Mile River Shelter",
+    "lat": 41.66517954344,
+    "lng": -73.5096360374687,
+    "nobo_mile": 1373.9,
+    "sobo_mile": 823.5,
+    "offtrail_m": 86
+  },
+  {
+    "name": "Mt. Algo Shelter",
+    "lat": 41.7317875156641,
+    "lng": -73.4963593123493,
+    "nobo_mile": 1386.8,
+    "sobo_mile": 810.6,
+    "offtrail_m": 81
+  },
+  {
+    "name": "Stewart Hollow Brook Shelter",
+    "lat": 41.7793067784927,
+    "lng": -73.4184975991318,
+    "nobo_mile": 1396.1,
+    "sobo_mile": 801.3,
+    "offtrail_m": 59
+  },
+  {
+    "name": "Pine Swamp Brook Shelter",
+    "lat": 41.8816572139808,
+    "lng": -73.3916261618622,
+    "nobo_mile": 1416,
+    "sobo_mile": 781.4,
+    "offtrail_m": 92
+  },
+  {
+    "name": "Limestone Spring Shelter",
+    "lat": 41.9754024758093,
+    "lng": -73.3923822090296,
+    "nobo_mile": 1434.2,
+    "sobo_mile": 763.2,
+    "offtrail_m": 257
+  },
+  {
+    "name": "Riga Shelter",
+    "lat": 42.0156488513556,
+    "lng": -73.4519556009073,
+    "nobo_mile": 1442,
+    "sobo_mile": 755.4,
+    "offtrail_m": 106
+  },
+  {
+    "name": "Brassie Brook Shelter",
+    "lat": 42.0284150047327,
+    "lng": -73.4533038311574,
+    "nobo_mile": 1444.5,
+    "sobo_mile": 752.9,
+    "offtrail_m": 58
+  },
+  {
+    "name": "The Hemlocks Shelter",
+    "lat": 42.1097237460152,
+    "lng": -73.4291220974976,
+    "nobo_mile": 1460.3,
+    "sobo_mile": 737.1,
+    "offtrail_m": 88
+  },
+  {
+    "name": "Glen Brook Shelter",
+    "lat": 42.1110795423235,
+    "lng": -73.4276770381151,
+    "nobo_mile": 1460.6,
+    "sobo_mile": 736.8,
+    "offtrail_m": 186
+  },
+  {
+    "name": "Tom Leonard Shelter",
+    "lat": 42.1648270748158,
+    "lng": -73.3057843489533,
+    "nobo_mile": 1471.1,
+    "sobo_mile": 726.3,
+    "offtrail_m": 35
+  },
+  {
+    "name": "Mt. Wilcox South Shelter 2",
+    "lat": 42.2072057711941,
+    "lng": -73.2673024161472,
+    "nobo_mile": 1479.3,
+    "sobo_mile": 718.1,
+    "offtrail_m": 107
+  },
+  {
+    "name": "Mt. Wilcox South Shelter 1",
+    "lat": 42.2077292822592,
+    "lng": -73.268266115494,
+    "nobo_mile": 1479.4,
+    "sobo_mile": 718,
+    "offtrail_m": 68
+  },
+  {
+    "name": "Mt. Wilcox North Shelter",
+    "lat": 42.2210776734206,
+    "lng": -73.250209624474,
+    "nobo_mile": 1482,
+    "sobo_mile": 715.4,
+    "offtrail_m": 291
+  },
+  {
+    "name": "Upper Goose Pond Cabin Shelter",
+    "lat": 42.2887358716318,
+    "lng": -73.1813555813904,
+    "nobo_mile": 1495.2,
+    "sobo_mile": 702.2,
+    "offtrail_m": 657
+  },
+  {
+    "name": "October Mtn Shelter",
+    "lat": 42.3550150600948,
+    "lng": -73.1541585467718,
+    "nobo_mile": 1508,
+    "sobo_mile": 689.4,
+    "offtrail_m": 20
+  },
+  {
+    "name": "Kay Wood Shelter",
+    "lat": 42.4520956871149,
+    "lng": -73.1614744923869,
+    "nobo_mile": 1526.9,
+    "sobo_mile": 670.5,
+    "offtrail_m": 242
+  },
+  {
+    "name": "Mark Noepel Shelter",
+    "lat": 42.6086553256892,
+    "lng": -73.1841031688945,
+    "nobo_mile": 1557.4,
+    "sobo_mile": 640,
+    "offtrail_m": 167
+  },
+  {
+    "name": "Wilbur Clearing Shelter",
+    "lat": 42.6678092322518,
+    "lng": -73.1701221571792,
+    "nobo_mile": 1568.9,
+    "sobo_mile": 628.5,
+    "offtrail_m": 254
+  },
+  {
+    "name": "Seth Warner Shelter",
+    "lat": 42.7720187338857,
+    "lng": -73.136909147131,
+    "nobo_mile": 1589.1,
+    "sobo_mile": 608.3,
+    "offtrail_m": 182
+  },
+  {
+    "name": "Congdon Shelter",
+    "lat": 42.848121801017,
+    "lng": -73.1099888523135,
+    "nobo_mile": 1603.9,
+    "sobo_mile": 593.5,
+    "offtrail_m": 9
+  },
+  {
+    "name": "Melville Nauheim Shelter",
+    "lat": 42.8878704409221,
+    "lng": -73.0955679262048,
+    "nobo_mile": 1611.7,
+    "sobo_mile": 585.7,
+    "offtrail_m": 81
+  },
+  {
+    "name": "Goddard Shelter",
+    "lat": 42.9741219417711,
+    "lng": -73.072116750205,
+    "nobo_mile": 1628.4,
+    "sobo_mile": 569,
+    "offtrail_m": 0
+  },
+  {
+    "name": "Kid Gore Shelter",
+    "lat": 43.0141301572259,
+    "lng": -73.0429349612825,
+    "nobo_mile": 1636.2,
+    "sobo_mile": 561.2,
+    "offtrail_m": 45
+  },
+  {
+    "name": "Story Spring Shelter",
+    "lat": 43.0504569970383,
+    "lng": -73.012434982682,
+    "nobo_mile": 1643.3,
+    "sobo_mile": 554.1,
+    "offtrail_m": 8
+  },
+  {
+    "name": "GMC Caretaker Hut Shelter",
+    "lat": 43.0859080127075,
+    "lng": -72.9248439722868,
+    "nobo_mile": 1650.2,
+    "sobo_mile": 547.2,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Stratton Pond Shelter",
+    "lat": 43.100536483023,
+    "lng": -72.9640487981186,
+    "nobo_mile": 1653,
+    "sobo_mile": 544.4,
+    "offtrail_m": 163
+  },
+  {
+    "name": "William B. Douglas Shelter",
+    "lat": 43.1445594932034,
+    "lng": -72.9909146638523,
+    "nobo_mile": 1661.6,
+    "sobo_mile": 535.8,
+    "offtrail_m": 334
+  },
+  {
+    "name": "Spruce Peak Shelter",
+    "lat": 43.1786034023346,
+    "lng": -72.9952060185226,
+    "nobo_mile": 1668.2,
+    "sobo_mile": 529.2,
+    "offtrail_m": 87
+  },
+  {
+    "name": "Bromley Shelter",
+    "lat": 43.2224171340051,
+    "lng": -72.9505051007541,
+    "nobo_mile": 1676.7,
+    "sobo_mile": 520.7,
+    "offtrail_m": 80
+  },
+  {
+    "name": "Peru Peak Shelter",
+    "lat": 43.3012739434577,
+    "lng": -72.9523463006164,
+    "nobo_mile": 1692.1,
+    "sobo_mile": 505.3,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Lost Pond Shelter",
+    "lat": 43.3475965929456,
+    "lng": -72.953068730953,
+    "nobo_mile": 1701.1,
+    "sobo_mile": 496.3,
+    "offtrail_m": 45
+  },
+  {
+    "name": "Old Job Shelter",
+    "lat": 43.3541566270271,
+    "lng": -72.9284863873055,
+    "nobo_mile": 1702.3,
+    "sobo_mile": 495.1,
+    "offtrail_m": 1395
+  },
+  {
+    "name": "Big Branch Shelter",
+    "lat": 43.3642499632417,
+    "lng": -72.9463988938747,
+    "nobo_mile": 1704.3,
+    "sobo_mile": 493.1,
+    "offtrail_m": 7
+  },
+  {
+    "name": "Little Rock Pond Shelter",
+    "lat": 43.3987630582755,
+    "lng": -72.9547861929505,
+    "nobo_mile": 1711,
+    "sobo_mile": 486.4,
+    "offtrail_m": 32
+  },
+  {
+    "name": "Greenwall Shelter",
+    "lat": 43.4405972438478,
+    "lng": -72.9294906854359,
+    "nobo_mile": 1719.1,
+    "sobo_mile": 478.3,
+    "offtrail_m": 370
+  },
+  {
+    "name": "Minerva Hinchey Shelter",
+    "lat": 43.48787011668,
+    "lng": -72.9245488369917,
+    "nobo_mile": 1728.3,
+    "sobo_mile": 469.1,
+    "offtrail_m": 49
+  },
+  {
+    "name": "Clarendon Shelter",
+    "lat": 43.5236789436547,
+    "lng": -72.9126480884865,
+    "nobo_mile": 1735.3,
+    "sobo_mile": 462.1,
+    "offtrail_m": 66
+  },
+  {
+    "name": "Governor Clement Shelter",
+    "lat": 43.5646636834411,
+    "lng": -72.848316538046,
+    "nobo_mile": 1743.3,
+    "sobo_mile": 454.1,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Cooper Lodge Shelter",
+    "lat": 43.60600953291,
+    "lng": -72.8224962843205,
+    "nobo_mile": 1751.3,
+    "sobo_mile": 446.1,
+    "offtrail_m": 2
+  },
+  {
+    "name": "Pico Camp Shelter",
+    "lat": 43.6391052266609,
+    "lng": -72.8304789051921,
+    "nobo_mile": 1757.7,
+    "sobo_mile": 439.7,
+    "offtrail_m": 416
+  },
+  {
+    "name": "Churchill Scott Shelter",
+    "lat": 43.6449714129134,
+    "lng": -72.8533406671339,
+    "nobo_mile": 1758.9,
+    "sobo_mile": 438.5,
+    "offtrail_m": 98
+  },
+  {
+    "name": "Winturri Shelter",
+    "lat": 43.6622680842908,
+    "lng": -72.6220370139281,
+    "nobo_mile": 1762.3,
+    "sobo_mile": 435.1,
+    "offtrail_m": 222
+  },
+  {
+    "name": "Stony Brook Shelter",
+    "lat": 43.6918209438398,
+    "lng": -72.7301696956387,
+    "nobo_mile": 1768,
+    "sobo_mile": 429.4,
+    "offtrail_m": 56
+  },
+  {
+    "name": "Thistle Hill Shelter",
+    "lat": 43.6952500684755,
+    "lng": -72.4753556136555,
+    "nobo_mile": 1768.7,
+    "sobo_mile": 428.7,
+    "offtrail_m": 168
+  },
+  {
+    "name": "Velvet Rocks Shelter",
+    "lat": 43.7025356541717,
+    "lng": -72.2647111194548,
+    "nobo_mile": 1770.1,
+    "sobo_mile": 427.3,
+    "offtrail_m": 139
+  },
+  {
+    "name": "Happy Hill Shelter",
+    "lat": 43.7239906985754,
+    "lng": -72.3652205501399,
+    "nobo_mile": 1774.3,
+    "sobo_mile": 423.1,
+    "offtrail_m": 123
+  },
+  {
+    "name": "Moose Mtn Shelter",
+    "lat": 43.7272062866789,
+    "lng": -72.1492585538585,
+    "nobo_mile": 1774.9,
+    "sobo_mile": 422.5,
+    "offtrail_m": 54
+  },
+  {
+    "name": "Trapper John Shelter",
+    "lat": 43.7831337801769,
+    "lng": -72.1114924840313,
+    "nobo_mile": 1785.8,
+    "sobo_mile": 411.6,
+    "offtrail_m": 263
+  },
+  {
+    "name": "Smarts Mtn Fire Warden's Cabin Shelter",
+    "lat": 43.8253331074179,
+    "lng": -72.0373989122466,
+    "nobo_mile": 1794,
+    "sobo_mile": 403.4,
+    "offtrail_m": 29
+  },
+  {
+    "name": "Hexacuba Shelter",
+    "lat": 43.8762148300324,
+    "lng": -72.0268361450964,
+    "nobo_mile": 1803.9,
+    "sobo_mile": 393.5,
+    "offtrail_m": 172
+  },
+  {
+    "name": "Jeffers Brook Shelter",
+    "lat": 43.9966229566264,
+    "lng": -71.8889444992452,
+    "nobo_mile": 1827.3,
+    "sobo_mile": 370.1,
+    "offtrail_m": 60
+  },
+  {
+    "name": "Beaver Brook Shelter",
+    "lat": 44.0330713338919,
+    "lng": -71.8112967588291,
+    "nobo_mile": 1834.4,
+    "sobo_mile": 363,
+    "offtrail_m": 61
+  },
+  {
+    "name": "Eliza Brook Shelter",
+    "lat": 44.1008200145051,
+    "lng": -71.7423718073546,
+    "nobo_mile": 1847.5,
+    "sobo_mile": 349.9,
+    "offtrail_m": 34
+  },
+  {
+    "name": "Kinsman Pond Shelter",
+    "lat": 44.136906796365,
+    "lng": -71.7323805944062,
+    "nobo_mile": 1854.5,
+    "sobo_mile": 342.9,
+    "offtrail_m": 128
+  },
+  {
+    "name": "Lonesome Lake Hut",
+    "lat": 44.1385306706565,
+    "lng": -71.703179444787,
+    "nobo_mile": 1854.9,
+    "sobo_mile": 342.5,
+    "offtrail_m": 27
+  },
+  {
+    "name": "Greenleaf Hut",
+    "lat": 44.1602604590449,
+    "lng": -71.6602250489068,
+    "nobo_mile": 1859.1,
+    "sobo_mile": 338.3,
+    "offtrail_m": 1255
+  },
+  {
+    "name": "Guyot Shelter",
+    "lat": 44.1610428544428,
+    "lng": -71.5350130332244,
+    "nobo_mile": 1859.2,
+    "sobo_mile": 338.2,
+    "offtrail_m": 798
+  },
+  {
+    "name": "Ethan Pond Shelter",
+    "lat": 44.1771841460147,
+    "lng": -71.4267974071899,
+    "nobo_mile": 1862.4,
+    "sobo_mile": 335,
+    "offtrail_m": 174
+  },
+  {
+    "name": "Galehead Hut",
+    "lat": 44.187974281154,
+    "lng": -71.56888044528,
+    "nobo_mile": 1864.5,
+    "sobo_mile": 332.9,
+    "offtrail_m": 39
+  },
+  {
+    "name": "Garfield Ridge Shelter",
+    "lat": 44.1907317213092,
+    "lng": -71.6083556306226,
+    "nobo_mile": 1865,
+    "sobo_mile": 332.4,
+    "offtrail_m": 95
+  },
+  {
+    "name": "Zealand Falls Hut",
+    "lat": 44.1959368631163,
+    "lng": -71.4943745119544,
+    "nobo_mile": 1866,
+    "sobo_mile": 331.4,
+    "offtrail_m": 12
+  },
+  {
+    "name": "Mizpah Spring Hut",
+    "lat": 44.2194127015599,
+    "lng": -71.3696305458626,
+    "nobo_mile": 1870.6,
+    "sobo_mile": 326.8,
+    "offtrail_m": 6
+  },
+  {
+    "name": "Lake of the Clouds Hut",
+    "lat": 44.2589160563836,
+    "lng": -71.3189803545206,
+    "nobo_mile": 1878.3,
+    "sobo_mile": 319.1,
+    "offtrail_m": 19
+  },
+  {
+    "name": "Carter Notch Hut",
+    "lat": 44.2593386515965,
+    "lng": -71.1954072452682,
+    "nobo_mile": 1878.4,
+    "sobo_mile": 319,
+    "offtrail_m": 111
+  },
+  {
+    "name": "The Perch Shelter",
+    "lat": 44.3240616603482,
+    "lng": -71.311922301405,
+    "nobo_mile": 1890.9,
+    "sobo_mile": 306.5,
+    "offtrail_m": 976
+  },
+  {
+    "name": "Madison Spring Hut",
+    "lat": 44.3279139900019,
+    "lng": -71.283315571095,
+    "nobo_mile": 1891.7,
+    "sobo_mile": 305.7,
+    "offtrail_m": 4
+  },
+  {
+    "name": "Imp Shelter",
+    "lat": 44.3290011156509,
+    "lng": -71.150180075654,
+    "nobo_mile": 1891.9,
+    "sobo_mile": 305.5,
+    "offtrail_m": 123
+  },
+  {
+    "name": "Rattle River Shelter",
+    "lat": 44.3800147762443,
+    "lng": -71.1075437256923,
+    "nobo_mile": 1901.8,
+    "sobo_mile": 295.6,
+    "offtrail_m": 0
+  },
+  {
+    "name": "Gentian Pond Shelter",
+    "lat": 44.4518084144024,
+    "lng": -71.0694025965749,
+    "nobo_mile": 1915.8,
+    "sobo_mile": 281.6,
+    "offtrail_m": 176
+  },
+  {
+    "name": "Carlo Col Shelter",
+    "lat": 44.4886845757824,
+    "lng": -71.0161757321332,
+    "nobo_mile": 1923,
+    "sobo_mile": 274.4,
+    "offtrail_m": 300
+  },
+  {
+    "name": "Full Goose Shelter",
+    "lat": 44.52517811849,
+    "lng": -70.9808828656679,
+    "nobo_mile": 1930.1,
+    "sobo_mile": 267.3,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Speck Pond Shelter",
+    "lat": 44.5647213968065,
+    "lng": -70.9736129877946,
+    "nobo_mile": 1937.7,
+    "sobo_mile": 259.7,
+    "offtrail_m": 63
+  },
+  {
+    "name": "Baldpate Lean-to Shelter",
+    "lat": 44.5984645688917,
+    "lng": -70.911642248191,
+    "nobo_mile": 1944.3,
+    "sobo_mile": 253.1,
+    "offtrail_m": 146
+  },
+  {
+    "name": "Frye Notch Lean-to Shelter",
+    "lat": 44.6279736885338,
+    "lng": -70.9004258253397,
+    "nobo_mile": 1950,
+    "sobo_mile": 247.4,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Hall Mtn Lean-to Shelter",
+    "lat": 44.7009093520444,
+    "lng": -70.8247604316556,
+    "nobo_mile": 1964.2,
+    "sobo_mile": 233.2,
+    "offtrail_m": 3
+  },
+  {
+    "name": "Bemis Mtn Lean-to Shelter",
+    "lat": 44.8101913047633,
+    "lng": -70.7558611185818,
+    "nobo_mile": 1985.5,
+    "sobo_mile": 211.9,
+    "offtrail_m": 86
+  },
+  {
+    "name": "Sabbath Day Pond Lean-to Shelter",
+    "lat": 44.8409373013057,
+    "lng": -70.662140251027,
+    "nobo_mile": 1991.5,
+    "sobo_mile": 205.9,
+    "offtrail_m": 65
+  },
+  {
+    "name": "Piazza Rock Lean-to Shelter",
+    "lat": 44.9041901898513,
+    "lng": -70.5300079415971,
+    "nobo_mile": 2003.8,
+    "sobo_mile": 193.6,
+    "offtrail_m": 43
+  },
+  {
+    "name": "Poplar Ridge Lean-to Shelter",
+    "lat": 44.9700735712617,
+    "lng": -70.4459302764887,
+    "nobo_mile": 2016.6,
+    "sobo_mile": 180.8,
+    "offtrail_m": 1
+  },
+  {
+    "name": "Spaulding Mtn Lean-to Shelter",
+    "lat": 44.9957714661994,
+    "lng": -70.3413417928369,
+    "nobo_mile": 2021.6,
+    "sobo_mile": 175.8,
+    "offtrail_m": 41
+  },
+  {
+    "name": "Little Bigelow Lean-to Shelter",
+    "lat": 45.1392129703765,
+    "lng": -70.1911652312805,
+    "nobo_mile": 2049.5,
+    "sobo_mile": 147.9,
+    "offtrail_m": 64
+  },
+  {
+    "name": "Horns Pond Lean-to Shelter 1",
+    "lat": 45.1437630557125,
+    "lng": -70.3296276814121,
+    "nobo_mile": 2050.3,
+    "sobo_mile": 147.1,
+    "offtrail_m": 67
+  },
+  {
+    "name": "Horns Pond Lean-to Shelter 2",
+    "lat": 45.1438593857281,
+    "lng": -70.3296712964331,
+    "nobo_mile": 2050.4,
+    "sobo_mile": 147,
+    "offtrail_m": 56
+  },
+  {
+    "name": "Horns Pond Day Use Shelter",
+    "lat": 45.1442609207814,
+    "lng": -70.330209210641,
+    "nobo_mile": 2050.4,
+    "sobo_mile": 147,
+    "offtrail_m": 3
+  },
+  {
+    "name": "West Carry Pond Lean-to Shelter",
+    "lat": 45.158060727629,
+    "lng": -70.0997570945515,
+    "nobo_mile": 2053.1,
+    "sobo_mile": 144.3,
+    "offtrail_m": 49
+  },
+  {
+    "name": "Pierce Pond Lean-to Shelter",
+    "lat": 45.2402894345231,
+    "lng": -70.0554322057963,
+    "nobo_mile": 2069.1,
+    "sobo_mile": 128.3,
+    "offtrail_m": 52
+  },
+  {
+    "name": "Bald Mtn Brook Lean-to Shelter",
+    "lat": 45.2584514638304,
+    "lng": -69.7996161882195,
+    "nobo_mile": 2072.6,
+    "sobo_mile": 124.8,
+    "offtrail_m": 65
+  },
+  {
+    "name": "Moxie Bald Lean-to Shelter",
+    "lat": 45.2706854526894,
+    "lng": -69.7453198525701,
+    "nobo_mile": 2075,
+    "sobo_mile": 122.4,
+    "offtrail_m": 38
+  },
+  {
+    "name": "Pleasant Pond Lean-to Shelter",
+    "lat": 45.2712189303747,
+    "lng": -69.9167404837534,
+    "nobo_mile": 2075.1,
+    "sobo_mile": 122.3,
+    "offtrail_m": 105
+  },
+  {
+    "name": "Horseshoe Canyon Lean-to Shelter",
+    "lat": 45.2826869254815,
+    "lng": -69.6276738773946,
+    "nobo_mile": 2077.4,
+    "sobo_mile": 120,
+    "offtrail_m": 51
+  },
+  {
+    "name": "Leeman Brook Lean-to Shelter",
+    "lat": 45.3515372845895,
+    "lng": -69.4987098668886,
+    "nobo_mile": 2090.7,
+    "sobo_mile": 106.7,
+    "offtrail_m": 9
+  },
+  {
+    "name": "Wilson Valley Lean-to Shelter",
+    "lat": 45.3988338311135,
+    "lng": -69.4591439583854,
+    "nobo_mile": 2099.9,
+    "sobo_mile": 97.5,
+    "offtrail_m": 31
+  },
+  {
+    "name": "Cloud Pond Lean-to Shelter",
+    "lat": 45.4181053867414,
+    "lng": -69.3538266717571,
+    "nobo_mile": 2103.7,
+    "sobo_mile": 93.7,
+    "offtrail_m": 279
+  },
+  {
+    "name": "Long Pond Stream Lean-to Shelter",
+    "lat": 45.4211584545385,
+    "lng": -69.4102365041399,
+    "nobo_mile": 2104.3,
+    "sobo_mile": 93.1,
+    "offtrail_m": 53
+  },
+  {
+    "name": "Chairback Gap Lean-to Shelter",
+    "lat": 45.4531807456927,
+    "lng": -69.2624152728137,
+    "nobo_mile": 2110.5,
+    "sobo_mile": 86.9,
+    "offtrail_m": 2
+  },
+  {
+    "name": "Carl A. Newhall Lean-to Shelter",
+    "lat": 45.5310909537062,
+    "lng": -69.3151160655957,
+    "nobo_mile": 2125.7,
+    "sobo_mile": 71.7,
+    "offtrail_m": 34
+  },
+  {
+    "name": "Logan Brook Lean-to Shelter",
+    "lat": 45.5610497844041,
+    "lng": -69.2347697550732,
+    "nobo_mile": 2131.5,
+    "sobo_mile": 65.9,
+    "offtrail_m": 9
+  },
+  {
+    "name": "East Branch (Pleasant River) Lean-to Shelter",
+    "lat": 45.5967816257593,
+    "lng": -69.1981849898139,
+    "nobo_mile": 2138.4,
+    "sobo_mile": 59,
+    "offtrail_m": 21
+  },
+  {
+    "name": "Cooper Brook Falls Lean-to Shelter",
+    "lat": 45.6404711587541,
+    "lng": -69.0873456446954,
+    "nobo_mile": 2146.9,
+    "sobo_mile": 50.5,
+    "offtrail_m": 26
+  },
+  {
+    "name": "Potaywadjo Spring Lean-to Shelter",
+    "lat": 45.706545705683,
+    "lng": -69.0073891594639,
+    "nobo_mile": 2159.8,
+    "sobo_mile": 37.6,
+    "offtrail_m": 35
+  },
+  {
+    "name": "Nahmakanta Stream Lean-to Shelter",
+    "lat": 45.7353807901277,
+    "lng": -69.059141989931,
+    "nobo_mile": 2165.4,
+    "sobo_mile": 32,
+    "offtrail_m": 5
+  },
+  {
+    "name": "Wadleigh Stream Lean-to Shelter",
+    "lat": 45.7469915235454,
+    "lng": -69.1444994858217,
+    "nobo_mile": 2167.6,
+    "sobo_mile": 29.8,
+    "offtrail_m": 16
+  },
+  {
+    "name": "Rainbow Stream Lean-to Shelter",
+    "lat": 45.7990760157884,
+    "lng": -69.1705326399714,
+    "nobo_mile": 2177.8,
+    "sobo_mile": 19.6,
+    "offtrail_m": 5
+  },
+  {
+    "name": "Hurd Brook Lean-to Shelter",
+    "lat": 45.8185016697898,
+    "lng": -69.01847954718,
+    "nobo_mile": 2181.6,
+    "sobo_mile": 15.8,
+    "offtrail_m": 2
+  },
+  {
+    "name": "The Birches Lean-to Shelter 1",
+    "lat": 45.8867654652022,
+    "lng": -68.9990427177682,
+    "nobo_mile": 2194.8,
+    "sobo_mile": 2.6,
+    "offtrail_m": 46
+  },
+  {
+    "name": "The Birches Lean-to Shelter 2",
+    "lat": 45.8868452142179,
+    "lng": -68.9989815407523,
+    "nobo_mile": 2194.8,
+    "sobo_mile": 2.6,
+    "offtrail_m": 48
+  }
+]
