@@ -1,6 +1,6 @@
 import type { Session } from '@supabase/supabase-js';
 import type { AdminPhoto } from '../types';
-import { useSignedUrl } from './useSignedUrl';
+import { Thumbnail } from './Thumbnail';
 
 interface LibraryTileProps {
   photo: AdminPhoto;
@@ -9,18 +9,10 @@ interface LibraryTileProps {
 }
 
 export function LibraryTile({ photo, session, onClick }: LibraryTileProps) {
-  const { url, loading } = useSignedUrl(photo, session);
-
   return (
     <div className="library-tile" onClick={onClick}>
-      {loading ? (
-        <div className="library-tile-skeleton" />
-      ) : (
-        <>
-          {url && <img src={url} alt={photo.locationName} className="library-tile-img" />}
-          <div className="library-tile-label">{photo.locationName}</div>
-        </>
-      )}
+      <Thumbnail photo={photo} session={session} />
+      <div className="library-tile-label">{photo.locationName}</div>
     </div>
   );
 }

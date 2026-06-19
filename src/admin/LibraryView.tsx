@@ -228,12 +228,13 @@ export function LibraryView({ photos, loading, session, refetch }: LibraryViewPr
         <Lightbox
           photo={filtered[lightboxIndex]}
           session={session}
+          mode="library"
           onClose={handleLightboxClose}
           onPrev={handleLightboxPrev}
           onNext={handleLightboxNext}
           hasPrev={lightboxIndex > (page - 1) * PAGE_SIZE}
           hasNext={lightboxIndex < Math.min(page * PAGE_SIZE - 1, filtered.length - 1)}
-          onRemoved={handlePhotoRemoved}
+          onAction={handlePhotoRemoved}
         />
       )}
     </div>

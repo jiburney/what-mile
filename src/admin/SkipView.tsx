@@ -86,7 +86,6 @@ export function SkipView({ photos, loading, session, refetch }: SkipViewProps) {
             key={photo.id}
             photo={photo}
             session={session}
-            onAction={refetch}
             mode="skip"
             onImageClick={() => setLightboxIndex(index)}
           />
@@ -97,12 +96,13 @@ export function SkipView({ photos, loading, session, refetch }: SkipViewProps) {
         <Lightbox
           photo={photos[lightboxIndex]}
           session={session}
+          mode="skip"
           onClose={() => setLightboxIndex(null)}
           onPrev={() => setLightboxIndex(Math.max(0, lightboxIndex - 1))}
           onNext={() => setLightboxIndex(Math.min(photos.length - 1, lightboxIndex + 1))}
           hasPrev={lightboxIndex > 0}
           hasNext={lightboxIndex < photos.length - 1}
-          onRemoved={() => {
+          onAction={() => {
             setLightboxIndex(null);
             refetch();
           }}

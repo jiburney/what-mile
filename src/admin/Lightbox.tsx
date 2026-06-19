@@ -6,23 +6,25 @@ import { useSignedUrl } from './useSignedUrl';
 interface LightboxProps {
   photo: AdminPhoto;
   session: Session;
+  mode: 'pending' | 'review' | 'skip' | 'library';
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
   hasPrev: boolean;
   hasNext: boolean;
-  onRemoved: () => void;
+  onAction: () => void;
 }
 
 export function Lightbox({
   photo,
   session,
+  mode,
   onClose,
   onPrev,
   onNext,
   hasPrev,
   hasNext,
-  onRemoved,
+  onAction,
 }: LightboxProps) {
   const { url, loading } = useSignedUrl(photo, session);
   const [description, setDescription] = useState(photo.description || '');
@@ -76,12 +78,90 @@ export function Lightbox({
       if (!response.ok) {
         throw new Error('Failed to update description');
       }
-
-      // Update successful — photo.description will be updated on next refetch
     } catch (err) {
       console.error('Error updating description:', err);
-      // Revert to original
       setDescription(photo.description || '');
+    }
+  };
+
+  const handleApprove = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/approve-photo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ photoId: photo.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to approve photo');
+      }
+
+      onAction();
+      onClose();
+    } catch (err) {
+      console.error('Error approving photo:', err);
+      alert('Failed to approve photo. See console for details.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleSkip = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/skip-photo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ photoId: photo.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to skip photo');
+      }
+
+      onAction();
+      onClose();
+    } catch (err) {
+      console.error('Error skipping photo:', err);
+      alert('Failed to skip photo. See console for details.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRescue = async () => {
+    setActionLoading(true);
+    try {
+      const response = await fetch('/api/update-photo', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          photoId: photo.id,
+          status: 'pending',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to rescue photo');
+      }
+
+      onAction();
+      onClose();
+    } catch (err) {
+      console.error('Error rescuing photo:', err);
+      alert('Failed to rescue photo. See console for details.');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -101,7 +181,7 @@ export function Lightbox({
         throw new Error('Failed to remove photo from game');
       }
 
-      onRemoved();
+      onAction();
       onClose();
     } catch (err) {
       console.error('Error removing photo:', err);
@@ -121,6 +201,26 @@ export function Lightbox({
     }
   };
 
+  const formatCoords = (lat?: number, lng?: number) => {
+    if (lat === undefined || lng === undefined) return null;
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  };
+
+  const getModeLabel = () => {
+    switch (mode) {
+      case 'pending':
+        return 'Pending approval';
+      case 'review':
+        return 'Needs review';
+      case 'skip':
+        return 'Skipped';
+      case 'library':
+        return 'In game library';
+    }
+  };
+
+  const coords = formatCoords(photo.coordinates[0], photo.coordinates[1]);
+
   return (
     <div className="lightbox-backdrop" onClick={onClose}>
       <div className="lightbox-panel" onClick={(e) => e.stopPropagation()}>
@@ -129,7 +229,7 @@ export function Lightbox({
         </button>
 
         {loading ? (
-          <div className="library-tile-skeleton" style={{ aspectRatio: '4/3', width: '100%' }} />
+          <div className="thumbnail-skeleton" style={{ aspectRatio: '4/3', width: '100%' }} />
         ) : (
           url && (
             <img
@@ -147,10 +247,18 @@ export function Lightbox({
           {photo.trail_section && <span>{photo.trail_section}</span>}
           {photo.trail_section && formatDate(photo.taken_at) && <span> • </span>}
           {formatDate(photo.taken_at)}
+          {coords && (
+            <>
+              {(photo.trail_section || formatDate(photo.taken_at)) && <span> • </span>}
+              <span>{coords}</span>
+            </>
+          )}
         </div>
 
-        {(photo.status === 'review' || photo.status === 'skip') && photo.triage_reason && (
-          <div className="photo-card-reason">{photo.triage_reason}</div>
+        {photo.triage_reason && (
+          <div className="lightbox-triage-reason">
+            <strong>{getModeLabel()}:</strong> {photo.triage_reason}
+          </div>
         )}
 
         <textarea
@@ -162,13 +270,42 @@ export function Lightbox({
         />
 
         <div className="lightbox-actions">
-          <button
-            className="btn-skip"
-            onClick={handleRemove}
-            disabled={actionLoading}
-          >
-            {actionLoading ? 'Removing...' : 'Remove from Game'}
-          </button>
+          {(mode === 'pending' || mode === 'review') && (
+            <>
+              <button
+                className="btn-approve"
+                onClick={handleApprove}
+                disabled={actionLoading}
+              >
+                {actionLoading ? 'Approving...' : 'Approve'}
+              </button>
+              <button
+                className="btn-skip"
+                onClick={handleSkip}
+                disabled={actionLoading}
+              >
+                {actionLoading ? 'Skipping...' : 'Skip'}
+              </button>
+            </>
+          )}
+          {mode === 'skip' && (
+            <button
+              className="btn-rescue"
+              onClick={handleRescue}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Rescuing...' : 'Rescue'}
+            </button>
+          )}
+          {mode === 'library' && (
+            <button
+              className="btn-skip"
+              onClick={handleRemove}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Removing...' : 'Remove from Game'}
+            </button>
+          )}
         </div>
 
         <div className="lightbox-nav">

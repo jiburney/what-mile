@@ -156,7 +156,6 @@ export function ReviewView({ photos, loading, session, refetch }: ReviewViewProp
             key={photo.id}
             photo={photo}
             session={session}
-            onAction={refetch}
             mode="review"
             selected={selectedIds.has(photo.id)}
             onToggle={() => toggleSelection(photo.id)}
@@ -169,12 +168,13 @@ export function ReviewView({ photos, loading, session, refetch }: ReviewViewProp
         <Lightbox
           photo={photos[lightboxIndex]}
           session={session}
+          mode="review"
           onClose={() => setLightboxIndex(null)}
           onPrev={() => setLightboxIndex(Math.max(0, lightboxIndex - 1))}
           onNext={() => setLightboxIndex(Math.min(photos.length - 1, lightboxIndex + 1))}
           hasPrev={lightboxIndex > 0}
           hasNext={lightboxIndex < photos.length - 1}
-          onRemoved={() => {
+          onAction={() => {
             setLightboxIndex(null);
             refetch();
           }}

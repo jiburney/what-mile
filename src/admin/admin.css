@@ -72,33 +72,44 @@
   overflow-y: auto;
 }
 
+/* ── Shared thumbnail component ──────────────────────── */
+.thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  flex-shrink: 0;
+  background: var(--parchment);
+  overflow: hidden;
+}
+
+.thumbnail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.thumbnail-skeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--parchment) 25%, var(--cream) 50%, var(--parchment) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
 .photo-card {
   background: var(--white);
   border: 1px solid var(--parchment);
   border-radius: var(--radius);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
+  position: relative;
 }
 
 .photo-card.selected {
   border-color: var(--forest);
   box-shadow: 0 0 0 2px var(--forest-lt);
-}
-
-.photo-card-img-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.photo-card-img {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  background: var(--parchment);
-  display: block;
 }
 
 .photo-card-checkbox {
@@ -109,81 +120,12 @@
   height: 22px;
   accent-color: var(--forest);
   cursor: pointer;
-}
-
-.photo-card-img-skeleton {
-  width: 100%;
-  aspect-ratio: 4/3;
-  background: linear-gradient(90deg, var(--parchment) 25%, var(--cream) 50%, var(--parchment) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  z-index: 1;
 }
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}
-
-.photo-card-body {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.photo-card-location {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.photo-card-meta {
-  font-size: 12px;
-  color: var(--stone);
-}
-
-.photo-card-reason {
-  font-size: 12px;
-  color: var(--bark);
-  font-style: italic;
-}
-
-.photo-card-description {
-  width: 100%;
-  font-size: 13px;
-  font-family: inherit;
-  color: var(--ink-soft);
-  border: 1px solid var(--parchment);
-  border-radius: var(--radius-sm);
-  padding: 8px;
-  resize: vertical;
-  min-height: 60px;
-}
-
-.photo-card-description:focus {
-  outline: none;
-  border-color: var(--forest-lt);
-}
-
-.photo-card-expand {
-  background: none;
-  border: none;
-  color: var(--forest);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 4px 0 0;
-  align-self: flex-start;
-}
-
-.photo-card-expand:hover {
-  text-decoration: underline;
-}
-
-.photo-card-actions {
-  display: flex;
-  gap: 8px;
-  padding: 0 12px 12px;
 }
 
 .btn-approve {
@@ -652,21 +594,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.library-tile-img {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  display: block;
-  background: var(--parchment);
-}
-
-.library-tile-skeleton {
-  width: 100%;
-  aspect-ratio: 4/3;
-  background: linear-gradient(90deg, var(--parchment) 25%, var(--cream) 50%, var(--parchment) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
 
 .library-tile-label {
   position: absolute;
@@ -793,6 +720,14 @@
   font-size: 13px;
   color: var(--stone);
   text-align: center;
+}
+
+.lightbox-triage-reason {
+  font-size: 13px;
+  color: var(--bark);
+  font-style: italic;
+  text-align: center;
+  padding: 0 16px;
 }
 
 .lightbox-description {
