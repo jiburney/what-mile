@@ -70,6 +70,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  align-content: start;
 }
 
 /* ── Shared thumbnail component ──────────────────────── */
@@ -577,6 +578,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  align-content: start;
 }
 
 .library-tile {
