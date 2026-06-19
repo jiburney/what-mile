@@ -30,6 +30,9 @@
     },
     "api/health.ts": {
       "maxDuration": 15
+    },
+    "api/enrich.ts": {
+      "maxDuration": 60
     }
   }
 }

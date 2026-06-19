@@ -11,7 +11,7 @@ export function useLocationFill(session: Session | null, onComplete: () => void)
     if (!session) return;
 
     try {
-      const response = await fetch('/api/photos-need-location', {
+      const response = await fetch('/api/enrich?action=count-need-location', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
@@ -38,7 +38,7 @@ export function useLocationFill(session: Session | null, onComplete: () => void)
     // Loop until no photos remain
     while (true) {
       try {
-        const response = await fetch('/api/fill-locations', {
+        const response = await fetch('/api/enrich?action=fill-locations', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${session.access_token}`,
@@ -66,9 +66,10 @@ export function useLocationFill(session: Session | null, onComplete: () => void)
 
     setFilling(false);
     setProgress(0);
-    setNeedsFilling(0);
     onComplete();
-  }, [session, filling, needsFilling, onComplete]);
+    // Recheck count after completion
+    await checkNeedsFilling();
+  }, [session, filling, needsFilling, onComplete, checkNeedsFilling]);
 
   return {
     filling,
