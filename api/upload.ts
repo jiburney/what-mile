@@ -301,6 +301,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         trail_section,
         description: null,
         status: triageStatus,
+        triage_reason: reason,
         source,
         is_private: true,
         times_shown: 0,

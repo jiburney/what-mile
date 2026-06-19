@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import type { AdminPhoto } from '../types';
 import { PhotoCard } from './PhotoCard';
+import { Lightbox } from './Lightbox';
+import { usePhotoSelection } from './usePhotoSelection';
 
 interface PendingViewProps {
   photos: AdminPhoto[];
@@ -11,36 +13,12 @@ interface PendingViewProps {
 }
 
 export function PendingView({ photos, loading, session, refetch }: PendingViewProps) {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const { selectedIds, toggleSelection, selectAll, deselectAll } = usePhotoSelection(photos);
   const [approving, setApproving] = useState(false);
   const [progress, setProgress] = useState(0);
   const [skipping, setSkipping] = useState(false);
   const [skipProgress, setSkipProgress] = useState(0);
-
-  // Initialize selection with all photos when photos change
-  useEffect(() => {
-    setSelectedIds(new Set(photos.map((p) => p.id)));
-  }, [photos]);
-
-  const toggleSelection = (id: string) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
-  const selectAll = () => {
-    setSelectedIds(new Set(photos.map((p) => p.id)));
-  };
-
-  const deselectAll = () => {
-    setSelectedIds(new Set());
-  };
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const handleApproveSelected = async () => {
     const selectedPhotos = photos.filter((p) => selectedIds.has(p.id));
@@ -173,7 +151,7 @@ export function PendingView({ photos, loading, session, refetch }: PendingViewPr
         </button>
       </div>
       <div className="photo-grid">
-        {photos.map((photo) => (
+        {photos.map((photo, index) => (
           <PhotoCard
             key={photo.id}
             photo={photo}
@@ -182,9 +160,26 @@ export function PendingView({ photos, loading, session, refetch }: PendingViewPr
             mode="pending"
             selected={selectedIds.has(photo.id)}
             onToggle={() => toggleSelection(photo.id)}
+            onImageClick={() => setLightboxIndex(index)}
           />
         ))}
       </div>
+
+      {lightboxIndex !== null && photos[lightboxIndex] && (
+        <Lightbox
+          photo={photos[lightboxIndex]}
+          session={session}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={() => setLightboxIndex(Math.max(0, lightboxIndex - 1))}
+          onNext={() => setLightboxIndex(Math.min(photos.length - 1, lightboxIndex + 1))}
+          hasPrev={lightboxIndex > 0}
+          hasNext={lightboxIndex < photos.length - 1}
+          onRemoved={() => {
+            setLightboxIndex(null);
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 }

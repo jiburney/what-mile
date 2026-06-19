@@ -9,9 +9,10 @@ interface PhotoCardProps {
   mode: 'pending' | 'review' | 'skip' | 'upload' | 'library';
   selected?: boolean;
   onToggle?: () => void;
+  onImageClick?: () => void;
 }
 
-export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }: PhotoCardProps) {
+export function PhotoCard({ photo, session, onAction, mode, selected, onToggle, onImageClick }: PhotoCardProps) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [description, setDescription] = useState(photo.description || '');
@@ -200,12 +201,12 @@ export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }
   };
 
   const handleCardClick = () => {
-    if (mode === 'pending' && onToggle && selected !== undefined) {
+    if ((mode === 'pending' || mode === 'review') && onToggle && selected !== undefined) {
       onToggle();
     }
   };
 
-  const showCheckbox = mode === 'pending' && selected !== undefined;
+  const showCheckbox = (mode === 'pending' || mode === 'review') && selected !== undefined;
   const cardClassName = `photo-card${selected ? ' selected' : ''}`;
 
   return (
@@ -214,7 +215,18 @@ export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }
         <div className="photo-card-img-skeleton" />
       ) : (
         <div className="photo-card-img-wrapper">
-          {signedUrl && <img src={signedUrl} alt={photo.locationName} className="photo-card-img" />}
+          {signedUrl && (
+            <img
+              src={signedUrl}
+              alt={photo.locationName}
+              className="photo-card-img"
+              onClick={(e) => {
+                e.stopPropagation();
+                onImageClick?.();
+              }}
+              style={onImageClick ? { cursor: 'pointer' } : undefined}
+            />
+          )}
           {showCheckbox && (
             <input
               type="checkbox"
@@ -237,8 +249,8 @@ export function PhotoCard({ photo, session, onAction, mode, selected, onToggle }
           {photo.trail_section && formatDate(photo.taken_at) && <span> • </span>}
           {formatDate(photo.taken_at)}
         </div>
-        {photo.status === 'skip' && (
-          <div className="photo-card-reason">{photo.description || 'Skipped by triage'}</div>
+        {(mode === 'review' || mode === 'skip') && photo.triage_reason && (
+          <div className="photo-card-reason">{photo.triage_reason}</div>
         )}
         <textarea
           ref={textareaRef}

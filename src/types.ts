@@ -39,6 +39,7 @@ export type PhotoSource = 'owner' | 'community';
 export interface AdminPhoto extends ImageConfig {
   status: PhotoStatus;
   source: PhotoSource;
-  created_at: string;  // ISO 8601 timestamp
-  slug?: string;       // Human-readable identifier (optional)
+  created_at: string;     // ISO 8601 timestamp
+  slug?: string;          // Human-readable identifier (optional)
+  triage_reason?: string; // AI-generated explanation for triage classification
 }

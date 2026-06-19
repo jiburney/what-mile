@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import type { AdminPhoto } from '../types';
 import { PhotoCard } from './PhotoCard';
+import { Lightbox } from './Lightbox';
 
 interface SkipViewProps {
   photos: AdminPhoto[];
@@ -12,6 +13,7 @@ interface SkipViewProps {
 
 export function SkipView({ photos, loading, session, refetch }: SkipViewProps) {
   const [purging, setPurging] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const handlePurgeAll = async () => {
     if (photos.length === 0) return;
@@ -79,16 +81,33 @@ export function SkipView({ photos, loading, session, refetch }: SkipViewProps) {
         </button>
       </div>
       <div className="photo-grid">
-        {photos.map((photo) => (
+        {photos.map((photo, index) => (
           <PhotoCard
             key={photo.id}
             photo={photo}
             session={session}
             onAction={refetch}
             mode="skip"
+            onImageClick={() => setLightboxIndex(index)}
           />
         ))}
       </div>
+
+      {lightboxIndex !== null && photos[lightboxIndex] && (
+        <Lightbox
+          photo={photos[lightboxIndex]}
+          session={session}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={() => setLightboxIndex(Math.max(0, lightboxIndex - 1))}
+          onNext={() => setLightboxIndex(Math.min(photos.length - 1, lightboxIndex + 1))}
+          hasPrev={lightboxIndex > 0}
+          hasNext={lightboxIndex < photos.length - 1}
+          onRemoved={() => {
+            setLightboxIndex(null);
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 }

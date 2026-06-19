@@ -36,6 +36,14 @@ export function AdminApp() {
   const skipPhotos = usePhotos('skip', session);
   const approvedPhotos = usePhotos('approved', session);
 
+  // Refetch all tabs when an action moves photos between statuses
+  const refetchAll = () => {
+    pendingPhotos.refetch();
+    reviewPhotos.refetch();
+    skipPhotos.refetch();
+    approvedPhotos.refetch();
+  };
+
   if (loading) {
     return (
       <div className="admin-login">
@@ -119,7 +127,7 @@ export function AdminApp() {
             photos={pendingPhotos.photos}
             loading={pendingPhotos.loading}
             session={session}
-            refetch={pendingPhotos.refetch}
+            refetch={refetchAll}
           />
         )}
         {activeTab === 'review' && (
@@ -127,7 +135,7 @@ export function AdminApp() {
             photos={reviewPhotos.photos}
             loading={reviewPhotos.loading}
             session={session}
-            refetch={reviewPhotos.refetch}
+            refetch={refetchAll}
           />
         )}
         {activeTab === 'skip' && (
@@ -135,7 +143,7 @@ export function AdminApp() {
             photos={skipPhotos.photos}
             loading={skipPhotos.loading}
             session={session}
-            refetch={skipPhotos.refetch}
+            refetch={refetchAll}
           />
         )}
         {activeTab === 'library' && (

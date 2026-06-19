@@ -58,6 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       source: row.source,
       created_at: row.created_at,
       slug: row.slug ?? undefined,
+      triage_reason: row.triage_reason ?? undefined,
     }));
 
     return res.status(200).json(photos);

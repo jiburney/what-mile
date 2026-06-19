@@ -149,6 +149,10 @@ export function Lightbox({
           {formatDate(photo.taken_at)}
         </div>
 
+        {(photo.status === 'review' || photo.status === 'skip') && photo.triage_reason && (
+          <div className="photo-card-reason">{photo.triage_reason}</div>
+        )}
+
         <textarea
           className="lightbox-description"
           placeholder="Description (optional)"
