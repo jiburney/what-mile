@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as dotenv from 'dotenv';
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 import Anthropic from '@anthropic-ai/sdk';
-import { supabaseAdmin } from './lib/supabase-admin.js';
+import { supabaseAdmin } from './_lib/supabase-admin.js';
 
 // Load env vars from .config folder when running locally
 if (process.env.WHAT_MILE_ENV) {

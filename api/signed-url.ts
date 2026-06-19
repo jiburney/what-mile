@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as dotenv from 'dotenv';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { supabaseAdmin } from './lib/supabase-admin.js';
+import { supabaseAdmin } from './_lib/supabase-admin.js';
 
 // Load env vars from .config folder when running locally
 if (process.env.WHAT_MILE_ENV) {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getTrailSection } from '../../api/lib/trail-sections'
+import { getTrailSection } from '../../api/_lib/trail-sections'
 
 describe('getTrailSection', () => {
   it('Amicalola Falls is Georgia', () => {

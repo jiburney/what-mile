@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as dotenv from 'dotenv';
-import { supabaseAdmin } from './lib/supabase-admin.js';
-import { getCountyLocation } from './lib/geocode-county.js';
+import { supabaseAdmin } from './_lib/supabase-admin.js';
+import { getCountyLocation } from './_lib/geocode-county.js';
 
 // Load env vars from .config folder when running locally
 if (process.env.WHAT_MILE_ENV) {
