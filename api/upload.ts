@@ -6,6 +6,7 @@ import exifr from 'exifr';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabaseAdmin } from './supabase-admin.js';
 import { getTrailSection } from './trail-sections.js';
+import { getCountyLocation } from './lib/geocode-county.js';
 
 // IMPORTANT: Vercel's request body size limit for serverless functions is 4.5MB on Hobby plan.
 // Photos larger than ~4MB must be compressed client-side before upload (use Canvas API to target ~3MB).
@@ -285,8 +286,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error('Triage failed, defaulting to review:', triageError);
     }
 
-    // Determine trail section
+    // Determine trail section and county location
     const trail_section = lat !== null && lng !== null ? getTrailSection(lat, lng) : null;
+    const location_name = lat !== null && lng !== null ? (getCountyLocation(lat, lng) ?? 'Unknown') : 'Unknown';
 
     // Insert into Supabase
     const { data, error: dbError } = await supabaseAdmin
@@ -294,7 +296,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .insert({
         filename,
         r2_url: uploadedKey,
-        location_name: 'Unknown',
+        location_name,
         lat,
         lng,
         taken_at: taken_at?.toISOString() ?? null,

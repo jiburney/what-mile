@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAdminAuth } from './useAdminAuth';
 import { AdminLogin } from './AdminLogin';
 import { UploadView } from './UploadView';
@@ -7,6 +7,7 @@ import { ReviewView } from './ReviewView';
 import { SkipView } from './SkipView';
 import { LibraryView } from './LibraryView';
 import { usePhotos } from './usePhotos';
+import { useLocationFill } from './useLocationFill';
 import { UploadProvider, useUpload } from './UploadContext';
 import './admin.css';
 
@@ -44,6 +45,19 @@ export function AdminApp() {
     approvedPhotos.refetch();
   };
 
+  // Location fill management
+  const locationFill = useLocationFill(session, () => {
+    refetchAll();
+    locationFill.checkNeedsFilling();
+  });
+
+  // Check photos needing location on mount and after tab switches
+  useEffect(() => {
+    if (session) {
+      locationFill.checkNeedsFilling();
+    }
+  }, [session]);
+
   if (loading) {
     return (
       <div className="admin-login">
@@ -63,19 +77,41 @@ export function AdminApp() {
     <div className="admin-layout">
       <header className="admin-header">
         <div className="admin-header-title">What Mile? Admin</div>
-        <button
-          onClick={signOut}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--white)',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: 600,
-          }}
-        >
-          Sign Out
-        </button>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {locationFill.needsFilling > 0 && (
+            <button
+              onClick={locationFill.startFill}
+              disabled={locationFill.filling}
+              style={{
+                background: locationFill.filling ? 'var(--parchment)' : 'var(--forest-lt)',
+                border: 'none',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--white)',
+                cursor: locationFill.filling ? 'not-allowed' : 'pointer',
+                fontSize: '13px',
+                fontWeight: 600,
+                padding: '6px 12px',
+              }}
+            >
+              {locationFill.filling
+                ? `Filling ${locationFill.progress}/${locationFill.total}...`
+                : `Fill ${locationFill.needsFilling} Locations`}
+            </button>
+          )}
+          <button
+            onClick={signOut}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--white)',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 600,
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
       </header>
 
       <div className="admin-tabs">
