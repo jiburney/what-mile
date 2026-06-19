@@ -46,16 +46,14 @@ export function AdminApp() {
   };
 
   // Location fill management
-  const locationFill = useLocationFill(session, () => {
-    refetchAll();
-    locationFill.checkNeedsFilling();
-  });
+  const locationFill = useLocationFill(session, refetchAll);
 
-  // Check photos needing location on mount and after tab switches
+  // Check photos needing location on mount
   useEffect(() => {
     if (session) {
       locationFill.checkNeedsFilling();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   if (loading) {

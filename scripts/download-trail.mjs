@@ -28,10 +28,16 @@ async function fetchOverpass() {
   console.log('Fetching AT route from Overpass API (this may take ~30s)...');
   const res = await fetch(OVERPASS_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'what-mile-trail-fetch/1.0 (AT game data generator)',
+    },
     body: `data=${encodeURIComponent(QUERY)}`,
   });
-  if (!res.ok) throw new Error(`Overpass API error: ${res.status}`);
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => '');
+    throw new Error(`Overpass API error: ${res.status} - ${errorText}`);
+  }
   return res.json();
 }
 

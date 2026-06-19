@@ -1,0 +1,1210 @@
+{
+  "source": "NPS APPA centerline + 2023 AT Data Book shelter miles",
+  "created": "2026-06-14T23:34:52.117Z",
+  "measured_centerline_mi": 2167.351366047699,
+  "official_length_mi": 2198.4,
+  "anchor_count": 200,
+  "anchors": [
+    {
+      "name": "Springer Mountain Shelter",
+      "state": "GA",
+      "raw_gis_mile": 0.2,
+      "at_mile": 0.2
+    },
+    {
+      "name": "Stover Creek Shelter",
+      "state": "GA",
+      "raw_gis_mile": 2.7,
+      "at_mile": 2.8
+    },
+    {
+      "name": "Hawk Mountain Shelter",
+      "state": "GA",
+      "raw_gis_mile": 8,
+      "at_mile": 8.1
+    },
+    {
+      "name": "Gooch Mountain Shelter",
+      "state": "GA",
+      "raw_gis_mile": 15.5,
+      "at_mile": 15.7
+    },
+    {
+      "name": "Woods Hole Shelter",
+      "state": "GA",
+      "raw_gis_mile": 27.2,
+      "at_mile": 27.7
+    },
+    {
+      "name": "Blood Mountain Shelter",
+      "state": "GA",
+      "raw_gis_mile": 28.9,
+      "at_mile": 28.9
+    },
+    {
+      "name": "Whitley Gap Shelter",
+      "state": "GA",
+      "raw_gis_mile": 37.9,
+      "at_mile": 38
+    },
+    {
+      "name": "Low Gap Shelter",
+      "state": "GA",
+      "raw_gis_mile": 42.8,
+      "at_mile": 43.2
+    },
+    {
+      "name": "Blue Mountain Shelter",
+      "state": "GA",
+      "raw_gis_mile": 50.1,
+      "at_mile": 50.1
+    },
+    {
+      "name": "Tray Mountain Shelter",
+      "state": "GA",
+      "raw_gis_mile": 57.9,
+      "at_mile": 58.2
+    },
+    {
+      "name": "Deep Gap Shelter",
+      "state": "GA",
+      "raw_gis_mile": 65.1,
+      "at_mile": 65.6
+    },
+    {
+      "name": "Muskrat Creek Shelter",
+      "state": "NC",
+      "raw_gis_mile": 80.4,
+      "at_mile": 81
+    },
+    {
+      "name": "Standing Indian Shelter",
+      "state": "NC",
+      "raw_gis_mile": 85.3,
+      "at_mile": 85.9
+    },
+    {
+      "name": "Carter Gap Shelter",
+      "state": "NC",
+      "raw_gis_mile": 93,
+      "at_mile": 93.5
+    },
+    {
+      "name": "Long Branch Shelter",
+      "state": "NC",
+      "raw_gis_mile": 101.7,
+      "at_mile": 102.2
+    },
+    {
+      "name": "Rock Gap Shelter",
+      "state": "NC",
+      "raw_gis_mile": 105.1,
+      "at_mile": 105.6
+    },
+    {
+      "name": "Siler Bald Shelter",
+      "state": "NC",
+      "raw_gis_mile": 113,
+      "at_mile": 113.6
+    },
+    {
+      "name": "Wayah Shelter",
+      "state": "NC",
+      "raw_gis_mile": 119.9,
+      "at_mile": 120.4
+    },
+    {
+      "name": "Cold Spring Shelter",
+      "state": "NC",
+      "raw_gis_mile": 124.9,
+      "at_mile": 125.2
+    },
+    {
+      "name": "Wesser Bald Shelter",
+      "state": "NC",
+      "raw_gis_mile": 130.8,
+      "at_mile": 131
+    },
+    {
+      "name": "A Rufus Morgan Shelter",
+      "state": "NC",
+      "raw_gis_mile": 135.6,
+      "at_mile": 135.9
+    },
+    {
+      "name": "Sassafras Gap Shelter",
+      "state": "NC",
+      "raw_gis_mile": 143.5,
+      "at_mile": 143.8
+    },
+    {
+      "name": "Brown Fork Gap Shelter",
+      "state": "NC",
+      "raw_gis_mile": 152.6,
+      "at_mile": 152.9
+    },
+    {
+      "name": "Cable Gap Shelter",
+      "state": "NC",
+      "raw_gis_mile": 158.8,
+      "at_mile": 159.2
+    },
+    {
+      "name": "Fontana Dam Shelter",
+      "state": "NC",
+      "raw_gis_mile": 165.6,
+      "at_mile": 165.9
+    },
+    {
+      "name": "Mollies Ridge Shelter",
+      "state": "TN",
+      "raw_gis_mile": 177.2,
+      "at_mile": 177.7
+    },
+    {
+      "name": "Russell Field Shelter",
+      "state": "TN",
+      "raw_gis_mile": 180.4,
+      "at_mile": 180.8
+    },
+    {
+      "name": "Spence Field Shelter",
+      "state": "NC",
+      "raw_gis_mile": 183.2,
+      "at_mile": 183.7
+    },
+    {
+      "name": "Derrick Knob Shelter",
+      "state": "TN",
+      "raw_gis_mile": 189.4,
+      "at_mile": 189.8
+    },
+    {
+      "name": "Silers Bald Shelter",
+      "state": "TN",
+      "raw_gis_mile": 195.1,
+      "at_mile": 195.5
+    },
+    {
+      "name": "Double Spring Gap Shelter",
+      "state": "TN",
+      "raw_gis_mile": 196.8,
+      "at_mile": 197.2
+    },
+    {
+      "name": "Icewater Spring Shelter",
+      "state": "NC",
+      "raw_gis_mile": 210.4,
+      "at_mile": 210.8
+    },
+    {
+      "name": "Pecks Corner Shelter",
+      "state": "NC",
+      "raw_gis_mile": 217.6,
+      "at_mile": 217.8
+    },
+    {
+      "name": "Tri-Corner Knob Shelter",
+      "state": "NC",
+      "raw_gis_mile": 223,
+      "at_mile": 223.4
+    },
+    {
+      "name": "Cosby Knob Shelter",
+      "state": "NC",
+      "raw_gis_mile": 230.7,
+      "at_mile": 231.1
+    },
+    {
+      "name": "Davenport Gap Shelter",
+      "state": "TN",
+      "raw_gis_mile": 237.7,
+      "at_mile": 238
+    },
+    {
+      "name": "Groundhog Creek Shelter",
+      "state": "NC",
+      "raw_gis_mile": 248.4,
+      "at_mile": 248.7
+    },
+    {
+      "name": "Roaring Fork Shelter",
+      "state": "NC",
+      "raw_gis_mile": 256.3,
+      "at_mile": 257
+    },
+    {
+      "name": "Walnut Mountain Shelter",
+      "state": "NC",
+      "raw_gis_mile": 261.1,
+      "at_mile": 261.8
+    },
+    {
+      "name": "Deer Park Mountain Shelter",
+      "state": "NC",
+      "raw_gis_mile": 270.9,
+      "at_mile": 271.7
+    },
+    {
+      "name": "Spring Mountain Shelter",
+      "state": "TN",
+      "raw_gis_mile": 285.4,
+      "at_mile": 285.9
+    },
+    {
+      "name": "Little Laurel Shelter",
+      "state": "NC",
+      "raw_gis_mile": 294,
+      "at_mile": 294.5
+    },
+    {
+      "name": "Jerry Cabin Shelter",
+      "state": "NC",
+      "raw_gis_mile": 300.6,
+      "at_mile": 301.8
+    },
+    {
+      "name": "Flint Mountain Shelter",
+      "state": "NC",
+      "raw_gis_mile": 307.2,
+      "at_mile": 308.5
+    },
+    {
+      "name": "Hogback Ridge Shelter",
+      "state": "NC",
+      "raw_gis_mile": 316.8,
+      "at_mile": 317.3
+    },
+    {
+      "name": "Bald Mountain Shelter",
+      "state": "TN",
+      "raw_gis_mile": 326.9,
+      "at_mile": 327.4
+    },
+    {
+      "name": "No Business Knob Shelter",
+      "state": "TN",
+      "raw_gis_mile": 337.5,
+      "at_mile": 338
+    },
+    {
+      "name": "Curley Maple Gap Shelter",
+      "state": "TN",
+      "raw_gis_mile": 347.8,
+      "at_mile": 348.5
+    },
+    {
+      "name": "Cherry Gap Shelter",
+      "state": "TN",
+      "raw_gis_mile": 360.9,
+      "at_mile": 361.4
+    },
+    {
+      "name": "Clyde Smith Shelter",
+      "state": "TN",
+      "raw_gis_mile": 370.1,
+      "at_mile": 370.5
+    },
+    {
+      "name": "Roan High Knob Shelter",
+      "state": "NC",
+      "raw_gis_mile": 378.2,
+      "at_mile": 379
+    },
+    {
+      "name": "Stan Murray Shelter",
+      "state": "TN",
+      "raw_gis_mile": 383.4,
+      "at_mile": 384.2
+    },
+    {
+      "name": "Mountaineer Falls Shelter",
+      "state": "TN",
+      "raw_gis_mile": 403.3,
+      "at_mile": 404.1
+    },
+    {
+      "name": "Moreland Gap Shelter",
+      "state": "TN",
+      "raw_gis_mile": 412.9,
+      "at_mile": 413.7
+    },
+    {
+      "name": "Laurel Fork Shelter",
+      "state": "TN",
+      "raw_gis_mile": 420.9,
+      "at_mile": 421.9
+    },
+    {
+      "name": "Vandeventer Shelter",
+      "state": "TN",
+      "raw_gis_mile": 437.1,
+      "at_mile": 437.7
+    },
+    {
+      "name": "Iron Mountain Shelter",
+      "state": "TN",
+      "raw_gis_mile": 443.9,
+      "at_mile": 444.5
+    },
+    {
+      "name": "Double Springs Shelter",
+      "state": "TN",
+      "raw_gis_mile": 451.7,
+      "at_mile": 452.2
+    },
+    {
+      "name": "Abingdon Gap Shelter",
+      "state": "TN",
+      "raw_gis_mile": 459.9,
+      "at_mile": 460.5
+    },
+    {
+      "name": "Saunders Shelter",
+      "state": "VA",
+      "raw_gis_mile": 479.5,
+      "at_mile": 480.2
+    },
+    {
+      "name": "Lost Mountain Shelter",
+      "state": "VA",
+      "raw_gis_mile": 486.1,
+      "at_mile": 486.7
+    },
+    {
+      "name": "Thomas Knob Shelter",
+      "state": "VA",
+      "raw_gis_mile": 498.3,
+      "at_mile": 499.1
+    },
+    {
+      "name": "Old Orchard Shelter",
+      "state": "VA",
+      "raw_gis_mile": 509.2,
+      "at_mile": 510.2
+    },
+    {
+      "name": "Hurricane Mountain Shelter",
+      "state": "VA",
+      "raw_gis_mile": 514.1,
+      "at_mile": 515.1
+    },
+    {
+      "name": "Trimpi Shelter",
+      "state": "VA",
+      "raw_gis_mile": 523.1,
+      "at_mile": 524.3
+    },
+    {
+      "name": "Partnership Shelter",
+      "state": "VA",
+      "raw_gis_mile": 532.9,
+      "at_mile": 534.1
+    },
+    {
+      "name": "Knot Maul Branch Shelter",
+      "state": "VA",
+      "raw_gis_mile": 559.1,
+      "at_mile": 560.4
+    },
+    {
+      "name": "Chestnut Knob Shelter",
+      "state": "VA",
+      "raw_gis_mile": 568.4,
+      "at_mile": 569.8
+    },
+    {
+      "name": "Jenkins Shelter",
+      "state": "VA",
+      "raw_gis_mile": 578.8,
+      "at_mile": 580.5
+    },
+    {
+      "name": "Helveys Mill Shelter",
+      "state": "VA",
+      "raw_gis_mile": 592.9,
+      "at_mile": 594
+    },
+    {
+      "name": "Jenny Knob Shelter",
+      "state": "VA",
+      "raw_gis_mile": 602.6,
+      "at_mile": 603.7
+    },
+    {
+      "name": "Wapiti Shelter",
+      "state": "VA",
+      "raw_gis_mile": 617,
+      "at_mile": 618.2
+    },
+    {
+      "name": "Docs Knob Shelter",
+      "state": "VA",
+      "raw_gis_mile": 626.3,
+      "at_mile": 627.7
+    },
+    {
+      "name": "Rice Field Shelter",
+      "state": "VA",
+      "raw_gis_mile": 642.8,
+      "at_mile": 644.2
+    },
+    {
+      "name": "Pine Swamp Branch Shelter",
+      "state": "VA",
+      "raw_gis_mile": 655.2,
+      "at_mile": 656.7
+    },
+    {
+      "name": "Bailey Gap Shelter",
+      "state": "VA",
+      "raw_gis_mile": 659.3,
+      "at_mile": 660.6
+    },
+    {
+      "name": "War Spur Shelter",
+      "state": "VA",
+      "raw_gis_mile": 668.6,
+      "at_mile": 669.4
+    },
+    {
+      "name": "Laurel Creek Shelter",
+      "state": "VA",
+      "raw_gis_mile": 675,
+      "at_mile": 675.2
+    },
+    {
+      "name": "Sarver Hollow Shelter",
+      "state": "VA",
+      "raw_gis_mile": 682,
+      "at_mile": 681.8
+    },
+    {
+      "name": "Niday Shelter",
+      "state": "VA",
+      "raw_gis_mile": 687.7,
+      "at_mile": 687.8
+    },
+    {
+      "name": "Pickle Branch Shelter",
+      "state": "VA",
+      "raw_gis_mile": 698.2,
+      "at_mile": 697.9
+    },
+    {
+      "name": "Johns Spring Shelter",
+      "state": "VA",
+      "raw_gis_mile": 711.5,
+      "at_mile": 711.5
+    },
+    {
+      "name": "Catawba Mountain Shelter",
+      "state": "VA",
+      "raw_gis_mile": 712.8,
+      "at_mile": 712.5
+    },
+    {
+      "name": "Campbell Shelter",
+      "state": "VA",
+      "raw_gis_mile": 715.3,
+      "at_mile": 714.9
+    },
+    {
+      "name": "Lamberts Meadow Shelter",
+      "state": "VA",
+      "raw_gis_mile": 721.4,
+      "at_mile": 720.9
+    },
+    {
+      "name": "Fullhardt Knob Shelter",
+      "state": "VA",
+      "raw_gis_mile": 736.4,
+      "at_mile": 735.3
+    },
+    {
+      "name": "Wilson Creek Shelter",
+      "state": "VA",
+      "raw_gis_mile": 742.4,
+      "at_mile": 741.5
+    },
+    {
+      "name": "Cove Mountain Shelter",
+      "state": "PA",
+      "raw_gis_mile": 756.1,
+      "at_mile": 1145.9
+    },
+    {
+      "name": "Clarks Ferry Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1150,
+      "at_mile": 1154.2
+    },
+    {
+      "name": "Peters Mountain Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1156.8,
+      "at_mile": 1160.9
+    },
+    {
+      "name": "Rausch Gap Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1175.1,
+      "at_mile": 1178.9
+    },
+    {
+      "name": "William Penn Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1188.3,
+      "at_mile": 1192.3
+    },
+    {
+      "name": "Eagles Nest Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1207.2,
+      "at_mile": 1211.3
+    },
+    {
+      "name": "Windsor Furnace Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1222,
+      "at_mile": 1226
+    },
+    {
+      "name": "Eckville Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1231,
+      "at_mile": 1235.1
+    },
+    {
+      "name": "Bake Oven Knob Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1248.3,
+      "at_mile": 1252.5
+    },
+    {
+      "name": "George W. Outerbridge Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1255.7,
+      "at_mile": 1260
+    },
+    {
+      "name": "Leroy A. Smith Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1273.7,
+      "at_mile": 1276.8
+    },
+    {
+      "name": "Kirkridge Shelter",
+      "state": "PA",
+      "raw_gis_mile": 1287.2,
+      "at_mile": 1290.5
+    },
+    {
+      "name": "Brink Rd Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1317.7,
+      "at_mile": 1321.8
+    },
+    {
+      "name": "Gren Anderson Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1324.1,
+      "at_mile": 1328.5
+    },
+    {
+      "name": "Mashipacong Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1329.6,
+      "at_mile": 1334.3
+    },
+    {
+      "name": "Rutherford Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1332.6,
+      "at_mile": 1336.9
+    },
+    {
+      "name": "High Point Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1336.4,
+      "at_mile": 1341.5
+    },
+    {
+      "name": "Pochuck Mountain Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1348.6,
+      "at_mile": 1353.9
+    },
+    {
+      "name": "Wawayanda Shelter",
+      "state": "NJ",
+      "raw_gis_mile": 1359.9,
+      "at_mile": 1365.4
+    },
+    {
+      "name": "Wildcat Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1371.5,
+      "at_mile": 1377.6
+    },
+    {
+      "name": "Fingerboard Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1385,
+      "at_mile": 1392.1
+    },
+    {
+      "name": "William Brien Memorial Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1390.2,
+      "at_mile": 1397.4
+    },
+    {
+      "name": "West Mountain Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1395.3,
+      "at_mile": 1403.8
+    },
+    {
+      "name": "RPH Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1424.7,
+      "at_mile": 1435.7
+    },
+    {
+      "name": "Morgan Stewart Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1433.2,
+      "at_mile": 1444.7
+    },
+    {
+      "name": "Telephone Pioneers Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1440.8,
+      "at_mile": 1452.5
+    },
+    {
+      "name": "Wiley Shelter",
+      "state": "NY",
+      "raw_gis_mile": 1449.3,
+      "at_mile": 1461.3
+    },
+    {
+      "name": "Ten Mile River Shelter",
+      "state": "CT",
+      "raw_gis_mile": 1453.3,
+      "at_mile": 1465.3
+    },
+    {
+      "name": "Stewart Hollow Brook Shelter",
+      "state": "CT",
+      "raw_gis_mile": 1469.2,
+      "at_mile": 1481.4
+    },
+    {
+      "name": "Pine Swamp Brook Shelter",
+      "state": "CT",
+      "raw_gis_mile": 1478.9,
+      "at_mile": 1491.4
+    },
+    {
+      "name": "Limestone Spring Shelter",
+      "state": "CT",
+      "raw_gis_mile": 1490.8,
+      "at_mile": 1504.1
+    },
+    {
+      "name": "Riga Shelter",
+      "state": "CT",
+      "raw_gis_mile": 1497.6,
+      "at_mile": 1511.5
+    },
+    {
+      "name": "Brassie Brook Shelter",
+      "state": "CT",
+      "raw_gis_mile": 1498.7,
+      "at_mile": 1512.7
+    },
+    {
+      "name": "The Hemlocks Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1506.7,
+      "at_mile": 1521
+    },
+    {
+      "name": "Glen Brook Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1506.8,
+      "at_mile": 1521.1
+    },
+    {
+      "name": "Tom Leonard Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1520.8,
+      "at_mile": 1535.4
+    },
+    {
+      "name": "Upper Goose Pond Cabin",
+      "state": "MA",
+      "raw_gis_mile": 1539.7,
+      "at_mile": 1556.7
+    },
+    {
+      "name": "October Mountain Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1550.4,
+      "at_mile": 1565.5
+    },
+    {
+      "name": "Kay Wood Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1559.1,
+      "at_mile": 1574.3
+    },
+    {
+      "name": "Mark Noepel Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1575.1,
+      "at_mile": 1591
+    },
+    {
+      "name": "Wilbur Clearing Shelter",
+      "state": "MA",
+      "raw_gis_mile": 1581.4,
+      "at_mile": 1597.6
+    },
+    {
+      "name": "Seth Warner Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1591,
+      "at_mile": 1609.9
+    },
+    {
+      "name": "Congdon Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1598,
+      "at_mile": 1614.7
+    },
+    {
+      "name": "Melville Nauheim Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1603.7,
+      "at_mile": 1620.6
+    },
+    {
+      "name": "Goddard Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1612,
+      "at_mile": 1629.1
+    },
+    {
+      "name": "Kid Gore Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1616.1,
+      "at_mile": 1633.4
+    },
+    {
+      "name": "Story Spring Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1620.9,
+      "at_mile": 1638
+    },
+    {
+      "name": "Stratton Pond Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1631.1,
+      "at_mile": 1648.4
+    },
+    {
+      "name": "William B Douglas Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1635.5,
+      "at_mile": 1653.3
+    },
+    {
+      "name": "Spruce Peak Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1638.8,
+      "at_mile": 1656.3
+    },
+    {
+      "name": "Bromley Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1643.5,
+      "at_mile": 1661.1
+    },
+    {
+      "name": "Peru Peak Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1651.5,
+      "at_mile": 1669.2
+    },
+    {
+      "name": "Lost Pond Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1656.1,
+      "at_mile": 1673.9
+    },
+    {
+      "name": "Old Job Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1657.5,
+      "at_mile": 1675.4
+    },
+    {
+      "name": "Big Branch Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1657.8,
+      "at_mile": 1675.6
+    },
+    {
+      "name": "Little Rock Pond Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1661.1,
+      "at_mile": 1678.9
+    },
+    {
+      "name": "Greenwall Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1666,
+      "at_mile": 1683.7
+    },
+    {
+      "name": "Minerva Hinchey Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1671,
+      "at_mile": 1688.8
+    },
+    {
+      "name": "Clarendon Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1674.8,
+      "at_mile": 1692.5
+    },
+    {
+      "name": "Governor Clement Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1681.1,
+      "at_mile": 1698.6
+    },
+    {
+      "name": "Cooper Lodge Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1685.3,
+      "at_mile": 1702.9
+    },
+    {
+      "name": "Pico Camp Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1688.2,
+      "at_mile": 1705.4
+    },
+    {
+      "name": "Churchill Scott Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1689.7,
+      "at_mile": 1707.3
+    },
+    {
+      "name": "Stony Brook Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1701.7,
+      "at_mile": 1719.2
+    },
+    {
+      "name": "Thistle Hill Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1723.7,
+      "at_mile": 1741.4
+    },
+    {
+      "name": "Happy Hill Shelter",
+      "state": "VT",
+      "raw_gis_mile": 1733.2,
+      "at_mile": 1750.2
+    },
+    {
+      "name": "Velvet Rocks Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1740.9,
+      "at_mile": 1757.5
+    },
+    {
+      "name": "Moose Mountain Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1749.9,
+      "at_mile": 1767
+    },
+    {
+      "name": "Trapper John Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1756,
+      "at_mile": 1772.7
+    },
+    {
+      "name": "Hexacuba Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1767.7,
+      "at_mile": 1784.7
+    },
+    {
+      "name": "Jeffers Brook Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1783.7,
+      "at_mile": 1800.4
+    },
+    {
+      "name": "Beaver Brook Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1790.1,
+      "at_mile": 1807.3
+    },
+    {
+      "name": "Eliza Brook Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1798.7,
+      "at_mile": 1816.3
+    },
+    {
+      "name": "Kinsman Pond Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1802.4,
+      "at_mile": 1820.3
+    },
+    {
+      "name": "Garfield Ridge Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1816.7,
+      "at_mile": 1835.4
+    },
+    {
+      "name": "Guyot Campsite",
+      "state": "NH",
+      "raw_gis_mile": 1821.9,
+      "at_mile": 1840.9
+    },
+    {
+      "name": "Ethan Pond Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1830.5,
+      "at_mile": 1849.9
+    },
+    {
+      "name": "The Perch Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1849.8,
+      "at_mile": 1869.5
+    },
+    {
+      "name": "Imp Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1870.9,
+      "at_mile": 1891.9
+    },
+    {
+      "name": "Rattle River Shelter",
+      "state": "NH",
+      "raw_gis_mile": 1876.5,
+      "at_mile": 1898
+    },
+    {
+      "name": "Gentian Pond Campsite",
+      "state": "NH",
+      "raw_gis_mile": 1889.6,
+      "at_mile": 1911.7
+    },
+    {
+      "name": "Carlo Col Shelter",
+      "state": "ME",
+      "raw_gis_mile": 1894.4,
+      "at_mile": 1916.9
+    },
+    {
+      "name": "Full Goose Shelter",
+      "state": "ME",
+      "raw_gis_mile": 1898.9,
+      "at_mile": 1921.3
+    },
+    {
+      "name": "Speck Pond Campsite",
+      "state": "ME",
+      "raw_gis_mile": 1903.3,
+      "at_mile": 1926.4
+    },
+    {
+      "name": "Baldpate Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1910.3,
+      "at_mile": 1933.3
+    },
+    {
+      "name": "Frye Notch Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1913.8,
+      "at_mile": 1936.8
+    },
+    {
+      "name": "Hall Mountain Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1924.2,
+      "at_mile": 1947.3
+    },
+    {
+      "name": "Bemis Mountain Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1936.7,
+      "at_mile": 1960.1
+    },
+    {
+      "name": "Sabbath Day Pond Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1944.8,
+      "at_mile": 1968.4
+    },
+    {
+      "name": "Piazza Rock Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1955.7,
+      "at_mile": 1979.6
+    },
+    {
+      "name": "Poplar Ridge Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1963.9,
+      "at_mile": 1988.5
+    },
+    {
+      "name": "Spaulding Mountain Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 1971.6,
+      "at_mile": 1996.5
+    },
+    {
+      "name": "Little Bigelow Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2000.2,
+      "at_mile": 2025.3
+    },
+    {
+      "name": "West Carry Pond Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2008,
+      "at_mile": 2033
+    },
+    {
+      "name": "Pierce Pond Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2017.9,
+      "at_mile": 2043
+    },
+    {
+      "name": "Pleasant Pond Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2027.3,
+      "at_mile": 2052.7
+    },
+    {
+      "name": "Bald Mountain Brook Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2036.1,
+      "at_mile": 2061.7
+    },
+    {
+      "name": "Moxie Bald Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2040.1,
+      "at_mile": 2065.8
+    },
+    {
+      "name": "Horseshoe Canyon Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2049,
+      "at_mile": 2074.7
+    },
+    {
+      "name": "Leeman Brook Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2061.1,
+      "at_mile": 2086.7
+    },
+    {
+      "name": "Wilson Valley Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2068.6,
+      "at_mile": 2094.1
+    },
+    {
+      "name": "Long Pond Stream Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2073.2,
+      "at_mile": 2098.8
+    },
+    {
+      "name": "Cloud Pond Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2077,
+      "at_mile": 2102.8
+    },
+    {
+      "name": "Chairback Gap Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2083.6,
+      "at_mile": 2109.9
+    },
+    {
+      "name": "Carl A. Newhall Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2092.8,
+      "at_mile": 2119.8
+    },
+    {
+      "name": "Logan Brook Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2099.2,
+      "at_mile": 2127
+    },
+    {
+      "name": "East Branch Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2102.7,
+      "at_mile": 2130.6
+    },
+    {
+      "name": "Cooper Brook Falls Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2110.3,
+      "at_mile": 2138.7
+    },
+    {
+      "name": "Potaywadjo Spring Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2121.1,
+      "at_mile": 2150.1
+    },
+    {
+      "name": "Nahmakanta Stream Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2125.5,
+      "at_mile": 2154.6
+    },
+    {
+      "name": "Wadleigh Stream Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2130.8,
+      "at_mile": 2160.2
+    },
+    {
+      "name": "Rainbow Stream Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2138.2,
+      "at_mile": 2168.3
+    },
+    {
+      "name": "Hurd Brook Lean-to",
+      "state": "ME",
+      "raw_gis_mile": 2148.7,
+      "at_mile": 2179.8
+    }
+  ],
+  "description": "Piecewise-linear calibration: interpolate between anchors, extrapolate beyond endpoints"
+}

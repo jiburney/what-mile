@@ -95,7 +95,7 @@
 </head>
 <body>
   <h1>What Mile? — Roadmap</h1>
-  <p class="subtitle">Feature tracker · last updated April 2026</p>
+  <p class="subtitle">Feature tracker · last updated June 2026</p>
 
   <div class="controls">
     <button class="filter-btn active" onclick="filter('all', this)">All</button>
@@ -113,33 +113,41 @@
       { section: 'Done', status: 'done', items: [
         { title: 'Core game loop', note: 'Photo → guess → score → summary, 5 rounds, Leaflet map with AT route overlay', tag: 'done' },
         { title: 'Scoring tiers', note: 'Thru-Hiker / LASHer / Section Hiker / Day Hiker based on distance off', tag: 'done' },
-        { title: 'Photo ingest script', note: 'EXIF GPS extraction, Nominatim geocoding, Claude vision fallback, --descriptions flag', tag: 'done' },
-        { title: 'Initial photo pool', note: '~45 images, mostly Georgia section', tag: 'done' },
         { title: 'Production deploy', note: 'Live at what-mile.vercel.app via Vercel', tag: 'done' },
         { title: 'Mobile-first layout', note: 'Full-screen portrait layout, landscape side-by-side', tag: 'done' },
-        { title: 'Anonymize image filenames', note: 'All files renamed to UUIDs. Ingest script updated to assign UUIDs going forward.', tag: 'done' },
+        { title: 'Anonymize image filenames', note: 'All files renamed to UUIDs so location names aren\u2019t visible in source/network tab', tag: 'done' },
+        { title: 'Supabase + R2 backend', note: 'Photo metadata in Supabase, images in Cloudflare R2 (public + private buckets). Replaces the static images.json pipeline, now vestigial.', tag: 'done' },
+        { title: 'Admin dashboard', note: 'Upload / Pending / Review / Skip / Library tabs. Supabase-auth login, signed URLs for private photos, paginated Library with lightbox editing.', tag: 'done' },
+        { title: 'Cloud upload pipeline', note: 'Client-side EXIF GPS extraction, content-hash dedup, skip photos without GPS, graceful HEIC handling, Haiku triage into ready/review/skip, R2 + Supabase storage.', tag: 'done' },
+        { title: 'Approval flow', note: 'On approve: Haiku writes a trail-journal caption, photo copied from the private to the public bucket.', tag: 'done' },
+        { title: 'Upload resilience', note: 'Health-check status bar (R2 / Supabase / Anthropic), rate-limit handling, and the HEIC decode-hang fixed with a timeout backstop + guard.', tag: 'done' },
+        { title: '2023 AT Data Book reference', note: 'scripts/data/at-reference-2023.json \u2014 437-waypoint shelter/mile reference (hike year), validated. The calibration backbone for photo miles.', tag: 'done' },
       ]},
       { section: 'Up next', status: 'next', items: [
-        { title: 'Photo triage pipeline', note: 'Three-stage hybrid pipeline: local heuristics (blur/screenshots/duplicates) → face detection via @vladmandic/face-api → Claude Haiku for trail photo quality. Sorts into ready/ review/ skip/. Resumable via state file. Ingest remains a separate manual step.', tag: 'next', inProgress: true },
+        { title: 'Upload-state persistence', note: 'Lift upload progress into a provider so it survives switching admin tabs, and show a live indicator on the Upload tab. Prompt written; implementing now.', tag: 'next', inProgress: true },
+        { title: 'Location names (county + state)', note: 'Populate location_name with county + state via offline reverse-geocoding; backfill existing \u201cUnknown\u201d rows. Currently hardcoded to \u201cUnknown,\u201d which also weakens approval captions. Prompt ready.', tag: 'next' },
+        { title: 'Mile calibration', note: 'Stitch the 3,025-segment NPS centerline, calibrate to 2023 Data Book shelter miles, regenerate shelters.json (NoBo/SoBo + offtrail) and a reusable mile-calibration.json. BLOCKED: first run stalled on segment stitching \u2014 needs an efficient connect-end-to-end rewrite.', tag: 'next', inProgress: true },
       ]},
       { section: 'Soon', status: 'soon', items: [
+        { title: 'Photo miles (NoBo + SoBo)', note: 'Project each photo onto the calibrated centerline for its NoBo + SoBo mile; surface in the admin, captions, and game. Depends on mile calibration.', tag: 'soon' },
+        { title: 'Nearest-shelter labels', note: 'Trail-context label from shelters.json (within a distance threshold), feeding richer captions. Depends on mile calibration.', tag: 'soon' },
+        { title: 'Bulk photo ingest', note: 'Process the ~10k-photo iCloud backlog in ~150-photo batches once the upload pipeline is confirmed solid. The prerequisite for broad trail coverage.', tag: 'soon' },
         { title: 'Daily Challenge mode', note: 'Same 5 photos for everyone each day, seed-based selection, per-day leaderboard with initials (Wordle-style)', tag: 'soon' },
-        { title: 'Anonymous results storage', note: 'Vercel KV to store daily scores and image play frequency. No account required.', tag: 'soon' },
-        { title: 'Analytics', note: 'Visitor tracking (Vercel Analytics), image play counts, return visitor rate, per-photo score distribution', tag: 'soon' },
+        { title: 'Analytics + results storage', note: 'Visitor tracking (Vercel Analytics), per-photo play counts and score distribution, daily results (now via Supabase). No account required.', tag: 'soon' },
       ]},
       { section: 'Later', status: 'later', items: [
-        { title: 'Expand photo pool', note: 'Add coverage beyond Georgia — currently heavily skewed to the southern terminus', tag: 'later' },
-        { title: 'Photo hints system', note: 'Nearest shelter, nearest trail town, second photo within 100 miles, etc.', tag: 'later' },
+        { title: 'Broad trail coverage', note: 'Photo coverage well beyond Georgia \u2014 unlocked by bulk ingest + mile calibration. Currently skewed to the southern terminus.', tag: 'later' },
+        { title: 'Photo hints system', note: 'Nearest shelter, nearest trail town, second photo within 100 miles, etc. (Nearest-shelter data now feasible.)', tag: 'later' },
         { title: 'Date-of-year metadata', note: 'Surface the day/season a photo was taken to show the trail through changing seasons', tag: 'later' },
         { title: 'Photographer credit', note: 'Trail name + year shown publicly, real name stored privately on backend', tag: 'later' },
-        { title: 'Custom domain', note: 'Domain already purchased — point to Vercel deploy', tag: 'later' },
+        { title: 'Custom domain', note: 'Domain already purchased \u2014 point to Vercel deploy', tag: 'later' },
       ]},
       { section: 'Vision', status: 'vision', items: [
         { title: 'Community photo submissions', note: 'Let other hikers submit photos. Review queue, trail name + year credit, private real name storage.', tag: 'vision' },
         { title: 'Faces & photo removal flow', note: 'Allow people in photos with a formal takedown/removal request process', tag: 'vision' },
-        { title: 'Social nostalgia layer', note: 'See photos from your hike year, recognize people from the trail — the core emotional hook', tag: 'vision' },
+        { title: 'Social nostalgia layer', note: 'See photos from your hike year, recognize people from the trail \u2014 the core emotional hook', tag: 'vision' },
         { title: 'Accounts & all-time leaderboard', note: 'Optional accounts unlock personal history and cross-day score tracking', tag: 'vision' },
-        { title: 'Multi-trail support', note: 'PCT, CDT, Long Trail, etc. — same game engine, different trail GeoJSON', tag: 'vision' },
+        { title: 'Multi-trail support', note: 'PCT, CDT, Long Trail, etc. \u2014 same game engine, different trail GeoJSON', tag: 'vision' },
       ]},
     ];
 
