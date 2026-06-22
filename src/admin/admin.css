@@ -71,6 +71,7 @@
   min-height: 0;
   overflow-y: auto;
   align-content: start;
+  grid-auto-rows: max-content;
 }
 
 /* ── Shared thumbnail component ──────────────────────── */
@@ -579,6 +580,7 @@
   min-height: 0;
   overflow-y: auto;
   align-content: start;
+  grid-auto-rows: max-content;
 }
 
 .library-tile {
