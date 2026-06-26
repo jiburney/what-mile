@@ -188,7 +188,7 @@ const HAIKU_PROMPT =
   '  towns, hostels, general stores, road crossings, and any other recognizable AT\n' +
   '  location or experience — with no people visible\n' +
   '- review: contains people or faces, interesting wildlife or animals, flowers or\n' +
-  '  very close-up nature, or genuinely ambiguous whether it relates to the AT\n' +
+  '  very close-up nature, wide panoramic images, or genuinely ambiguous whether it relates to the AT\n' +
   '- skip: screenshot, severely blurry, food closeup, gear closeup with no context,\n' +
   '  pure interior shot with no AT context, or otherwise not useful for the game\n\n' +
   'When in doubt between ready and review, choose review.\n' +
