@@ -4,7 +4,9 @@
   "framework": "vite",
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
-    { "source": "/admin/(.*)", "destination": "/index.html" }
+    { "source": "/admin/(.*)", "destination": "/index.html" },
+    { "source": "/daily", "destination": "/index.html" },
+    { "source": "/daily/(.*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/upload.ts": {
