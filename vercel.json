@@ -33,6 +33,9 @@
     },
     "api/enrich.ts": {
       "maxDuration": 60
+    },
+    "api/daily.ts": {
+      "maxDuration": 30
     }
   }
 }
