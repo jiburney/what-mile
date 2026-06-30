@@ -26,6 +26,9 @@ export function StartScreen({ onStart }: Props) {
         <p className="start-hint">
           Tap the trail on the map to drop your pin, then lock in your guess.
         </p>
+        <div className="daily-nav">
+          <a href="/daily" className="link-button">Try Daily Challenge →</a>
+        </div>
       </div>
     </div>
   );

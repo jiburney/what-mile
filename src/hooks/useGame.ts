@@ -20,9 +20,12 @@ function pickRounds(images: ImageConfig[]): ImageConfig[] {
   return shuffled.slice(0, Math.min(ROUNDS_PER_GAME, shuffled.length));
 }
 
-export function useGame() {
+export function useGame(
+  mode: 'free-play' | 'daily' = 'free-play',
+  predeterminedPhotos: ImageConfig[] | null = null
+) {
   const [allImages, setAllImages] = useState<ImageConfig[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(mode === 'free-play'); // Daily mode doesn't need to load
   const [error, setError] = useState<string | null>(null);
   const [queue, setQueue] = useState<ImageConfig[]>([]);
 
@@ -34,8 +37,14 @@ export function useGame() {
     pendingGuess: null,
   });
 
-  // Fetch approved photos from Supabase on mount
+  // Fetch approved photos from Supabase on mount (free-play mode only)
   useEffect(() => {
+    if (mode === 'daily') {
+      // Daily mode uses predetermined photos, skip Supabase fetch
+      setLoading(false);
+      return;
+    }
+
     async function fetchPhotos() {
       try {
         const { data, error: fetchError } = await supabaseGame
@@ -70,10 +79,13 @@ export function useGame() {
     }
 
     fetchPhotos();
-  }, []);
+  }, [mode]);
 
   const startGame = useCallback(() => {
-    const selected = pickRounds(allImages);
+    const selected = mode === 'daily' && predeterminedPhotos
+      ? predeterminedPhotos
+      : pickRounds(allImages);
+
     setQueue(selected);
     setState({
       phase: 'guessing',
@@ -82,7 +94,7 @@ export function useGame() {
       currentImage: selected[0],
       pendingGuess: null,
     });
-  }, [allImages]);
+  }, [allImages, mode, predeterminedPhotos]);
 
   const setGuess = useCallback((coords: [number, number]) => {
     setState((s) => ({ ...s, pendingGuess: coords }));
