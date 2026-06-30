@@ -3,38 +3,38 @@ import { calculateScore } from '../utils/scoring'
 import { distanceMiles } from '../utils/distance'
 
 describe('calculateScore', () => {
-  it('returns max round score (1000) for an exact guess', () => {
+  it('returns max round score (440) for an exact guess', () => {
     const result = calculateScore(0)
-    expect(result.score).toBe(1000)
+    expect(result.score).toBe(440)
     expect(result.tier).toBe('Thru-Hiker')
   })
 
-  it('classifies a 10-mile miss as Thru-Hiker with score 800-1000', () => {
+  it('classifies a 10-mile miss as Thru-Hiker with score 352-440', () => {
     const result = calculateScore(10)
     expect(result.tier).toBe('Thru-Hiker')
-    expect(result.score).toBeGreaterThan(800)
-    expect(result.score).toBeLessThan(1000)
+    expect(result.score).toBeGreaterThan(352)
+    expect(result.score).toBeLessThan(440)
   })
 
   it('classifies a 50-mile miss as LASHer', () => {
     const result = calculateScore(50)
     expect(result.tier).toBe('LASHer')
-    expect(result.score).toBeGreaterThanOrEqual(500)
-    expect(result.score).toBeLessThanOrEqual(799)
+    expect(result.score).toBeGreaterThanOrEqual(220)
+    expect(result.score).toBeLessThanOrEqual(351)
   })
 
   it('classifies a 150-mile miss as Section Hiker', () => {
     const result = calculateScore(150)
     expect(result.tier).toBe('Section Hiker')
-    expect(result.score).toBeGreaterThanOrEqual(200)
-    expect(result.score).toBeLessThanOrEqual(499)
+    expect(result.score).toBeGreaterThanOrEqual(88)
+    expect(result.score).toBeLessThanOrEqual(219)
   })
 
   it('classifies a very distant guess as Day Hiker with a low score', () => {
     const result = calculateScore(1500)
     expect(result.tier).toBe('Day Hiker')
     expect(result.score).toBeGreaterThanOrEqual(0)
-    expect(result.score).toBeLessThan(200)
+    expect(result.score).toBeLessThan(88)
   })
 
   it('scales toward 0 at the full AT length (~2200 mi)', () => {

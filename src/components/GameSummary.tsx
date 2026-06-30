@@ -8,13 +8,13 @@ interface Props {
 }
 
 function overallTier(score: number): string {
-  if (score >= 4000) return 'Thru-Hiker';
-  if (score >= 2500) return 'LASHer';
-  if (score >= 1000) return 'Section Hiker';
+  if (score >= 1760) return 'Thru-Hiker';
+  if (score >= 1100) return 'LASHer';
+  if (score >= 440) return 'Section Hiker';
   return 'Day Hiker';
 }
 
-const MAX_SCORE = 5000;
+const MAX_SCORE = 2200;
 
 export function GameSummary({ rounds, totalScore, onPlayAgain }: Props) {
   const tier = overallTier(totalScore);
