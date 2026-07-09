@@ -8,6 +8,9 @@ export interface UploadStatus {
   message?: string;
 }
 
+// Client compression target — matches server's final WebP output to minimize upload bandwidth
+const WEBP_QUALITY = 0.80;
+
 export interface BatchSummary {
   total: number;
   completed: number;
@@ -51,7 +54,7 @@ async function compressImage(file: File): Promise<Blob> {
       clearTimeout(timer);
       const canvas = document.createElement('canvas');
       let { width, height } = img;
-      const maxDim = 2000;
+      const maxDim = 1200;
       if (width > maxDim || height > maxDim) {
         const ratio = Math.min(maxDim / width, maxDim / height);
         width = Math.round(width * ratio);
@@ -63,14 +66,17 @@ async function compressImage(file: File): Promise<Blob> {
       canvas.toBlob(
         (blob) => {
           URL.revokeObjectURL(url);
-          if (blob) {
-            resolve(blob);
-          } else {
+          if (!blob) {
             reject(new Error('Image encode failed'));
+          } else if (blob.type !== 'image/webp') {
+            // canvas.toBlob silently falls back to PNG when WebP unsupported — reject explicitly
+            reject(new Error(`WebP encoding failed (got ${blob.type}). Browser may not support WebP.`));
+          } else {
+            resolve(blob);
           }
         },
-        'image/jpeg',
-        0.85
+        'image/webp',
+        WEBP_QUALITY
       );
     };
     img.onerror = () => {
