@@ -95,6 +95,29 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
     }
   }, [showResult, actualLocation, pendingGuess]);
 
+  // Keep Leaflet's internal tile grid in sync with the container's actual size.
+  // Mobile browsers resize the viewport (via 100dvh) as the address bar hides/shows
+  // while scrolling — Leaflet doesn't detect that on its own, which shows up as gray
+  // tile patches and a GeoJSON trail line that appears to shift off-canvas.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const container = map.getContainer();
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize();
+    });
+    resizeObserver.observe(container);
+
+    // Also correct for the address bar still settling right after mount.
+    const settleTimer = setTimeout(() => map.invalidateSize(), 300);
+
+    return () => {
+      resizeObserver.disconnect();
+      clearTimeout(settleTimer);
+    };
+  }, []);
+
   const trailStyle: L.PathOptions = {
     color: '#2d5016',
     weight: 3,
