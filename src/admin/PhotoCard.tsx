@@ -13,12 +13,12 @@ interface PhotoCardProps {
 
 export function PhotoCard({ photo, session, mode, selected, onToggle, onImageClick }: PhotoCardProps) {
   const handleCardClick = () => {
-    if ((mode === 'pending' || mode === 'review') && onToggle && selected !== undefined) {
+    if ((mode === 'pending' || mode === 'review' || mode === 'skip') && onToggle && selected !== undefined) {
       onToggle();
     }
   };
 
-  const showCheckbox = (mode === 'pending' || mode === 'review') && selected !== undefined;
+  const showCheckbox = (mode === 'pending' || mode === 'review' || mode === 'skip') && selected !== undefined;
   const cardClassName = `photo-card${selected ? ' selected' : ''}`;
 
   return (
