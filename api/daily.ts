@@ -92,6 +92,10 @@ async function handleGetChallenge(req: VercelRequest, res: VercelResponse) {
 
   let challenge = existingChallenge;
 
+  // Holds full photo rows once we have them — either freshly selected below,
+  // or fetched by id further down if the challenge already existed.
+  let photos: Awaited<ReturnType<typeof selectDailyPhotos>> | null = null;
+
   // Create new challenge if it doesn't exist
   if (!challenge) {
     try {
@@ -113,6 +117,8 @@ async function handleGetChallenge(req: VercelRequest, res: VercelResponse) {
       }
 
       challenge = newChallenge;
+      // selectDailyPhotos already returned full rows — no need to re-fetch by id
+      photos = selectedPhotos;
     } catch (error) {
       console.error('Photo selection error:', error);
       return res.status(500).json({
@@ -122,15 +128,19 @@ async function handleGetChallenge(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // Fetch full photo details
-  const { data: photos, error: photosError } = await supabaseAdmin
-    .from('photos')
-    .select('id, filename, location_name, lat, lng, description, r2_url, times_shown, is_private, taken_at')
-    .in('id', challenge.photo_ids);
+  // Existing challenge (or somehow missing photos above) — fetch by id
+  if (!photos) {
+    const { data: fetchedPhotos, error: photosError } = await supabaseAdmin
+      .from('photos')
+      .select('id, filename, location_name, lat, lng, description, r2_url, times_shown, is_private, taken_at')
+      .in('id', challenge.photo_ids);
 
-  if (photosError) {
-    console.error('Photos fetch error:', photosError);
-    return res.status(500).json({ error: 'Failed to fetch challenge photos' });
+    if (photosError) {
+      console.error('Photos fetch error:', photosError);
+      return res.status(500).json({ error: 'Failed to fetch challenge photos' });
+    }
+
+    photos = fetchedPhotos;
   }
 
   // Sort photos to match challenge.photo_ids order (important for deterministic order)

@@ -1,6 +1,4 @@
 import { supabaseAdmin } from './supabase-admin.js';
-import { createSeededRandom } from './seeded-random.js';
-import { distanceMiles } from './distance.js';
 
 interface Photo {
   id: string;
@@ -16,13 +14,19 @@ interface Photo {
 }
 
 /**
- * Select 5 photos for a daily challenge using deterministic seeded random
+ * Select 5 photos for a daily challenge using deterministic seeded random.
  *
  * Rules:
  * 1. Only approved photos
- * 2. Pure random (no section weighting) - seeded by date
+ * 2. Pure random (no section weighting) - seeded by date, same for everyone
  * 3. 1-mile minimum distance between any two photos in the set
  * 4. 60-day cooldown (photos used in last 60 days are excluded)
+ *
+ * The random pool + 1-mile distance filtering happens inside Postgres via
+ * select_game_photos — the same function free-play uses (without a seed or
+ * cooldown). Keeping selection in one place means both modes stay in sync
+ * and neither is limited by PostgREST's default 1000-row response cap,
+ * since the candidate scan happens inside the function, not over the API.
  */
 export async function selectDailyPhotos(challengeDate: string): Promise<Photo[]> {
   // Calculate cooldown cutoff date (60 days before challenge date)
@@ -31,59 +35,45 @@ export async function selectDailyPhotos(challengeDate: string): Promise<Photo[]>
   cutoffDate.setDate(cutoffDate.getDate() - 60);
   const cutoffISO = cutoffDate.toISOString();
 
-  // Fetch eligible photos (approved + either never used or last used > 60 days ago)
-  const { data: eligiblePhotos, error } = await supabaseAdmin
-    .from('photos')
-    .select('id, lat, lng, filename, location_name, description, r2_url, times_shown, is_private, taken_at')
-    .eq('status', 'approved')
-    .not('lat', 'is', null)
-    .not('lng', 'is', null)
-    .or(`last_daily_used_at.is.null,last_daily_used_at.lt.${cutoffISO}`);
+  // Deterministic seed derived from the date, so every player gets the same
+  // 5 photos on the same day. Postgres setseed() requires a value in [-1, 1].
+  const seed = dateStringToSeed(challengeDate);
+
+  const { data: selected, error } = await supabaseAdmin.rpc('select_game_photos', {
+    p_count: 5,
+    p_min_distance_miles: 1.0,
+    p_seed: seed,
+    p_cooldown_cutoff: cutoffISO,
+  });
 
   if (error) {
-    throw new Error(`Failed to fetch eligible photos: ${error.message}`);
+    throw new Error(`Failed to select daily photos: ${error.message}`);
   }
 
-  if (!eligiblePhotos || eligiblePhotos.length < 5) {
-    throw new Error(`Insufficient photos for daily challenge: only ${eligiblePhotos?.length || 0} available`);
-  }
-
-  // Create seeded random generator from challenge date
-  const rng = createSeededRandom(challengeDate);
-
-  // Shuffle with seeded randomness
-  const shuffled = rng.shuffle(eligiblePhotos);
-
-  // Greedy selection with 1-mile minimum distance constraint
-  const selected: Photo[] = [];
-
-  for (const candidate of shuffled) {
-    if (selected.length >= 5) break;
-
-    // Check distance to all already-selected photos
-    const tooClose = selected.some(photo =>
-      distanceMiles(candidate.lat, candidate.lng, photo.lat, photo.lng) < 1.0
-    );
-
-    if (!tooClose) {
-      selected.push(candidate as Photo);
-    }
-  }
-
-  if (selected.length < 5) {
-    throw new Error(`Could not select 5 photos with 1-mile constraint: only ${selected.length} found`);
+  if (!selected || selected.length < 5) {
+    throw new Error(`Could not select 5 photos with 1-mile constraint: only ${selected?.length || 0} found`);
   }
 
   // Update last_daily_used_at for selected photos
   const { error: updateError } = await supabaseAdmin
     .from('photos')
     .update({ last_daily_used_at: new Date(challengeDate + 'T00:00:00-05:00').toISOString() })
-    .in('id', selected.map(p => p.id));
+    .in('id', selected.map((p: Photo) => p.id));
 
   if (updateError) {
     console.error('Failed to update last_daily_used_at:', updateError);
     // Don't throw - selection was successful, cooldown update is non-critical
   }
 
-  return selected;
+  return selected as Photo[];
+}
+
+/** Deterministic seed in Postgres setseed() range [-1, 1], derived from a date string */
+function dateStringToSeed(dateString: string): number {
+  let hash = 0;
+  for (let i = 0; i < dateString.length; i++) {
+    hash = (hash << 5) - hash + dateString.charCodeAt(i);
+    hash |= 0; // force 32-bit int
+  }
+  return (Math.abs(hash) % 2_000_000) / 1_000_000 - 1;
 }

@@ -1,31 +1,17 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import type { GameState, ImageConfig, RoundResult } from '../types';
 import { distanceMiles } from '../utils/distance';
 import { calculateScore } from '../utils/scoring';
 import { supabaseGame } from '../lib/supabase';
 
 const ROUNDS_PER_GAME = 5;
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function pickRounds(images: ImageConfig[]): ImageConfig[] {
-  const shuffled = shuffle(images);
-  return shuffled.slice(0, Math.min(ROUNDS_PER_GAME, shuffled.length));
-}
+const MIN_DISTANCE_MILES = 1.0;
 
 export function useGame(
   mode: 'free-play' | 'daily' = 'free-play',
   predeterminedPhotos: ImageConfig[] | null = null
 ) {
-  const [allImages, setAllImages] = useState<ImageConfig[]>([]);
-  const [loading, setLoading] = useState(mode === 'free-play'); // Daily mode doesn't need to load
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [queue, setQueue] = useState<ImageConfig[]>([]);
 
@@ -37,64 +23,64 @@ export function useGame(
     pendingGuess: null,
   });
 
-  // Fetch approved photos from Supabase on mount (free-play mode only)
-  useEffect(() => {
-    if (mode === 'daily') {
-      // Daily mode uses predetermined photos, skip Supabase fetch
-      setLoading(false);
+  // Fetches a fresh random set on every call (initial start AND "Play Again"),
+  // so free-play never reuses the same 5 photos twice in a session.
+  // Selection (random pool + 1-mile minimum distance apart) happens inside
+  // Postgres via select_game_photos — same function Daily Challenge uses.
+  const startGame = useCallback(async () => {
+    if (mode === 'daily' && predeterminedPhotos) {
+      setQueue(predeterminedPhotos);
+      setState({
+        phase: 'guessing',
+        rounds: [],
+        currentRound: 0,
+        currentImage: predeterminedPhotos[0],
+        pendingGuess: null,
+      });
       return;
     }
 
-    async function fetchPhotos() {
-      try {
-        const { data, error: fetchError } = await supabaseGame
-          .from('photos')
-          .select('id, filename, location_name, lat, lng, description, r2_url, times_shown, is_private')
-          .eq('status', 'approved');
+    setLoading(true);
+    setError(null);
 
-        if (fetchError) throw fetchError;
+    try {
+      const { data, error: fetchError } = await supabaseGame.rpc('select_game_photos', {
+        p_count: ROUNDS_PER_GAME,
+        p_min_distance_miles: MIN_DISTANCE_MILES,
+      });
 
-        if (!data || data.length === 0) {
-          throw new Error('No approved photos found');
-        }
+      if (fetchError) throw fetchError;
 
-        // Map Supabase rows to ImageConfig objects
-        const images: ImageConfig[] = data.map((row) => ({
-          id: row.id,
-          filename: row.filename,
-          locationName: row.location_name,
-          coordinates: [row.lat, row.lng],
-          description: row.description ?? undefined,
-          r2_url: row.r2_url,
-          times_shown: row.times_shown ?? 0,
-          is_private: row.is_private ?? false,
-        }));
-
-        setAllImages(images);
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load photos');
-        setLoading(false);
+      if (!data || data.length === 0) {
+        throw new Error('No approved photos found');
       }
+
+      // Map Supabase rows to ImageConfig objects
+      const selected: ImageConfig[] = data.map((row: any) => ({
+        id: row.id,
+        filename: row.filename,
+        locationName: row.location_name,
+        coordinates: [row.lat, row.lng],
+        description: row.description ?? undefined,
+        r2_url: row.r2_url,
+        times_shown: row.times_shown ?? 0,
+        is_private: row.is_private ?? false,
+      }));
+
+      setQueue(selected);
+      setState({
+        phase: 'guessing',
+        rounds: [],
+        currentRound: 0,
+        currentImage: selected[0],
+        pendingGuess: null,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load photos');
+    } finally {
+      setLoading(false);
     }
-
-    fetchPhotos();
-  }, [mode]);
-
-  const startGame = useCallback(() => {
-    const selected = mode === 'daily' && predeterminedPhotos
-      ? predeterminedPhotos
-      : pickRounds(allImages);
-
-    setQueue(selected);
-    setState({
-      phase: 'guessing',
-      rounds: [],
-      currentRound: 0,
-      currentImage: selected[0],
-      pendingGuess: null,
-    });
-  }, [allImages, mode, predeterminedPhotos]);
+  }, [mode, predeterminedPhotos]);
 
   const setGuess = useCallback((coords: [number, number]) => {
     setState((s) => ({ ...s, pendingGuess: coords }));
