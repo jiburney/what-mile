@@ -75,7 +75,7 @@ body { margin: 0; overscroll-behavior: none; }
 }
 .btn-primary.btn-lock:hover { background: var(--forest-mid); }
 
-/* ── Start Screen ─────────────────────────────────────── */
+/* ── Start Screen (Free Play) ─────────────────────────── */
 .start-screen {
   flex: 1;
   display: flex;
@@ -86,13 +86,12 @@ body { margin: 0; overscroll-behavior: none; }
 }
 .start-content {
   text-align: center;
-  max-width: 420px;
+  max-width: 460px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
 }
-.start-logo { font-size: 56px; line-height: 1; }
 .start-title {
   font-size: 42px;
   font-weight: 700;
@@ -105,21 +104,183 @@ body { margin: 0; overscroll-behavior: none; }
   color: var(--text-secondary);
   line-height: 1.55;
 }
-.start-trail-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--stone);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-}
-.trail-divider { opacity: 0.4; }
 .start-hint {
   font-size: 14px;
   color: var(--stone);
   line-height: 1.5;
+}
+
+/* ── Daily Entry Veil ─────────────────────────────────── */
+.daily-entry-veil-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,24,0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+}
+
+@media (max-width: 767px) {
+  .daily-entry-veil-overlay {
+    align-items: flex-end;
+    padding: 28px;
+  }
+}
+
+.daily-entry-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  max-width: 460px;
+}
+
+@media (max-width: 767px) {
+  .daily-entry-content {
+    align-items: stretch;
+    text-align: left;
+    gap: 16px;
+  }
+}
+
+.daily-entry-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(247,244,239,0.72);
+}
+
+@media (max-width: 767px) {
+  .daily-entry-label {
+    font-size: 11px;
+  }
+}
+
+.daily-entry-title {
+  font-size: 62px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--cream);
+}
+
+@media (max-width: 767px) {
+  .daily-entry-title {
+    font-size: 44px;
+  }
+}
+
+.daily-entry-description {
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgba(247,244,239,0.86);
+}
+
+@media (max-width: 767px) {
+  .daily-entry-description {
+    font-size: 16px;
+  }
+}
+
+.daily-entry-pips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+@media (max-width: 767px) {
+  .daily-entry-pips {
+    gap: 7px;
+  }
+}
+
+.daily-entry-pip {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.daily-entry-pip.active {
+  background: var(--cream);
+}
+
+.daily-entry-pip.inactive {
+  background: rgba(247,244,239,0.3);
+}
+
+@media (max-width: 767px) {
+  .daily-entry-pip {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+.daily-entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+@media (max-width: 767px) {
+  .daily-entry-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 0;
+  }
+}
+
+.daily-entry-link {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(247,244,239,0.78);
+  border-bottom: 1px solid rgba(247,244,239,0.4);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.daily-entry-link:hover {
+  color: rgba(247,244,239,0.9);
+}
+
+@media (max-width: 767px) {
+  .daily-entry-link {
+    font-size: 13px;
+  }
+}
+
+.daily-entry-yesterday {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(247,244,239,0.55);
+  margin-top: 6px;
+}
+
+@media (max-width: 767px) {
+  .daily-entry-yesterday {
+    font-size: 11px;
+    align-self: flex-end;
+    margin-top: 0;
+  }
+
+  .daily-entry-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .daily-entry-link {
+    flex: none;
+  }
 }
 
 /* ── Game Layout ──────────────────────────────────────── */

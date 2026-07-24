@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGame } from './hooks/useGame';
 import { StartScreen } from './components/StartScreen';
 import { GameMap } from './components/GameMap';
 import { RoundResult } from './components/RoundResult';
 import { GameSummary } from './components/GameSummary';
 import { PhotoFullscreen } from './components/PhotoFullscreen';
+import { DailyEntryVeil } from './components/DailyEntryVeil';
 
 export default function App() {
   const {
@@ -26,6 +27,15 @@ export default function App() {
 
   const [mapExpanded, setMapExpanded] = useState(false);
   const [photoFullscreen, setPhotoFullscreen] = useState(false);
+  const [showEntryVeil, setShowEntryVeil] = useState(false);
+
+  // Show entry veil for daily challenge on first load
+  useEffect(() => {
+    const isDailyChallenge = window.location.pathname === '/daily';
+    if (isDailyChallenge && phase === 'guessing' && currentRound === 0 && currentImage) {
+      setShowEntryVeil(true);
+    }
+  }, [phase, currentRound, currentImage]);
 
   // Loading state
   if (loading) {
@@ -211,6 +221,11 @@ export default function App() {
             imageUrl={currentImage.r2_url}
             onClose={() => setPhotoFullscreen(false)}
           />
+        )}
+
+        {/* Daily challenge entry veil */}
+        {showEntryVeil && (
+          <DailyEntryVeil onStart={() => setShowEntryVeil(false)} />
         )}
       </div>
     </div>
