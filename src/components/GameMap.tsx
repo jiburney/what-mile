@@ -120,42 +120,40 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
 
   const trailStyle: L.PathOptions = {
     color: '#2d5016',
-    weight: 3,
-    opacity: 0.85,
+    weight: 3.4,
+    opacity: 1,
   };
 
   return (
-    <div className="map-wrapper">
-      <MapContainer
-        bounds={AT_BOUNDS}
-        style={{ height: '100%', width: '100%' }}
-        zoomControl={true}
-        ref={mapRef}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {trailData && (
-          <GeoJSON data={trailData} style={trailStyle} />
-        )}
-        {trailError && (
-          <div className="trail-error-notice">
-            Trail overlay not loaded — see README for setup
-          </div>
-        )}
-        <ClickHandler onGuess={onGuess} disabled={showResult} />
-        {pendingGuess && (
-          <Marker position={pendingGuess} icon={guessIcon}>
-            <Popup>Your guess</Popup>
-          </Marker>
-        )}
-        {showResult && actualLocation && (
-          <Marker position={actualLocation} icon={actualIcon}>
-            <Popup>{actualName ?? 'Actual location'}</Popup>
-          </Marker>
-        )}
-      </MapContainer>
-    </div>
+    <MapContainer
+      bounds={AT_BOUNDS}
+      style={{ height: '100%', width: '100%' }}
+      zoomControl={true}
+      ref={mapRef}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {trailData && (
+        <GeoJSON data={trailData} style={trailStyle} />
+      )}
+      {trailError && (
+        <div className="trail-error-notice">
+          Trail overlay not loaded — see README for setup
+        </div>
+      )}
+      <ClickHandler onGuess={onGuess} disabled={showResult} />
+      {pendingGuess && (
+        <Marker position={pendingGuess} icon={guessIcon}>
+          <Popup>Your guess</Popup>
+        </Marker>
+      )}
+      {showResult && actualLocation && (
+        <Marker position={actualLocation} icon={actualIcon}>
+          <Popup>{actualName ?? 'Actual location'}</Popup>
+        </Marker>
+      )}
+    </MapContainer>
   );
 }
