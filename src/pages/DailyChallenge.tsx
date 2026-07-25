@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';
 import { DailyStartScreen } from '../components/DailyStartScreen';
-import { GameMap } from '../components/GameMap';
-import { RoundResult } from '../components/RoundResult';
+import { GameScreen } from '../components/GameScreen';
 import { GameSummary } from '../components/GameSummary';
 import { NameCaptureModal } from '../components/NameCaptureModal';
 import { DailyLeaderboard } from '../components/DailyLeaderboard';
@@ -228,10 +227,8 @@ export function DailyChallenge() {
     );
   }
 
-  // Playing phase - use standard game flow
+  // Playing phase - use shared GameScreen component
   const { phase, currentImage, pendingGuess, currentRound, rounds } = state;
-  const isLastRound = currentRound + 1 >= totalRounds;
-  const showResult = phase === 'result';
 
   if (phase === 'summary') {
     return (
@@ -247,82 +244,21 @@ export function DailyChallenge() {
 
   return (
     <div className="app-layout">
-      {/* Header bar */}
-      <header className="game-header">
-        <div className="game-header-left">
-          <span className="header-title">Daily Challenge</span>
-        </div>
-        <div className="game-header-center">
-          <div className="round-pips">
-            {Array.from({ length: totalRounds }, (_, i) => (
-              <span
-                key={i}
-                className={`round-pip ${
-                  i < rounds.length ? 'pip-done' : i === currentRound ? 'pip-active' : 'pip-future'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="game-header-right">
-          <span className="header-score">{totalScore.toLocaleString()}</span>
-        </div>
-      </header>
-
-      {/* Photo */}
-      {currentImage && (
-        <div className="photo-area">
-          <div
-            className="photo-bg"
-            style={{ backgroundImage: `url(${currentImage.r2_url})` }}
-          />
-          <img
-            src={currentImage.r2_url}
-            alt="Somewhere on the Appalachian Trail"
-            className="trail-photo"
-            fetchPriority="high"
-            loading="eager"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
-          <div className="photo-round-badge">
-            Round {currentRound + 1} / {totalRounds}
-          </div>
-        </div>
-      )}
-
-      {/* Map */}
-      <div className="map-area">
-        <GameMap
-          onGuess={setGuess}
-          pendingGuess={pendingGuess}
-          actualLocation={showResult ? currentResult?.image.coordinates : undefined}
-          actualName={showResult ? currentResult?.image.locationName : undefined}
-          showResult={showResult}
-        />
-        {!showResult && (
-          <div className="map-overlay-bottom">
-            {pendingGuess ? (
-              <button className="btn-primary btn-lock" onClick={lockInGuess}>
-                Lock In Guess
-              </button>
-            ) : (
-              <div className="map-hint">Tap the trail to drop your pin</div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Result panel */}
-      {showResult && currentResult && (
-        <RoundResult
-          result={currentResult}
-          roundNumber={currentRound + 1}
-          totalRounds={totalRounds}
-          totalScore={totalScore}
-          onNext={nextRound}
-          isLastRound={isLastRound}
-        />
-      )}
+      <GameScreen
+        phase={phase}
+        currentImage={currentImage}
+        pendingGuess={pendingGuess}
+        currentRound={currentRound}
+        rounds={rounds}
+        currentResult={currentResult}
+        totalScore={totalScore}
+        totalRounds={totalRounds}
+        nextImage={null}
+        setGuess={setGuess}
+        lockInGuess={lockInGuess}
+        nextRound={nextRound}
+        headerTitle="Daily Challenge"
+      />
     </div>
   );
 }
