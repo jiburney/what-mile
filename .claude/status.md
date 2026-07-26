@@ -1,9 +1,10 @@
 # What Mile? — Working Status
 
-_Last updated: June 30, 2026_
+_Last updated: July 26, 2026_
 
-Pick-up-where-I-left-off doc. Two tracks: **(A) getting photos in** (upload + bulk
-ingest) and **(B) trail-data enrichment** (location + mile + descriptions on each photo).
+Pick-up-where-I-left-off doc. Three tracks: **(A) getting photos in** (upload + bulk
+ingest), **(B) trail-data enrichment** (location + mile + descriptions on each photo),
+and **(C) the core UI redesign** — active work, branch `feat/core-redesign`.
 
 ---
 
@@ -36,8 +37,10 @@ Approved photos are live in the game and displaying real county-level `location_
 - **Trail reference file** in the repo: `scripts/data/at-reference-2023.json` (437 waypoints /
   268 shelters, 2023 Data Book, Katahdin = 2198.4).
 - **Shelter name-matching fixed** → 241 shelters matched to the Data Book.
-- **`compute-shelter-miles.mjs` rewritten** to interim shelter-backbone model → produces
-  `shelters.json` + `data/mile-calibration.json`. ~1–2 mile accurate stopgap (see Road A).
+- **`compute-shelter-miles.mjs` rewritten** to interim shelter-backbone model → intended to
+  produce `shelters.json` + `data/mile-calibration.json`. **⚠️ The v2 script appears never to
+  have been run** — the on-disk `mile-calibration.json` is dated June 14 and predates it.
+  **That file is broken. Do not use it.** See "Known issues" below.
 - **Skip flow confirmed.** `purge-skips.ts` + "Purge All Skips" button in Skip tab wired and
   working. Skipped photos stay in Supabase with `status: 'skip'`; R2 file moves to `skip/`.
 - **Triage script updated.** Panoramic photos now route to `review/` via the Haiku prompt
@@ -49,12 +52,46 @@ Approved photos are live in the game and displaying real county-level `location_
 
 ## In flight — current focus
 
+### 0. Core UI redesign — branch `feat/core-redesign` (ACTIVE)
+
+Not yet merged to main. Production is unaffected.
+
+**Routes:** `/` → `src/App.tsx` (Free Play), `/daily` → `src/pages/DailyChallenge.tsx`.
+Both render the shared `src/components/GameScreen.tsx`. **Any game-screen change affects
+both — always verify both.**
+
+**Landed:** design tokens; game screen rebuilt as two panels (photo + map); `GameScreen`
+extracted and shared; entry veil for both modes (auto-start, StrictMode-guarded);
+dark page background; map `maxBounds` + dynamic `minZoom`; photo zoom/pan moved into the
+photo panel and `PhotoFullscreen.tsx` deleted.
+
+**Non-negotiable interaction rules.** Each of these cost a rollback to learn:
+
+- Within a round, **only the player resizes the map**, via the expand control. Not pin
+  placement, not confirming, not panning.
+- Round advance is the one exception: resets to minimized + full-trail view.
+- Expand/collapse **preserves** map center and zoom. Never re-fit, never re-center on the pin.
+- Map viewport must **never** derive from the photo's real coordinates — that leaks the answer.
+- Photo resets to 1× on round advance, but is **preserved** across panel resize.
+- Clamp pan offset after every zoom, pan, **and panel resize** — not just on drag.
+
+**Still stale / outstanding on this branch:**
+- Entry screen still needs polish
+- Round result screen still needs polish
+- Final summary + leaderboard not restyled
+- Collapsed map preview is still a hardcoded fake SVG squiggle
+- Nudge controls and reset-to-full-trail not built
+
+**Explicitly out of scope** (drawn in the Claude Design mockups, not built): trail-mile
+readouts, elevation graphics, share result, review rounds, daily countdown, geocoded
+place labels ("Near Bear Mountain, NY").
+
 ### 1. Photo pipeline (ongoing)
 - 15 of 56 batches uploaded (~1,000 photos). Continuing batch-by-batch.
 - Triage → Finder review → upload flow is the rhythm. No changes needed to the pipeline itself.
 
-### 2. Daily Challenge mode
-- **Next feature, design locked, ready for CC prompt.**
+### 2. Daily Challenge mode — ✅ SHIPPED
+- Live at `/daily`. Everything below describes what was built, kept for reference.
 - 5 photos/day, same set for all players, generated server-side on first request of the day
   (no cron), cached in a new `daily_challenges` Supabase table (date + 5 photo IDs).
 - Selection: pure random from the eligible pool (no section weighting — explicitly rejected;
@@ -81,6 +118,22 @@ Approved photos are live in the game and displaying real county-level `location_
 
 ## Known issues / next pieces
 
+- **⚠️ `scripts/data/mile-calibration.json` is broken — do not use it.** 200 anchors, dated
+  June 14. It contains a shelter name-collision: `Cove Mountain Shelter, PA` maps
+  `raw_gis_mile 756.1` → `at_mile 1145.9`. There are two Cove Mountain Shelters — one in VA
+  near mile 756, one in PA at 1145.9 — and the matcher paired the VA position with the PA
+  mile. In a piecewise-linear interpolation this compresses everything between raw mile 756
+  and 1150 into roughly eight reported miles, so northern Virginia, Shenandoah, Harpers
+  Ferry, and Maryland all return nonsense. There are also **no valid anchors at all** between
+  Wilson Creek (VA, 742) and Clarks Ferry (PA, 1154) — ~400 miles with nothing to interpolate
+  against.
+
+  It fails **silently and plausibly**: GA, NC, TN, and ME all look correct, which makes it
+  easy to trust. Two cheap fixes when this is picked up: (1) match shelters on **name + state**,
+  not name alone; (2) assert `at_mile` and `raw_gis_mile` increase monotonically together and
+  that no adjacent anchor pair has a wildly different slope than its neighbours — that
+  assertion catches the Cove Mountain case instantly.
+
 - **Approved photos may have weak descriptions.** Captions are generated at approval time from
   `location_name`. Quality depends on whether location was already set when the photo was approved.
   Fix is downstream of Road A: once miles + shelter are populated, regenerate captions.
@@ -96,20 +149,53 @@ Approved photos are live in the game and displaying real county-level `location_
 
 ## Suggested order
 
-1. **Write + run the Daily Challenge CC prompt** — design is locked, ready to build.
-2. **Continue photo batches** — keep uploading while working on features in parallel.
-3. **Road A fetch script** → ordered centerline → accurate miles → backfill via `enrich.ts`.
-4. **Regenerate descriptions** for approved photos once miles + shelter are populated.
+1. **Finish `feat/core-redesign`** — entry screen polish, round result polish, final summary
+   restyle. Small single-purpose CC prompts; large multi-concern prompts caused a rollback.
+2. **Merge to main and deploy.** Test both `/` and `/daily` on a branch preview first.
+3. **Continue photo batches** — keep uploading while working on features in parallel.
+4. **Road A fetch script** → ordered centerline → accurate miles → backfill via `enrich.ts`.
+   Fix the `mile-calibration.json` name-collision bug as part of this.
+5. **Regenerate descriptions** for approved photos once miles + shelter are populated.
 
 ## Working style
 
 - **Keep CC prompts problem/outcome-focused.** State the problem, desired end-result, and hard
   constraints (don't break X, must pass build, preserve behavior). Let CC choose the how.
+- **One concern per prompt.** A prompt that bundled layout, sizing rules, viewport
+  preservation, round reset, four bug fixes, and new controls produced an unusable result that
+  had to be reverted — too much surface to review in one pass. Smaller prompts, separate
+  commits, verify between each.
+- **Prose can't carry interaction.** For anything about how a gesture or transition *feels*,
+  prototype it before writing a prompt. Several rounds were lost to specs that read correctly
+  and built the wrong experience.
 - **Re-read files immediately before editing.** `filesystem:edit_file` requires exact `oldText`
   match — stale reads cause failed edits.
 - **Update this file** whenever plans change, something lands, or a decision is made.
 
 ## Watch out
 
-- **Two Vercel function slots remain.** Daily Challenge will likely need one. Plan accordingly.
+- **Vercel function slots.** `api/daily.ts` shipped, so budget accordingly before adding
+  endpoints. Prefer action-routing into an existing file (`enrich.ts`, `daily.ts`) over a
+  new function.
 - **`admin.css` edited outside CC** — re-read before any CSS edits to avoid clobbering changes.
+
+### Environment gotchas (all of these cost real debugging time)
+
+- **`npm run dev` (port 5173) does NOT serve `/api/*`.** Vite alone can't run the serverless
+  functions, so `/daily` hangs forever on "Loading today's challenge…" with only a
+  `console.error`. Use `WHAT_MILE_ENV=$HOME/.config/what-mile/.env npx vercel dev` (port 3000)
+  for anything touching Daily. Free Play works on either, since it queries Supabase directly
+  from the browser via the `VITE_` vars.
+- **Leaflet caches container size at init.** If the container is measured at zero or the wrong
+  size, you get tiles in a band with blank space around them, and any `getBoundsZoom()`
+  derived from it is garbage — this is what produced a whole-world map view. Always
+  `invalidateSize()` before computing zoom, never compute from a zero-size container, and
+  keep the `minZoom` floor of 4 as a guard.
+- **`main.tsx` uses `<StrictMode>`** — effects run twice in dev. Guard anything that
+  auto-starts or fetches on mount.
+- **Catastrophic-looking layout breakage is usually a stale Vite bundle**, not a real bug —
+  old JS served against new CSS. `rm -rf node_modules/.vite`, restart, hard reload
+  (Cmd+Shift+R) before debugging anything else.
+- **Preview deploys hit production Supabase.** Playing today's daily on a branch preview
+  submits a real score and burns the day's play. Use a past date (`/daily/2026-07-20`) —
+  `isToday` is false, so submission is skipped and it can be replayed freely.

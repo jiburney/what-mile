@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import type { Map as LeafletMap } from 'leaflet';
 import { GameMap } from './GameMap';
 import { RoundResult } from './RoundResult';
-import { PhotoFullscreen } from './PhotoFullscreen';
 import { DailyEntryVeil } from './DailyEntryVeil';
 import type { ImageConfig, RoundResult as RoundResultType } from '../types';
 
@@ -47,16 +46,27 @@ export function GameScreen({
   onDismissVeil,
 }: GameScreenProps) {
   const [mapExpanded, setMapExpanded] = useState(false);
-  const [photoFullscreen, setPhotoFullscreen] = useState(false);
+  const [photoZoom, setPhotoZoom] = useState(1);
+  const [photoPan, setPhotoPan] = useState({ x: 0, y: 0 });
   const mapRef = useRef<LeafletMap | null>(null);
+  const photoContainerRef = useRef<HTMLDivElement | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
 
   const showResult = phase === 'result';
   const isLastRound = currentRound + 1 >= totalRounds;
 
-  // Reset map to collapsed on round change
+  // Reset map to collapsed and photo to 1x on round change
   useEffect(() => {
     setMapExpanded(false);
+    setPhotoZoom(1);
+    setPhotoPan({ x: 0, y: 0 });
   }, [currentRound]);
+
+  // Re-clamp pan offset when panel resizes (map expand/collapse)
+  useEffect(() => {
+    setPhotoPan(current => clampPhotoPan(photoZoom, current));
+  }, [mapExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNudge = (dir: 'up' | 'down' | 'left' | 'right') => {
     if (!pendingGuess || !mapRef.current) return;
@@ -76,6 +86,64 @@ export function GameScreen({
 
   const handleLockInGuess = () => {
     lockInGuess();
+  };
+
+  // Clamp pan offset based on current zoom and container size
+  const clampPhotoPan = (zoom: number, pan: { x: number; y: number }) => {
+    const container = photoContainerRef.current;
+    if (!container) return pan;
+
+    const rect = container.getBoundingClientRect();
+    const panelWidth = rect.width;
+    const panelHeight = rect.height;
+
+    // Assume photo fills container at 1x (object-fit: contain behavior)
+    // At higher zoom, image is larger than panel
+    const imageDisplayWidth = panelWidth;
+    const imageDisplayHeight = panelHeight;
+
+    const maxOffsetX = Math.max(0, (imageDisplayWidth * zoom - panelWidth) / 2);
+    const maxOffsetY = Math.max(0, (imageDisplayHeight * zoom - panelHeight) / 2);
+
+    return {
+      x: Math.max(-maxOffsetX, Math.min(maxOffsetX, pan.x)),
+      y: Math.max(-maxOffsetY, Math.min(maxOffsetY, pan.y))
+    };
+  };
+
+  // Photo zoom handlers
+  const handlePhotoZoom = (delta: number) => {
+    setPhotoZoom(prev => {
+      const newZoom = Math.max(1, Math.min(3, prev + delta));
+      // Clamp pan after zoom changes
+      setPhotoPan(current => clampPhotoPan(newZoom, current));
+      return newZoom;
+    });
+  };
+
+  const handlePhotoWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    handlePhotoZoom(delta);
+  };
+
+  const handlePhotoMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (photoZoom <= 1) return; // No panning at 1x
+    isDraggingRef.current = true;
+    dragStartRef.current = { x: e.clientX - photoPan.x, y: e.clientY - photoPan.y };
+  };
+
+  const handlePhotoMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current || photoZoom <= 1) return;
+    const newX = e.clientX - dragStartRef.current.x;
+    const newY = e.clientY - dragStartRef.current.y;
+
+    // Clamp based on zoom and container size
+    setPhotoPan(clampPhotoPan(photoZoom, { x: newX, y: newY }));
+  };
+
+  const handlePhotoMouseUp = () => {
+    isDraggingRef.current = false;
   };
 
   // RESULT STATE - standalone layout
@@ -122,12 +190,6 @@ export function GameScreen({
           />
         </div>
 
-        {photoFullscreen && currentImage && (
-          <PhotoFullscreen
-            imageUrl={currentImage.r2_url}
-            onClose={() => setPhotoFullscreen(false)}
-          />
-        )}
       </div>
     );
   }
@@ -154,7 +216,16 @@ export function GameScreen({
       {currentImage && (
         <div className="game-panels">
           {/* Photo panel */}
-          <div className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}>
+          <div
+            ref={photoContainerRef}
+            className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}
+            onWheel={handlePhotoWheel}
+            onMouseDown={handlePhotoMouseDown}
+            onMouseMove={handlePhotoMouseMove}
+            onMouseUp={handlePhotoMouseUp}
+            onMouseLeave={handlePhotoMouseUp}
+            style={{ cursor: photoZoom > 1 ? 'grab' : 'default' }}
+          >
             <div
               className="photo-bg"
               style={{ backgroundImage: `url(${currentImage.r2_url})` }}
@@ -165,18 +236,33 @@ export function GameScreen({
               className="trail-photo"
               fetchPriority="high"
               loading="eager"
-              onClick={() => setPhotoFullscreen(true)}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              style={{
+                transform: `scale(${photoZoom}) translate(${photoPan.x / photoZoom}px, ${photoPan.y / photoZoom}px)`,
+                transformOrigin: 'center center',
+                transition: isDraggingRef.current ? 'none' : 'transform 0.1s ease-out'
+              }}
+              draggable={false}
             />
-            <button className="enlarge-photo-hint" onClick={() => setPhotoFullscreen(true)}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
-                <circle cx="11" cy="11" r="7"></circle>
-                <path d="M16.5 16.5 L21 21"></path>
-                <path d="M8 11h6"></path>
-                <path d="M11 8v6"></path>
-              </svg>
-              <span>Click photo to enlarge</span>
-            </button>
+
+            {/* Photo zoom controls */}
+            <div className="photo-zoom-controls">
+              <button
+                className="zoom-btn"
+                onClick={() => handlePhotoZoom(0.25)}
+                disabled={photoZoom >= 3}
+              >
+                +
+              </button>
+              <div className="zoom-readout">{photoZoom.toFixed(1)}×</div>
+              <button
+                className="zoom-btn"
+                onClick={() => handlePhotoZoom(-0.25)}
+                disabled={photoZoom <= 1}
+              >
+                −
+              </button>
+            </div>
           </div>
 
           {/* Map panel */}
@@ -284,14 +370,6 @@ export function GameScreen({
       {/* Preload next round's photo */}
       {nextImage && phase === 'guessing' && (
         <link rel="preload" as="image" href={nextImage.r2_url} />
-      )}
-
-      {/* Photo fullscreen viewer */}
-      {photoFullscreen && currentImage && (
-        <PhotoFullscreen
-          imageUrl={currentImage.r2_url}
-          onClose={() => setPhotoFullscreen(false)}
-        />
       )}
 
       {/* Daily challenge entry veil */}

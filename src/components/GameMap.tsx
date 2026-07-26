@@ -77,12 +77,53 @@ function MapController({ mapRef, showResult, actualLocation, pendingGuess }: Map
     mapRef.current = map;
   }, [map, mapRef]);
 
-  // Initial load: fit to AT_BOUNDS
+  // Setup container sizing and minimum zoom
   useEffect(() => {
-    if (!showResult) {
-      map.fitBounds(AT_BOUNDS);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const setupMinZoom = () => {
+      const size = map.getSize();
+
+      // Wait for non-zero, settled dimensions
+      if (size.x === 0 || size.y === 0) {
+        requestAnimationFrame(setupMinZoom);
+        return;
+      }
+
+      // Now container has real dimensions
+      map.invalidateSize();
+
+      // Compute minimum zoom to fit AT_BOUNDS
+      const computedZoom = map.getBoundsZoom(AT_BOUNDS);
+      const minZoom = Math.max(computedZoom, 4); // Safety floor
+      map.setMinZoom(minZoom);
+
+      // Set initial view if not in result state
+      if (!showResult) {
+        map.fitBounds(AT_BOUNDS);
+      }
+    };
+
+    // Initial setup
+    const settleTimer = setTimeout(() => setupMinZoom(), 100);
+
+    // Recompute on container resize
+    const container = map.getContainer();
+    const resizeObserver = new ResizeObserver(() => {
+      const size = map.getSize();
+      if (size.x === 0 || size.y === 0) return;
+
+      // Invalidate first, then recompute
+      map.invalidateSize();
+      const computedZoom = map.getBoundsZoom(AT_BOUNDS);
+      const minZoom = Math.max(computedZoom, 4);
+      map.setMinZoom(minZoom);
+    });
+    resizeObserver.observe(container);
+
+    return () => {
+      clearTimeout(settleTimer);
+      resizeObserver.disconnect();
+    };
+  }, [map, showResult]);
 
   // Result state: fit both pins
   useEffect(() => {
@@ -129,36 +170,24 @@ export function GameMap({
       .catch(() => setTrailError(true));
   }, []);
 
-  // Keep Leaflet's internal tile grid in sync with container size
-  useEffect(() => {
-    const map = containerRef.current;
-    if (!map) return;
-
-    const container = map.getContainer();
-    const resizeObserver = new ResizeObserver(() => {
-      map.invalidateSize();
-    });
-    resizeObserver.observe(container);
-
-    const settleTimer = setTimeout(() => map.invalidateSize(), 300);
-
-    return () => {
-      resizeObserver.disconnect();
-      clearTimeout(settleTimer);
-    };
-  }, []);
-
   const trailStyle: L.PathOptions = {
     color: '#2d5016',
     weight: 3.4,
     opacity: 1,
   };
 
+  const maxBounds = L.latLngBounds([
+    [34.0, -84.5],
+    [45.9, -68.0]
+  ]).pad(0.1);
+
   return (
     <MapContainer
       bounds={AT_BOUNDS}
       style={{ height: '100%', width: '100%' }}
       zoomControl={true}
+      maxBounds={maxBounds}
+      maxBoundsViscosity={1.0}
       ref={containerRef}
     >
       <TileLayer

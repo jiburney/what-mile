@@ -296,6 +296,7 @@ body { margin: 0; overscroll-behavior: none; }
   width: 100vw;
   height: 100dvh;
   overflow: hidden;
+  background: #1a2810; /* Dark forest green */
 }
 
 /* ── Game Header ──────────────────────────────────────── */
@@ -311,8 +312,8 @@ body { margin: 0; overscroll-behavior: none; }
   padding: 18px 26px;
   height: auto;
   background: transparent;
-  color: rgba(247,244,239,0.9);
-  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  color: var(--cream);
+  text-shadow: none;
 }
 
 @media (max-width: 767px) {
@@ -338,9 +339,9 @@ body { margin: 0; overscroll-behavior: none; }
   border-radius: 50%;
   transition: background 0.2s;
 }
-.pip-done   { background: var(--forest-lt); }
+.pip-done   { background: var(--cream); }
 .pip-active { background: var(--white); box-shadow: 0 0 0 2px rgba(255,255,255,0.4); }
-.pip-future { background: rgba(255,255,255,0.25); }
+.pip-future { background: rgba(247,244,239,0.3); }
 .header-score {
   font-size: 12px;
   font-weight: 700;
@@ -468,36 +469,60 @@ body { margin: 0; overscroll-behavior: none; }
   }
 }
 
-/* ── Enlarge Photo Hint ───────────────────────────────── */
-.enlarge-photo-hint {
+/* ── Photo Zoom Controls ──────────────────────────────── */
+.photo-zoom-controls {
   position: absolute;
-  left: 16px;
   bottom: 16px;
+  right: 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 9px;
-  background: rgba(26,26,24,0.62);
-  border: 1px solid rgba(247,244,239,0.22);
-  border-radius: 999px;
-  padding: 9px 15px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--cream);
-  cursor: pointer;
+  gap: 4px;
+  background: rgba(26, 26, 24, 0.7);
+  border: 1px solid rgba(247, 244, 239, 0.2);
+  border-radius: 6px;
+  padding: 8px;
   z-index: 50;
 }
 
+.photo-zoom-controls .zoom-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(247, 244, 239, 0.9);
+  border: 1px solid rgba(26, 26, 24, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-zoom-controls .zoom-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.photo-zoom-controls .zoom-btn:not(:disabled):hover {
+  background: var(--cream);
+}
+
+.photo-zoom-controls .zoom-readout {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cream);
+  padding: 4px 0;
+  min-width: 32px;
+  text-align: center;
+}
+
 @media (max-width: 767px) {
-  .enlarge-photo-hint {
-    left: 12px;
+  .photo-zoom-controls {
     bottom: 12px;
-    padding: 8px 13px;
-    font-size: 10px;
-  }
-  .enlarge-photo-hint span {
-    display: inline;
+    right: 12px;
+    padding: 6px;
   }
 }
 
@@ -1052,112 +1077,6 @@ body { margin: 0; overscroll-behavior: none; }
   white-space: nowrap;
 }
 
-/* ── Photo Fullscreen ─────────────────────────────────── */
-.photo-fullscreen {
-  position: fixed;
-  inset: 0;
-  background: #1a1a18;
-  z-index: 10000;
-  overflow: hidden;
-}
-
-.photo-fullscreen-image {
-  position: absolute;
-  inset: 0;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  transform-origin: center;
-  transition: transform 200ms ease-out;
-}
-
-.photo-fullscreen-close {
-  position: absolute;
-  top: 20px;
-  right: 22px;
-  width: 40px;
-  height: 40px;
-  background: rgba(26,26,24,0.66);
-  border: 1px solid rgba(247,244,239,0.28);
-  border-radius: var(--radius-sm);
-  color: var(--cream);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-}
-
-.photo-fullscreen-controls {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(26,26,24,0.66);
-  border: 1px solid rgba(247,244,239,0.24);
-  border-radius: 999px;
-  padding: 7px 10px;
-  color: var(--cream);
-}
-
-.zoom-btn {
-  width: 34px;
-  height: 30px;
-  background: transparent;
-  border: none;
-  color: var(--cream);
-  font-size: 19px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.zoom-label {
-  min-width: 52px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.zoom-divider {
-  width: 1px;
-  height: 20px;
-  background: rgba(247,244,239,0.3);
-  margin: 0 6px;
-}
-
-.photo-fullscreen-hint {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(247,244,239,0.75);
-  padding-right: 8px;
-}
-
-@media (max-width: 767px) {
-  .photo-fullscreen-close {
-    top: 18px;
-    right: 18px;
-    width: 44px;
-    height: 44px;
-  }
-
-  .photo-fullscreen-controls {
-    bottom: 22px;
-    padding: 9px 14px;
-  }
-
-  .photo-fullscreen-hint {
-    font-size: 11px;
-  }
-}
 
 /* ── Leaflet marker overrides ─────────────────────────── */
 .leaflet-marker-icon.guess-marker {
