@@ -556,7 +556,7 @@ body { margin: 0; overscroll-behavior: none; }
 /* ── Map Controls (expanded state) ────────────────────── */
 .map-controls {
   position: absolute;
-  top: 12px;
+  top: 44px; /* clears the attribution chip now anchored top-right */
   right: 12px;
   display: flex;
   flex-direction: column;
@@ -614,7 +614,7 @@ body { margin: 0; overscroll-behavior: none; }
 .scale-readout {
   position: absolute;
   bottom: 32px;
-  right: 12px;
+  right: 54px; /* clears the bottom-right zoom/expand cluster */
   background: rgba(255, 255, 255, 0.9);
   padding: 4px 8px;
   border-radius: 4px;
@@ -625,44 +625,167 @@ body { margin: 0; overscroll-behavior: none; }
   pointer-events: none;
 }
 
-.map-trail-labels {
+/* ── Map Corner System (direction chips + controls) ──────
+   Shared treatment: translucent light background, small radius,
+   consistent padding — so all four corners read as one system. */
+.map-trail-chip {
   position: absolute;
-  top: 12px;
-  left: 14px;
-  bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  pointer-events: none;
-  z-index: 500;
-}
-
-.map-trail-label-top,
-.map-trail-label-bottom {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--stone);
-}
-
-/* ── Map Toggle Button ────────────────────────────────── */
-.map-toggle-btn {
-  background: var(--cream);
-  border: 1px solid var(--ink);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  font-size: 13px;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 9px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(26, 26, 24, 0.15);
+  border-radius: var(--radius-badge);
+  box-shadow: var(--shadow-sm);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink);
-  cursor: pointer;
-  transition: background 0.15s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 500;
 }
 
-.map-toggle-btn:hover {
-  background: var(--parchment);
+.map-trail-chip .chip-arrow {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.map-trail-chip.chip-top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.map-trail-chip.chip-bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+/* Zoom control — compact fused pill, stacks above expand/collapse */
+.map-container .leaflet-control-zoom,
+.result-map-container .leaflet-control-zoom {
+  border: none;
+  box-shadow: none;
+  margin-bottom: 10px !important;
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(26, 26, 24, 0.15);
+  box-shadow: var(--shadow-sm);
+}
+
+.map-container .leaflet-control-zoom a,
+.result-map-container .leaflet-control-zoom a {
+  width: 32px;
+  height: 26px;
+  line-height: 26px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(26, 26, 24, 0.1);
+  box-shadow: none;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.map-container .leaflet-control-zoom a:last-child,
+.result-map-container .leaflet-control-zoom a:last-child {
+  border-bottom: none;
+}
+
+.map-container .leaflet-control-zoom a:hover,
+.result-map-container .leaflet-control-zoom a:hover {
+  background: rgba(26, 26, 24, 0.05);
+}
+
+/* Expand/collapse control — visually dominant, anchors the corner */
+.map-expand-control {
+  border: none;
+  box-shadow: none;
+}
+
+.map-expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 64px;
+  height: 64px;
+  background: var(--forest);
+  border: none;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  color: var(--cream);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 14px;
+}
+
+/* Expand state — pine green */
+.map-expand-btn[data-state="expand"] {
+  background: var(--forest);
+}
+
+.map-expand-btn[data-state="expand"]:hover {
+  background: var(--forest-mid);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+/* Collapse state — lighter forest green for visual distinction */
+.map-expand-btn[data-state="collapse"] {
+  background: var(--forest-mid);
+}
+
+.map-expand-btn[data-state="collapse"]:hover {
+  background: var(--forest-lt);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.map-expand-btn .btn-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.map-expand-btn .btn-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Mobile: icon only, smaller */
+@media (max-width: 767px) {
+  .map-expand-btn {
+    min-width: 48px;
+    height: 48px;
+    padding: 0;
+    gap: 0;
+  }
+
+  .map-expand-btn .btn-label {
+    display: none;
+  }
+
+  .map-expand-btn .btn-icon {
+    font-size: 18px;
+  }
+}
+
+/* Attribution: kept small so it doesn't need to be wide, top-right corner */
+.map-container .leaflet-control-attribution,
+.result-map-container .leaflet-control-attribution {
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 2px 6px;
+  border-radius: var(--radius-badge);
 }
 
 /* ── Confirm Area ─────────────────────────────────────── */
@@ -673,22 +796,28 @@ body { margin: 0; overscroll-behavior: none; }
   align-items: stretch;
 }
 
-.pin-status {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--text-tertiary);
-  text-align: center;
-}
-
 .btn-confirm {
   padding: 14px 24px;
   font-size: 14px;
+  background: var(--parchment);
+  color: var(--text-tertiary);
+  border: 1px solid rgba(26, 26, 24, 0.15);
+  box-shadow: none;
 }
 
 .btn-confirm:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-confirm:not(:disabled) {
+  background: var(--forest);
+  color: var(--cream);
+  border: 1px solid var(--ink);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-confirm:not(:disabled):hover {
+  background: var(--forest-mid);
 }
 
 @media (max-width: 767px) {
