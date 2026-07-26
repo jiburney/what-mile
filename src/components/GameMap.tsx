@@ -5,6 +5,7 @@ import {
   GeoJSON,
   Marker,
   useMapEvents,
+  useMap,
   Popup,
 } from 'react-leaflet';
 import L from 'leaflet';
@@ -39,21 +40,21 @@ const actualIcon = new L.Icon({
   className: 'actual-marker',
 });
 
-// AT bounding box: Springer (34.6°N) to Katahdin (45.9°N)
+// AT bounding box
 const AT_BOUNDS: L.LatLngBoundsExpression = [
-  [34.0, -85.0],
-  [46.5, -67.5],
+  [34.0, -84.5],  // Southwest (Georgia)
+  [45.9, -68.0]   // Northeast (Maine)
 ];
 
 interface ClickHandlerProps {
-  onGuess: (coords: [number, number]) => void;
-  disabled: boolean;
+  onGuess?: (coords: [number, number]) => void;
+  showResult: boolean;
 }
 
-function ClickHandler({ onGuess, disabled }: ClickHandlerProps) {
+function ClickHandler({ onGuess, showResult }: ClickHandlerProps) {
   useMapEvents({
     click(e) {
-      if (!disabled) {
+      if (!showResult && onGuess) {
         onGuess([e.latlng.lat, e.latlng.lng]);
       }
     },
@@ -61,18 +62,62 @@ function ClickHandler({ onGuess, disabled }: ClickHandlerProps) {
   return null;
 }
 
-interface Props {
-  onGuess: (coords: [number, number]) => void;
+interface MapControllerProps {
+  mapRef: React.MutableRefObject<L.Map | null>;
+  showResult: boolean;
+  actualLocation?: [number, number];
   pendingGuess: [number, number] | null;
+}
+
+function MapController({ mapRef, showResult, actualLocation, pendingGuess }: MapControllerProps) {
+  const map = useMap();
+
+  // Store map instance in ref
+  useEffect(() => {
+    mapRef.current = map;
+  }, [map, mapRef]);
+
+  // Initial load: fit to AT_BOUNDS
+  useEffect(() => {
+    if (!showResult) {
+      map.fitBounds(AT_BOUNDS);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Result state: fit both pins
+  useEffect(() => {
+    if (showResult && actualLocation && pendingGuess) {
+      const bounds = L.latLngBounds([
+        L.latLng(actualLocation[0], actualLocation[1]),
+        L.latLng(pendingGuess[0], pendingGuess[1]),
+      ]).pad(0.3);
+      map.fitBounds(bounds);
+    }
+  }, [showResult, actualLocation, pendingGuess, map]);
+
+  return null;
+}
+
+interface Props {
+  mapRef: React.MutableRefObject<L.Map | null>;
+  pendingGuess: [number, number] | null;
+  onGuess?: (coords: [number, number]) => void;
   actualLocation?: [number, number];
   actualName?: string;
   showResult: boolean;
 }
 
-export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, showResult }: Props) {
+export function GameMap({
+  mapRef,
+  pendingGuess,
+  onGuess,
+  actualLocation,
+  actualName,
+  showResult,
+}: Props) {
   const [trailData, setTrailData] = useState<GeoJSON.FeatureCollection | null>(null);
   const [trailError, setTrailError] = useState(false);
-  const mapRef = useRef<L.Map | null>(null);
+  const containerRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     fetch('/at-route.geojson')
@@ -84,23 +129,9 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
       .catch(() => setTrailError(true));
   }, []);
 
-  // When result is shown, fit bounds to include both markers
+  // Keep Leaflet's internal tile grid in sync with container size
   useEffect(() => {
-    if (showResult && actualLocation && pendingGuess && mapRef.current) {
-      const bounds = L.latLngBounds([
-        L.latLng(actualLocation[0], actualLocation[1]),
-        L.latLng(pendingGuess[0], pendingGuess[1]),
-      ]).pad(0.3);
-      mapRef.current.fitBounds(bounds);
-    }
-  }, [showResult, actualLocation, pendingGuess]);
-
-  // Keep Leaflet's internal tile grid in sync with the container's actual size.
-  // Mobile browsers resize the viewport (via 100dvh) as the address bar hides/shows
-  // while scrolling — Leaflet doesn't detect that on its own, which shows up as gray
-  // tile patches and a GeoJSON trail line that appears to shift off-canvas.
-  useEffect(() => {
-    const map = mapRef.current;
+    const map = containerRef.current;
     if (!map) return;
 
     const container = map.getContainer();
@@ -109,7 +140,6 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
     });
     resizeObserver.observe(container);
 
-    // Also correct for the address bar still settling right after mount.
     const settleTimer = setTimeout(() => map.invalidateSize(), 300);
 
     return () => {
@@ -129,7 +159,7 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
       bounds={AT_BOUNDS}
       style={{ height: '100%', width: '100%' }}
       zoomControl={true}
-      ref={mapRef}
+      ref={containerRef}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -143,9 +173,28 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
           Trail overlay not loaded — see README for setup
         </div>
       )}
-      <ClickHandler onGuess={onGuess} disabled={showResult} />
+      <MapController
+        mapRef={mapRef}
+        showResult={showResult}
+        actualLocation={actualLocation}
+        pendingGuess={pendingGuess}
+      />
+      <ClickHandler onGuess={onGuess} showResult={showResult} />
       {pendingGuess && (
-        <Marker position={pendingGuess} icon={guessIcon}>
+        <Marker
+          position={pendingGuess}
+          icon={guessIcon}
+          draggable={!showResult}
+          eventHandlers={{
+            dragend: (e) => {
+              if (onGuess) {
+                const marker = e.target;
+                const pos = marker.getLatLng();
+                onGuess([pos.lat, pos.lng]);
+              }
+            }
+          }}
+        >
           <Popup>Your guess</Popup>
         </Marker>
       )}

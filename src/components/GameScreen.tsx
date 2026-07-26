@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import type { Map as LeafletMap } from 'leaflet';
 import { GameMap } from './GameMap';
 import { RoundResult } from './RoundResult';
 import { PhotoFullscreen } from './PhotoFullscreen';
@@ -47,18 +48,94 @@ export function GameScreen({
 }: GameScreenProps) {
   const [mapExpanded, setMapExpanded] = useState(false);
   const [photoFullscreen, setPhotoFullscreen] = useState(false);
+  const mapRef = useRef<LeafletMap | null>(null);
 
   const showResult = phase === 'result';
   const isLastRound = currentRound + 1 >= totalRounds;
 
-  const handleLockInGuess = () => {
-    lockInGuess();
-    setMapExpanded(true); // Keep map expanded for result
+  // Reset map to collapsed on round change
+  useEffect(() => {
+    setMapExpanded(false);
+  }, [currentRound]);
+
+  const handleNudge = (dir: 'up' | 'down' | 'left' | 'right') => {
+    if (!pendingGuess || !mapRef.current) return;
+    const zoom = mapRef.current.getZoom();
+    // Scale step to zoom: 25 pixels on screen at mid-AT latitude
+    const degreesPerPixel = 360 / (256 * Math.pow(2, zoom) * Math.cos(40 * Math.PI / 180));
+    const delta = degreesPerPixel * 25;
+
+    const [lat, lng] = pendingGuess;
+    const newGuess: [number, number] =
+      dir === 'up' ? [lat + delta, lng] :
+      dir === 'down' ? [lat - delta, lng] :
+      dir === 'left' ? [lat, lng - delta] :
+      [lat, lng + delta];
+    setGuess(newGuess);
   };
 
+  const handleLockInGuess = () => {
+    lockInGuess();
+  };
+
+  // RESULT STATE - standalone layout
+  if (showResult && currentImage && currentResult) {
+    return (
+      <div className="game-screen">
+        <header className="game-header">
+          <span className="header-title">{headerTitle}</span>
+          <div className="round-pips">
+            {Array.from({ length: totalRounds }, (_, i) => (
+              <span
+                key={i}
+                className={`round-pip ${
+                  i < rounds.length ? 'pip-done' : i === currentRound ? 'pip-active' : 'pip-future'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="header-score">Round {currentRound + 1} · {totalScore.toLocaleString()}</span>
+        </header>
+
+        <div className="result-layout">
+          <div className="result-map-container">
+            <GameMap
+              key={currentRound}
+              mapRef={mapRef}
+              pendingGuess={pendingGuess}
+              actualLocation={currentResult.image.coordinates}
+              actualName={currentResult.image.locationName}
+              showResult={true}
+            />
+            <div className="map-trail-labels">
+              <span className="map-trail-label-top">Maine ↑</span>
+              <span className="map-trail-label-bottom">↓ Georgia</span>
+            </div>
+          </div>
+          <RoundResult
+            result={currentResult}
+            roundNumber={currentRound + 1}
+            totalRounds={totalRounds}
+            totalScore={totalScore}
+            onNext={nextRound}
+            isLastRound={isLastRound}
+          />
+        </div>
+
+        {photoFullscreen && currentImage && (
+          <PhotoFullscreen
+            imageUrl={currentImage.r2_url}
+            onClose={() => setPhotoFullscreen(false)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // NORMAL GAMEPLAY - two-panel layout
   return (
     <div className="game-screen">
-      {/* Header floats over photo */}
+      {/* Header */}
       <header className="game-header">
         <span className="header-title">{headerTitle}</span>
         <div className="round-pips">
@@ -74,25 +151,23 @@ export function GameScreen({
         <span className="header-score">Round {currentRound + 1} · {totalScore.toLocaleString()}</span>
       </header>
 
-      {/* Photo fills viewport */}
       {currentImage && (
-        <div className="photo-viewport">
-          <div
-            className="photo-bg"
-            style={{ backgroundImage: `url(${currentImage.r2_url})` }}
-          />
-          <img
-            src={currentImage.r2_url}
-            alt="Somewhere on the Appalachian Trail"
-            className="trail-photo"
-            fetchPriority="high"
-            loading="eager"
-            onClick={() => !showResult && setPhotoFullscreen(true)}
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
-
-          {/* Enlarge hint (bottom-left) */}
-          {!showResult && (
+        <div className="game-panels">
+          {/* Photo panel */}
+          <div className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}>
+            <div
+              className="photo-bg"
+              style={{ backgroundImage: `url(${currentImage.r2_url})` }}
+            />
+            <img
+              src={currentImage.r2_url}
+              alt="Somewhere on the Appalachian Trail"
+              className="trail-photo"
+              fetchPriority="high"
+              loading="eager"
+              onClick={() => setPhotoFullscreen(true)}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
             <button className="enlarge-photo-hint" onClick={() => setPhotoFullscreen(true)}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7"></circle>
@@ -102,83 +177,107 @@ export function GameScreen({
               </svg>
               <span>Click photo to enlarge</span>
             </button>
-          )}
+          </div>
 
-          {/* Map card collapsed */}
-          {!mapExpanded && !showResult && (
-            <button className="map-card-collapsed" onClick={() => setMapExpanded(true)}>
-              <div className="map-card-collapsed-preview">
-                <svg viewBox="0 0 200 130" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-                  <rect x="0" y="0" width="200" height="130" fill="#ede9e1"></rect>
-                  <path d="M0,96 L60,90 L130,94 L200,86" stroke="#c9c3b6" strokeWidth="1" fill="none"></path>
-                  <path d="M0,52 L70,46 L140,52 L200,44" stroke="#c9c3b6" strokeWidth="1" fill="none"></path>
-                  <path d="M52,128 L60,112 L68,96 L78,80 L88,64 L98,50 L108,36 L118,22 L126,8" stroke="#2d5016" strokeWidth="2.6" fill="none" strokeLinecap="round"></path>
-                </svg>
-              </div>
-              <div className="map-card-collapsed-footer">
-                <span className="map-card-label">Open map to guess</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2d5016" strokeWidth="2.4" strokeLinecap="round">
-                  <path d="M7 14 L12 9 L17 14"></path>
-                </svg>
-              </div>
-            </button>
-          )}
+          {/* Map panel */}
+          <div className={`map-panel ${mapExpanded ? 'expanded' : 'collapsed'}`}>
+            <div className="map-container">
+              <GameMap
+                key={currentRound}
+                mapRef={mapRef}
+                pendingGuess={pendingGuess}
+                onGuess={setGuess}
+                showResult={false}
+              />
 
-          {/* Map card expanded */}
-          {(mapExpanded || showResult) && (
-            <div className={`map-card-expanded ${showResult ? 'has-result' : ''}`}>
-              <div className={`map-card-map-container ${showResult ? 'has-result' : ''}`}>
-                <GameMap
-                  onGuess={setGuess}
-                  pendingGuess={pendingGuess}
-                  actualLocation={showResult ? currentResult?.image.coordinates : undefined}
-                  actualName={showResult ? currentResult?.image.locationName : undefined}
-                  showResult={showResult}
-                />
-
-                {/* Zoom controls inside map */}
-                <div className="map-zoom-controls">
-                  <button className="map-zoom-btn">+</button>
-                  <button className="map-zoom-btn">−</button>
-                </div>
-
-                {/* Maine/Georgia labels */}
-                <div className="map-trail-labels">
-                  <span className="map-trail-label-top">Maine ↑</span>
-                  <span className="map-trail-label-bottom">↓ Georgia</span>
-                </div>
-              </div>
-
-              {/* Map footer (guessing state only) */}
-              {!showResult && (
-                <div className="map-card-footer">
-                  <span className="map-pin-status">Pin dropped — drag to adjust</span>
-                  <div className="map-card-actions">
-                    <button className="map-close-btn" onClick={() => setMapExpanded(false)}>Close</button>
+              {/* Expanded controls */}
+              {mapExpanded && (
+                <>
+                  <div className="map-controls">
+                    <div className="nudge-controls">
+                      <button
+                        className="nudge-btn"
+                        onClick={() => handleNudge('up')}
+                        style={{ gridArea: '1 / 2' }}
+                        title="Nudge north"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        className="nudge-btn"
+                        onClick={() => handleNudge('left')}
+                        style={{ gridArea: '2 / 1' }}
+                        title="Nudge west"
+                      >
+                        ←
+                      </button>
+                      <button
+                        className="nudge-btn"
+                        onClick={() => handleNudge('right')}
+                        style={{ gridArea: '2 / 3' }}
+                        title="Nudge east"
+                      >
+                        →
+                      </button>
+                      <button
+                        className="nudge-btn"
+                        onClick={() => handleNudge('down')}
+                        style={{ gridArea: '3 / 2' }}
+                        title="Nudge south"
+                      >
+                        ↓
+                      </button>
+                    </div>
                     <button
-                      className="btn-primary btn-lock"
-                      onClick={handleLockInGuess}
-                      disabled={!pendingGuess}
+                      className="reset-view-btn"
+                      onClick={() => mapRef.current?.fitBounds([[34.0, -84.5], [45.9, -68.0]])}
+                      title="Reset to full trail"
                     >
-                      Confirm guess
+                      ⟲
                     </button>
                   </div>
-                </div>
+                  <div className="scale-readout">
+                    {mapRef.current && (() => {
+                      const zoom = mapRef.current.getZoom();
+                      const center = mapRef.current.getCenter();
+                      const milesPerPixel = (24901 * Math.cos(center.lat * Math.PI / 180)) / (256 * Math.pow(2, zoom));
+                      return `${milesPerPixel.toFixed(1)} mi/px`;
+                    })()}
+                  </div>
+                </>
               )}
 
-              {/* Result panel (result state only) */}
-              {showResult && currentResult && (
-                <RoundResult
-                  result={currentResult}
-                  roundNumber={currentRound + 1}
-                  totalRounds={totalRounds}
-                  totalScore={totalScore}
-                  onNext={nextRound}
-                  isLastRound={isLastRound}
-                />
-              )}
+              {/* Mobile collapsed: tap to expand overlay */}
+              <div className="mobile-tap-overlay" onClick={() => setMapExpanded(true)}>
+                Tap to expand map
+              </div>
+
+              {/* Trail labels */}
+              <div className="map-trail-labels">
+                <span className="map-trail-label-top">Maine ↑</span>
+                <span className="map-trail-label-bottom">↓ Georgia</span>
+              </div>
             </div>
-          )}
+
+            {/* Expand/collapse button */}
+            <button className="map-toggle-btn" onClick={() => setMapExpanded(!mapExpanded)}>
+              {mapExpanded ? '← Collapse map' : 'Expand map →'}
+            </button>
+
+            {/* Confirm area */}
+            <div className="confirm-area">
+              {pendingGuess && (
+                <span className="pin-status">Pin placed — drag to adjust</span>
+              )}
+              <button
+                className="btn-primary btn-confirm"
+                disabled={!pendingGuess}
+                onClick={handleLockInGuess}
+              >
+                Confirm guess
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

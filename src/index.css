@@ -351,12 +351,30 @@ body { margin: 0; overscroll-behavior: none; }
   text-align: right;
 }
 
-/* ── Photo Viewport ───────────────────────────────────── */
-.photo-viewport {
-  position: absolute;
-  inset: 0;
+/* ── Two-Panel Layout ─────────────────────────────────── */
+.game-panels {
+  display: flex;
+  height: calc(100dvh - 60px);
+  margin-top: 60px;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Photo panel */
+.photo-panel {
+  position: relative;
   background: #1a1a18;
+  border-radius: var(--radius-card);
   overflow: hidden;
+}
+
+.photo-panel.normal {
+  flex: 1; /* Takes remaining space */
+}
+
+.photo-panel.minimized {
+  width: 280px;
+  flex-shrink: 0;
 }
 
 .photo-bg {
@@ -369,26 +387,92 @@ body { margin: 0; overscroll-behavior: none; }
 
 .trail-photo {
   position: absolute;
-  inset: 56px 40px 40px;
-  width: calc(100% - 80px);
-  height: calc(100% - 96px);
+  inset: 16px;
+  width: calc(100% - 32px);
+  height: calc(100% - 32px);
   object-fit: contain;
   cursor: pointer;
 }
 
+/* Map panel */
+.map-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.map-panel.collapsed {
+  width: 420px; /* Tall portrait card */
+  flex-shrink: 0;
+}
+
+.map-panel.expanded {
+  flex: 1;
+}
+
+.map-container {
+  flex: 1;
+  background: var(--parchment);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  position: relative;
+}
+
+.map-container .leaflet-container {
+  height: 100%;
+  width: 100%;
+  cursor: crosshair;
+  background: var(--parchment);
+}
+
+/* Mobile layout */
 @media (max-width: 767px) {
+  .game-panels {
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+  }
+
+  .photo-panel.normal {
+    flex: 1;
+    border-radius: 0;
+  }
+
+  .photo-panel.minimized {
+    height: 120px;
+    width: auto;
+    flex: none;
+  }
+
+  .map-panel.collapsed {
+    width: auto;
+    height: 180px;
+    flex: none;
+  }
+
+  .map-panel.expanded {
+    flex: 1;
+    width: auto;
+  }
+
+  /* Collapsed mobile map: non-interactive */
+  .map-panel.collapsed .map-container {
+    pointer-events: none;
+  }
+
   .trail-photo {
-    inset: 48px 10px 92px;
-    width: calc(100% - 20px);
-    height: calc(100% - 140px);
+    inset: 12px;
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
   }
 }
 
 /* ── Enlarge Photo Hint ───────────────────────────────── */
 .enlarge-photo-hint {
   position: absolute;
-  left: 26px;
-  bottom: 26px;
+  left: 16px;
+  bottom: 16px;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -403,13 +487,12 @@ body { margin: 0; overscroll-behavior: none; }
   color: var(--cream);
   cursor: pointer;
   z-index: 50;
-  border: none;
 }
 
 @media (max-width: 767px) {
   .enlarge-photo-hint {
-    left: 18px;
-    bottom: 96px;
+    left: 12px;
+    bottom: 12px;
     padding: 8px 13px;
     font-size: 10px;
   }
@@ -418,116 +501,103 @@ body { margin: 0; overscroll-behavior: none; }
   }
 }
 
-/* ── Map Card Collapsed ───────────────────────────────── */
-.map-card-collapsed {
-  position: absolute;
-  right: 26px;
-  bottom: 26px;
-  width: 232px;
-  background: var(--parchment);
-  border: 1px solid var(--ink);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  cursor: pointer;
-  z-index: 50;
-  padding: 0;
-}
-
-.map-card-collapsed-preview {
-  position: relative;
-  height: 148px;
-  border-bottom: 1px solid rgba(26,26,24,0.35);
-}
-
-.map-card-collapsed-footer {
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.map-card-label {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink);
+/* ── Mobile Tap to Expand Overlay ─────────────────────── */
+.mobile-tap-overlay {
+  display: none; /* Hidden by default on desktop */
 }
 
 @media (max-width: 767px) {
-  .map-card-collapsed {
-    left: 14px;
-    right: 14px;
-    bottom: 16px;
-    width: auto;
+  .map-panel.collapsed .mobile-tap-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 26, 24, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    z-index: 1000;
+    cursor: pointer;
+    pointer-events: auto;
   }
-  .map-card-collapsed-preview {
-    height: 44px;
-  }
-  .map-card-collapsed-footer {
-    padding: 10px 14px;
-  }
-  .map-card-label {
-    font-size: 12px;
+
+  .map-panel.expanded .mobile-tap-overlay {
+    display: none;
   }
 }
 
-/* ── Map Card Expanded ────────────────────────────────── */
-.map-card-expanded {
-  position: absolute;
-  right: 26px;
-  bottom: 26px;
-  width: 620px;
-  max-width: calc(100vw - 52px);
-  max-height: calc(100dvh - 100px);
-  background: var(--parchment);
-  border: 1px solid var(--ink);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card-hover);
-  overflow: hidden;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-}
-
-.map-card-map-container {
-  height: 470px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.map-card-map-container .leaflet-container {
-  height: 100%;
-  width: 100%;
-  cursor: crosshair;
-  background: var(--parchment);
-}
-
-.map-zoom-controls {
+/* ── Map Controls (expanded state) ────────────────────── */
+.map-controls {
   position: absolute;
   top: 12px;
-  right: 14px;
+  right: 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   z-index: 1000;
 }
 
-.map-zoom-btn {
+.nudge-controls {
+  display: grid;
+  grid-template-columns: 32px 32px 32px;
+  grid-template-rows: 32px 32px 32px;
+  gap: 4px;
+}
+
+.nudge-btn {
   width: 32px;
   height: 32px;
-  background: var(--cream);
-  border: 1px solid var(--ink);
-  border-radius: var(--radius-badge);
+  background: white;
+  border: 1px solid rgba(26, 26, 24, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--ink);
+}
+
+.nudge-btn:hover {
+  background: var(--parchment);
+  border-color: var(--ink);
+}
+
+.reset-view-btn {
+  width: 32px;
+  height: 32px;
+  background: white;
+  border: 1px solid rgba(26, 26, 24, 0.2);
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reset-view-btn:hover {
+  background: var(--parchment);
+  border-color: var(--ink);
+}
+
+.scale-readout {
+  position: absolute;
+  bottom: 32px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  z-index: 1000;
+  pointer-events: none;
 }
 
 .map-trail-labels {
@@ -551,98 +621,90 @@ body { margin: 0; overscroll-behavior: none; }
   color: var(--stone);
 }
 
-.map-card-footer {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border-top: 1px solid rgba(26,26,24,0.3);
+/* ── Map Toggle Button ────────────────────────────────── */
+.map-toggle-btn {
+  background: var(--cream);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.map-toggle-btn:hover {
   background: var(--parchment);
 }
 
-.map-pin-status {
+/* ── Confirm Area ─────────────────────────────────────── */
+.confirm-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.pin-status {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   color: var(--text-tertiary);
+  text-align: center;
 }
 
-.map-card-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.btn-confirm {
+  padding: 14px 24px;
+  font-size: 14px;
 }
 
-.map-close-btn {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+.btn-confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 767px) {
-  .map-card-expanded {
-    left: 10px;
-    right: 10px;
-    bottom: 12px;
-    width: auto;
-  }
-
-  .map-card-map-container {
-    height: 520px;
-  }
-
-  .map-card-footer {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 12px 14px 14px;
-  }
-
-  .map-pin-status {
-    text-align: left;
-  }
-
-  .map-card-actions {
-    flex-direction: row;
-    gap: 10px;
-  }
-
-  .map-close-btn {
-    flex: none;
-    padding: 13px 4px;
-  }
-
-  .btn-lock {
-    flex: 1;
+  .confirm-area {
+    padding: 0 12px 12px;
   }
 }
 
-/* Result state: map + panel side-by-side on desktop */
+/* ── Result State Layout ──────────────────────────────── */
+.result-layout {
+  position: fixed;
+  inset: 50px;
+  background: var(--parchment);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-hover);
+  display: flex;
+  overflow: hidden;
+  margin-top: 60px;
+}
+
+.result-map-container {
+  flex: 1;
+  position: relative;
+  background: var(--parchment);
+}
+
+.result-map-container .leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: var(--parchment);
+}
+
+/* Desktop: side-by-side */
 @media (min-width: 768px) {
-  .map-card-expanded.has-result {
-    display: flex;
+  .result-layout {
     flex-direction: row;
-    width: calc(100vw - 100px);
-    height: calc(100dvh - 100px);
-    max-width: none;
-    max-height: none;
-    left: 50px;
-    right: 50px;
-    top: 50px;
-    bottom: 50px;
   }
 
-  .map-card-map-container.has-result {
-    flex: 1;
-    height: auto;
-    border-right: 1px solid rgba(26,26,24,0.3);
+  .result-map-container {
+    border-right: 1px solid rgba(26, 26, 24, 0.3);
   }
 
   .round-result {
@@ -651,17 +713,17 @@ body { margin: 0; overscroll-behavior: none; }
   }
 }
 
-/* Mobile result: map top, panel bottom */
+/* Mobile: stacked */
 @media (max-width: 767px) {
-  .map-card-expanded.has-result {
+  .result-layout {
     flex-direction: column;
-    max-height: calc(100dvh - 60px);
+    inset: 10px 10px 60px 10px;
   }
 
-  .map-card-map-container.has-result {
+  .result-map-container {
     height: 400px;
     flex-shrink: 0;
-    border-bottom: 1px solid rgba(26,26,24,0.3);
+    border-bottom: 1px solid rgba(26, 26, 24, 0.3);
   }
 
   .round-result {
