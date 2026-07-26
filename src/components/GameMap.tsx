@@ -145,69 +145,6 @@ function MapController({ mapRef, showResult, actualLocation, pendingGuess }: Map
   return null;
 }
 
-interface ExpandControlProps {
-  expanded: boolean;
-  onToggle: () => void;
-}
-
-// Mounted as a real Leaflet control (not an absolutely-positioned div) so it
-// joins the bottomright corner stack Leaflet already manages for ZoomControl.
-function ExpandControl({ expanded, onToggle }: ExpandControlProps) {
-  const map = useMap();
-  const buttonRef = useRef<HTMLAnchorElement | null>(null);
-  const onToggleRef = useRef(onToggle);
-  onToggleRef.current = onToggle;
-
-  useEffect(() => {
-    const control = new L.Control({ position: 'bottomright' });
-
-    control.onAdd = () => {
-      const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control map-expand-control');
-      const button = L.DomUtil.create('a', 'map-expand-btn', container);
-      button.href = '#';
-      button.setAttribute('role', 'button');
-      buttonRef.current = button;
-      L.DomEvent.disableClickPropagation(container);
-      L.DomEvent.disableScrollPropagation(container);
-      L.DomEvent.on(button, 'click', (e) => {
-        L.DomEvent.preventDefault(e);
-        onToggleRef.current();
-      });
-      return container;
-    };
-
-    control.addTo(map);
-
-    return () => {
-      control.remove();
-      buttonRef.current = null;
-    };
-  }, [map]);
-
-  useEffect(() => {
-    const button = buttonRef.current;
-    if (!button) return;
-
-    // Expand: growth arrow breaking out (⤢ diagonal arrow up-right)
-    // Collapse: arrow retreating in (⤡ diagonal arrow down-left)
-    const icon = expanded ? '⤡' : '⤢';
-    const labelText = expanded ? 'Collapse' : 'Expand';
-    const ariaLabel = expanded ? 'Collapse map' : 'Expand map';
-    const state = expanded ? 'collapse' : 'expand';
-
-    button.innerHTML = `
-      <span class="btn-icon">${icon}</span>
-      <span class="btn-label">${labelText}</span>
-    `;
-
-    button.setAttribute('aria-label', ariaLabel);
-    button.setAttribute('data-state', state);
-    button.title = ariaLabel;
-  }, [expanded]);
-
-  return null;
-}
-
 interface Props {
   mapRef: React.MutableRefObject<L.Map | null>;
   pendingGuess: [number, number] | null;
@@ -215,8 +152,6 @@ interface Props {
   actualLocation?: [number, number];
   actualName?: string;
   showResult: boolean;
-  mapExpanded?: boolean;
-  onToggleExpand?: () => void;
 }
 
 export function GameMap({
@@ -226,8 +161,6 @@ export function GameMap({
   actualLocation,
   actualName,
   showResult,
-  mapExpanded,
-  onToggleExpand,
 }: Props) {
   const [trailData, setTrailData] = useState<GeoJSON.FeatureCollection | null>(null);
   const [trailError, setTrailError] = useState(false);
@@ -268,9 +201,6 @@ export function GameMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <ZoomControl position="bottomright" />
-      {onToggleExpand && (
-        <ExpandControl expanded={!!mapExpanded} onToggle={onToggleExpand} />
-      )}
       {trailData && (
         <GeoJSON data={trailData} style={trailStyle} />
       )}

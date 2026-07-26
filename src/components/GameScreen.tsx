@@ -175,10 +175,12 @@ export function GameScreen({
               actualName={currentResult.image.locationName}
               showResult={true}
             />
-            <div className="map-trail-labels">
-              <span className="map-trail-label-top">Maine ↑</span>
-              <span className="map-trail-label-bottom">↓ Georgia</span>
-            </div>
+            <span className="map-trail-chip chip-top-left">
+              <span className="chip-arrow">↑</span>NOBO
+            </span>
+            <span className="map-trail-chip chip-bottom-left">
+              <span className="chip-arrow">↓</span>SOBO
+            </span>
           </div>
           <RoundResult
             result={currentResult}
@@ -338,23 +340,24 @@ export function GameScreen({
                 Tap to expand map
               </div>
 
-              {/* Trail labels */}
-              <div className="map-trail-labels">
-                <span className="map-trail-label-top">Maine ↑</span>
-                <span className="map-trail-label-bottom">↓ Georgia</span>
-              </div>
+              {/* Trail direction chips */}
+              <span className="map-trail-chip chip-top-left">
+                <span className="chip-arrow">↑</span>NOBO
+              </span>
+              <span className="map-trail-chip chip-bottom-left">
+                <span className="chip-arrow">↓</span>SOBO
+              </span>
             </div>
-
-            {/* Expand/collapse button */}
-            <button className="map-toggle-btn" onClick={() => setMapExpanded(!mapExpanded)}>
-              {mapExpanded ? '← Collapse map' : 'Expand map →'}
-            </button>
 
             {/* Confirm area */}
             <div className="confirm-area">
-              {pendingGuess && (
-                <span className="pin-status">Pin placed — drag to adjust</span>
-              )}
+              <button
+                type="button"
+                className="btn-primary btn-expand-toggle"
+                onClick={() => setMapExpanded((prev) => !prev)}
+              >
+                {mapExpanded ? 'Collapse map' : 'Expand map'}
+              </button>
               <button
                 className="btn-primary btn-confirm"
                 disabled={!pendingGuess}

@@ -614,7 +614,7 @@ body { margin: 0; overscroll-behavior: none; }
 .scale-readout {
   position: absolute;
   bottom: 32px;
-  right: 54px; /* clears the bottom-right zoom/expand cluster */
+  right: 54px; /* clears the bottom-right zoom cluster */
   background: rgba(255, 255, 255, 0.9);
   padding: 4px 8px;
   border-radius: 4px;
@@ -625,9 +625,9 @@ body { margin: 0; overscroll-behavior: none; }
   pointer-events: none;
 }
 
-/* ── Map Corner System (direction chips + controls) ──────
+/* ── Map Corner System (direction chips) ──────
    Shared treatment: translucent light background, small radius,
-   consistent padding — so all four corners read as one system. */
+   consistent padding. */
 .map-trail-chip {
   position: absolute;
   display: inline-flex;
@@ -663,7 +663,7 @@ body { margin: 0; overscroll-behavior: none; }
   left: 10px;
 }
 
-/* Zoom control — compact fused pill, stacks above expand/collapse */
+/* Zoom control - default Leaflet styling, small and unobtrusive */
 .map-container .leaflet-control-zoom,
 .result-map-container .leaflet-control-zoom {
   border: none;
@@ -700,85 +700,6 @@ body { margin: 0; overscroll-behavior: none; }
   background: rgba(26, 26, 24, 0.05);
 }
 
-/* Expand/collapse control — visually dominant, anchors the corner */
-.map-expand-control {
-  border: none;
-  box-shadow: none;
-}
-
-.map-expand-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-width: 64px;
-  height: 64px;
-  background: var(--forest);
-  border: none;
-  border-radius: 8px;
-  box-shadow: var(--shadow-md);
-  color: var(--cream);
-  font-size: 16px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0 14px;
-}
-
-/* Expand state — pine green */
-.map-expand-btn[data-state="expand"] {
-  background: var(--forest);
-}
-
-.map-expand-btn[data-state="expand"]:hover {
-  background: var(--forest-mid);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-}
-
-/* Collapse state — lighter forest green for visual distinction */
-.map-expand-btn[data-state="collapse"] {
-  background: var(--forest-mid);
-}
-
-.map-expand-btn[data-state="collapse"]:hover {
-  background: var(--forest-lt);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-}
-
-.map-expand-btn .btn-icon {
-  font-size: 20px;
-  line-height: 1;
-}
-
-.map-expand-btn .btn-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-/* Mobile: icon only, smaller */
-@media (max-width: 767px) {
-  .map-expand-btn {
-    min-width: 48px;
-    height: 48px;
-    padding: 0;
-    gap: 0;
-  }
-
-  .map-expand-btn .btn-label {
-    display: none;
-  }
-
-  .map-expand-btn .btn-icon {
-    font-size: 18px;
-  }
-}
-
 /* Attribution: kept small so it doesn't need to be wide, top-right corner */
 .map-container .leaflet-control-attribution,
 .result-map-container .leaflet-control-attribution {
@@ -794,6 +715,19 @@ body { margin: 0; overscroll-behavior: none; }
   flex-direction: column;
   gap: 8px;
   align-items: stretch;
+}
+
+.btn-expand-toggle {
+  padding: 12px 24px;
+  font-size: 13px;
+  background: var(--parchment);
+  color: var(--ink);
+  border: 1px solid rgba(26, 26, 24, 0.2);
+  box-shadow: none;
+}
+
+.btn-expand-toggle:hover {
+  background: var(--cream);
 }
 
 .btn-confirm {
