@@ -347,17 +347,37 @@ export function GameScreen({
               <span className="map-trail-chip chip-bottom-left">
                 <span className="chip-arrow">↓</span>SOBO
               </span>
+
+              {/* Expand/collapse — plain overlay button, sibling to the map,
+                  NOT a Leaflet control. Keeps it outside Leaflet's own
+                  stylesheet entirely so there's no specificity conflict. */}
+              <button
+                type="button"
+                className={`map-expand-toggle ${mapExpanded ? 'is-expanded' : ''}`}
+                onClick={() => setMapExpanded((prev) => !prev)}
+                aria-label={mapExpanded ? 'Collapse map' : 'Expand map'}
+              >
+                {mapExpanded ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="4 14 10 14 10 20" />
+                    <polyline points="20 10 14 10 14 4" />
+                    <line x1="14" y1="10" x2="21" y2="3" />
+                    <line x1="3" y1="21" x2="10" y2="14" />
+                  </svg>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="15 3 21 3 21 9" />
+                    <polyline points="9 21 3 21 3 15" />
+                    <line x1="21" y1="3" x2="14" y2="10" />
+                    <line x1="3" y1="21" x2="10" y2="14" />
+                  </svg>
+                )}
+                {mapExpanded ? 'Collapse' : 'Expand'}
+              </button>
             </div>
 
             {/* Confirm area */}
             <div className="confirm-area">
-              <button
-                type="button"
-                className="btn-primary btn-expand-toggle"
-                onClick={() => setMapExpanded((prev) => !prev)}
-              >
-                {mapExpanded ? 'Collapse map' : 'Expand map'}
-              </button>
               <button
                 className="btn-primary btn-confirm"
                 disabled={!pendingGuess}

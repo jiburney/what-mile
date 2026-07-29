@@ -663,12 +663,15 @@ body { margin: 0; overscroll-behavior: none; }
   left: 10px;
 }
 
-/* Zoom control - default Leaflet styling, small and unobtrusive */
+/* Zoom control - default Leaflet styling, small and unobtrusive.
+   Right-aligned to match the expand toggle below it, with a fixed gap so
+   the two read as one aligned cluster instead of overlapping. */
 .map-container .leaflet-control-zoom,
 .result-map-container .leaflet-control-zoom {
   border: none;
   box-shadow: none;
-  margin-bottom: 10px !important;
+  margin-bottom: 54px !important;
+  margin-right: 10px !important;
   background: rgba(255, 255, 255, 0.82);
   border-radius: 6px;
   overflow: hidden;
@@ -709,6 +712,48 @@ body { margin: 0; overscroll-behavior: none; }
   border-radius: var(--radius-badge);
 }
 
+/* Expand/collapse toggle — plain positioned button, sibling to the map's
+   Leaflet instance. Deliberately outside .leaflet-bar / .leaflet-control so
+   it can never collide with Leaflet's own stylesheet. Matches the NOBO/SOBO
+   chip treatment when collapsed; fills forest green when expanded, same
+   "active state" language as the Confirm button. */
+.map-expand-toggle {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-badge);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(26, 26, 24, 0.15);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.map-expand-toggle:hover {
+  background: var(--cream);
+}
+
+.map-expand-toggle.is-expanded {
+  background: var(--forest);
+  border-color: var(--ink);
+  color: var(--cream);
+  box-shadow: var(--shadow-md);
+}
+
+.map-expand-toggle.is-expanded:hover {
+  background: var(--forest-mid);
+}
+
 /* ── Confirm Area ─────────────────────────────────────── */
 .confirm-area {
   display: flex;
@@ -717,22 +762,9 @@ body { margin: 0; overscroll-behavior: none; }
   align-items: stretch;
 }
 
-.btn-expand-toggle {
-  padding: 12px 24px;
-  font-size: 13px;
-  background: var(--parchment);
-  color: var(--ink);
-  border: 1px solid rgba(26, 26, 24, 0.2);
-  box-shadow: none;
-}
-
-.btn-expand-toggle:hover {
-  background: var(--cream);
-}
-
 .btn-confirm {
-  padding: 14px 24px;
-  font-size: 14px;
+  padding: 18px 24px;
+  font-size: 16px;
   background: var(--parchment);
   color: var(--text-tertiary);
   border: 1px solid rgba(26, 26, 24, 0.15);
