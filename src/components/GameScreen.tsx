@@ -68,22 +68,6 @@ export function GameScreen({
     setPhotoPan(current => clampPhotoPan(photoZoom, current));
   }, [mapExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleNudge = (dir: 'up' | 'down' | 'left' | 'right') => {
-    if (!pendingGuess || !mapRef.current) return;
-    const zoom = mapRef.current.getZoom();
-    // Scale step to zoom: 25 pixels on screen at mid-AT latitude
-    const degreesPerPixel = 360 / (256 * Math.pow(2, zoom) * Math.cos(40 * Math.PI / 180));
-    const delta = degreesPerPixel * 25;
-
-    const [lat, lng] = pendingGuess;
-    const newGuess: [number, number] =
-      dir === 'up' ? [lat + delta, lng] :
-      dir === 'down' ? [lat - delta, lng] :
-      dir === 'left' ? [lat, lng - delta] :
-      [lat, lng + delta];
-    setGuess(newGuess);
-  };
-
   const handleLockInGuess = () => {
     lockInGuess();
   };
@@ -277,63 +261,6 @@ export function GameScreen({
                 onGuess={setGuess}
                 showResult={false}
               />
-
-              {/* Expanded controls */}
-              {mapExpanded && (
-                <>
-                  <div className="map-controls">
-                    <div className="nudge-controls">
-                      <button
-                        className="nudge-btn"
-                        onClick={() => handleNudge('up')}
-                        style={{ gridArea: '1 / 2' }}
-                        title="Nudge north"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        className="nudge-btn"
-                        onClick={() => handleNudge('left')}
-                        style={{ gridArea: '2 / 1' }}
-                        title="Nudge west"
-                      >
-                        ←
-                      </button>
-                      <button
-                        className="nudge-btn"
-                        onClick={() => handleNudge('right')}
-                        style={{ gridArea: '2 / 3' }}
-                        title="Nudge east"
-                      >
-                        →
-                      </button>
-                      <button
-                        className="nudge-btn"
-                        onClick={() => handleNudge('down')}
-                        style={{ gridArea: '3 / 2' }}
-                        title="Nudge south"
-                      >
-                        ↓
-                      </button>
-                    </div>
-                    <button
-                      className="reset-view-btn"
-                      onClick={() => mapRef.current?.fitBounds([[34.0, -84.5], [45.9, -68.0]])}
-                      title="Reset to full trail"
-                    >
-                      ⟲
-                    </button>
-                  </div>
-                  <div className="scale-readout">
-                    {mapRef.current && (() => {
-                      const zoom = mapRef.current.getZoom();
-                      const center = mapRef.current.getCenter();
-                      const milesPerPixel = (24901 * Math.cos(center.lat * Math.PI / 180)) / (256 * Math.pow(2, zoom));
-                      return `${milesPerPixel.toFixed(1)} mi/px`;
-                    })()}
-                  </div>
-                </>
-              )}
 
               {/* Mobile collapsed: tap to expand overlay */}
               <div className="mobile-tap-overlay" onClick={() => setMapExpanded(true)}>
