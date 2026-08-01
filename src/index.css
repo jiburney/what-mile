@@ -761,6 +761,15 @@ body { margin: 0; overscroll-behavior: none; }
   }
 }
 
+/* On desktop the scroll wrapper is transparent to layout — its children
+   (header, photo, stats, ...) act as direct flex items of .round-result,
+   identical to the pre-wrapper markup. Mobile turns it into the real
+   scrolling region below. Declared here (ahead of the mobile media query)
+   so the mobile override reliably wins the cascade. */
+.round-result-scroll {
+  display: contents;
+}
+
 /* Mobile: stacked */
 @media (max-width: 767px) {
   .result-layout {
@@ -776,8 +785,35 @@ body { margin: 0; overscroll-behavior: none; }
 
   .round-result {
     flex: 1;
+    min-height: 0;
+  }
+
+  /* The scroll region takes all remaining space above the footer; the
+     footer is a normal flex sibling (not sticky/overlaid), so it can never
+     cover scrolled content regardless of its own height. */
+  .round-result-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
     overflow-y: auto;
     min-height: 0;
+  }
+
+  /* Without this, column-flex children with their own overflow:hidden
+     (e.g. .result-stats) get their auto min-height resolved to 0 and are
+     squashed to fit instead of the container scrolling past them. */
+  .round-result-scroll > * {
+    flex-shrink: 0;
+  }
+
+  /* Score + next-round button stay pinned to the bottom of the panel so
+     they're always visible, regardless of how long the caption runs. */
+  .result-footer {
+    margin: 0 -18px -18px;
+    padding: 14px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    background: var(--cream);
+    box-shadow: 0 -8px 16px -8px rgba(0, 0, 0, 0.18);
   }
 }
 
@@ -836,15 +872,49 @@ body { margin: 0; overscroll-behavior: none; }
 }
 
 .result-photo-thumb-desktop {
+  position: relative;
   height: 176px;
   border: 1px solid rgba(26,26,24,0.2);
   border-radius: var(--radius-sm);
   background-size: cover;
   background-position: center;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.result-photo-thumb-desktop:hover {
+  opacity: 0.9;
 }
 
 .result-photo-thumb-mobile {
   display: none;
+}
+
+.result-photo-large-mobile {
+  display: none;
+  position: relative;
+}
+
+/* Persistent tap-to-enlarge hint, corner badge over the result photo —
+   always visible (not hover-only), matches the .photo-zoom-controls
+   treatment used elsewhere for photo overlay chips. */
+.photo-tap-hint {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  background: rgba(26, 26, 24, 0.72);
+  color: var(--cream);
+  border-radius: var(--radius-badge);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .result-content-row {
@@ -859,20 +929,35 @@ body { margin: 0; overscroll-behavior: none; }
   }
 
   .result-photo-thumb-mobile {
+    display: none;
+  }
+
+  .result-photo-large-mobile {
     display: block;
-    height: 48px;
-    width: 64px;
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 4 / 3;
     border: 1px solid rgba(26,26,24,0.2);
-    border-radius: var(--radius-badge);
+    border-radius: var(--radius-sm);
     background-size: cover;
     background-position: center;
-    flex: none;
+    cursor: pointer;
+    margin: 0 auto;
+    transition: opacity 0.15s;
+  }
+
+  .result-photo-large-mobile:hover {
+    opacity: 0.9;
   }
 
   .result-content-row {
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .result-description {
+    display: none;
   }
 }
 
@@ -1100,6 +1185,27 @@ body { margin: 0; overscroll-behavior: none; }
   white-space: nowrap;
 }
 
+
+/* ── Photo Fullscreen Overlay ─────────────────────────── */
+.photo-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: rgba(26, 26, 24, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.photo-fullscreen-overlay img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  cursor: default;
+}
 
 /* ── Leaflet marker overrides ─────────────────────────── */
 .leaflet-marker-icon.guess-marker {
