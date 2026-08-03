@@ -20,10 +20,7 @@ export function EntryVeil({ mode, onStart, imageUrl }: Props) {
   return (
     <div className="daily-entry-veil-overlay">
       {imageUrl && (
-        <>
-          <div className="daily-entry-veil-backdrop" style={{ backgroundImage: `url(${imageUrl})` }} />
-          <div className="daily-entry-veil-photo" style={{ backgroundImage: `url(${imageUrl})` }} />
-        </>
+        <div className="daily-entry-veil-backdrop" style={{ backgroundImage: `url(${imageUrl})` }} />
       )}
       <div className="daily-entry-veil-scrim" />
       <div className="daily-entry-content">

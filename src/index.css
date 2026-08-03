@@ -111,9 +111,12 @@ body { margin: 0; overscroll-behavior: none; }
 }
 
 /* ── Daily Entry Veil ─────────────────────────────────── */
-/* The veil IS the round-1 photo — same blur-bleed backdrop + contained
-   foreground treatment as the guessing screen, with a dark scrim and the
-   entry copy on top. Not a translucent box floating over other UI. */
+/* The veil IS the round-1 photo — a single blurred cover backdrop (no sharp
+   contain layer — that let landscape photos on tall viewports letterbox
+   with empty bars) with a dark scrim and the entry copy on top. Not a
+   translucent box floating over other UI. cover always fills the frame
+   regardless of aspect ratio, so this works for portrait, landscape, and
+   panorama photos without special-casing. */
 .daily-entry-veil-overlay {
   position: fixed;
   inset: 0;
@@ -130,16 +133,7 @@ body { margin: 0; overscroll-behavior: none; }
   inset: -30px;
   background-size: cover;
   background-position: center;
-  filter: blur(26px) brightness(0.42);
-}
-
-.daily-entry-veil-photo {
-  position: absolute;
-  inset: 0;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.9;
+  filter: blur(11px) brightness(0.42);
 }
 
 .daily-entry-veil-scrim {
@@ -151,7 +145,7 @@ body { margin: 0; overscroll-behavior: none; }
 @media (max-width: 767px) {
   .daily-entry-veil-backdrop {
     inset: -20px;
-    filter: blur(22px) brightness(0.42);
+    filter: blur(9px) brightness(0.42);
   }
 
   .daily-entry-veil-scrim {
