@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGame } from '../hooks/useGame';
 import { DailyStartScreen } from '../components/DailyStartScreen';
@@ -27,6 +27,8 @@ export function DailyChallenge() {
   const [challengeId, setChallengeId] = useState<string | null>(null);
   const [dailyPhotos, setDailyPhotos] = useState<ImageConfig[] | null>(null);
   const [submittedScore, setSubmittedScore] = useState(false);
+  const [showVeil, setShowVeil] = useState(false);
+  const hasAutoStarted = useRef(false);
 
   const {
     state,
@@ -54,8 +56,9 @@ export function DailyChallenge() {
         setChallengeId(data.challengeId);
         setDailyPhotos(data.photos);
 
-        // Check if we should resume mid-game
         if (isToday) {
+          // Resume mid-game — preserved exactly as before: no veil, no
+          // auto-start, just the existing local phase flag.
           const savedState = getDailyChallengeState();
           if (
             savedState?.lastPlayedDate === targetDate &&
@@ -63,13 +66,23 @@ export function DailyChallenge() {
             savedState.completedRounds.length > 0 &&
             !savedState.finalScore
           ) {
-            // Resume in progress
             setDailyPhase('playing');
-          } else if (savedState?.finalScore && savedState.lastPlayedDate === targetDate) {
-            // Already completed today
-            setDailyPhase('leaderboard');
+            return;
+          }
+
+          // Already completed today — leave dailyPhase at its default
+          // 'start' so DailyStartScreen renders its already-played branch
+          // (View Leaderboard action) instead of auto-starting into the veil.
+          if (!canPlayToday()) {
+            return;
           }
         }
+
+        // Fresh start (today, not yet played — or viewing a past challenge
+        // date). Reveal the veil; the actual startGame() call happens in the
+        // effect below once this render's dailyPhotos/startGame are current.
+        setShowVeil(true);
+        setDailyPhase('playing');
       } catch (err) {
         console.error('Failed to load challenge:', err);
       }
@@ -115,6 +128,18 @@ export function DailyChallenge() {
     startGame();
     setDailyPhase('playing');
   };
+
+  // Auto-start behind the veil once fresh photos are loaded. Reuses
+  // handleStart() rather than calling startGame() directly, so the
+  // localStorage clear/save semantics for a fresh game match exactly what
+  // the button click used to do. Guarded against StrictMode's
+  // mount/cleanup/remount double-invoke in dev.
+  useEffect(() => {
+    if (!showVeil || !dailyPhotos || hasAutoStarted.current) return;
+    hasAutoStarted.current = true;
+    handleStart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showVeil, dailyPhotos]);
 
   const handleViewLeaderboard = () => {
     setDailyPhase('leaderboard');
@@ -258,6 +283,9 @@ export function DailyChallenge() {
         lockInGuess={lockInGuess}
         nextRound={nextRound}
         headerTitle="Daily Challenge"
+        showEntryVeil={showVeil}
+        onDismissVeil={() => setShowVeil(false)}
+        veilMode="daily"
       />
     </div>
   );

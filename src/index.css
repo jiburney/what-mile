@@ -111,38 +111,73 @@ body { margin: 0; overscroll-behavior: none; }
 }
 
 /* ── Daily Entry Veil ─────────────────────────────────── */
+/* The veil IS the round-1 photo — same blur-bleed backdrop + contained
+   foreground treatment as the guessing screen, with a dark scrim and the
+   entry copy on top. Not a translucent box floating over other UI. */
 .daily-entry-veil-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(26,26,24,0.5);
+  overflow: hidden;
+  background: #1a1a18;
   z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px;
+}
+
+.daily-entry-veil-backdrop {
+  position: absolute;
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(26px) brightness(0.42);
+}
+
+.daily-entry-veil-photo {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.daily-entry-veil-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(26,26,24,0.5);
 }
 
 @media (max-width: 767px) {
-  .daily-entry-veil-overlay {
-    align-items: flex-end;
-    padding: 28px;
+  .daily-entry-veil-backdrop {
+    inset: -20px;
+    filter: blur(22px) brightness(0.42);
+  }
+
+  .daily-entry-veil-scrim {
+    background: rgba(26,26,24,0.52);
   }
 }
 
 .daily-entry-content {
+  /* content-box so max-width still governs the text column only — padding
+     (moved here from .daily-entry-veil-overlay, see comment above) must not
+     eat into it under the project's global border-box reset. */
+  box-sizing: content-box;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 22px;
   text-align: center;
   max-width: 460px;
+  padding: 60px;
 }
 
 @media (max-width: 767px) {
   .daily-entry-content {
-    align-items: stretch;
-    text-align: left;
     gap: 16px;
+    padding: 28px;
   }
 }
 
@@ -220,18 +255,19 @@ body { margin: 0; overscroll-behavior: none; }
   }
 }
 
+/* Button, link, and (daily mode only) yesterday's score stack in a single
+   centered column — same arrangement on every breakpoint. */
 .daily-entry-actions {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   margin-top: 10px;
 }
 
 @media (max-width: 767px) {
   .daily-entry-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
+    gap: 10px;
     margin-top: 0;
   }
 }
@@ -262,24 +298,11 @@ body { margin: 0; overscroll-behavior: none; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(247,244,239,0.55);
-  margin-top: 6px;
 }
 
 @media (max-width: 767px) {
   .daily-entry-yesterday {
     font-size: 11px;
-    align-self: flex-end;
-    margin-top: 0;
-  }
-
-  .daily-entry-actions {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .daily-entry-link {
-    flex: none;
   }
 }
 

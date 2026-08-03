@@ -46,7 +46,7 @@ export function DailyStartScreen({ onStart, onViewLeaderboard }: DailyStartScree
         )}
 
         <div className="daily-nav">
-          <a href="/" className="link-button">← Back to Free Play</a>
+          <a href="/play" className="link-button">← Back to Free Play</a>
         </div>
       </div>
     </div>

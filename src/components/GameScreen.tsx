@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { Map as LeafletMap } from 'leaflet';
 import { GameMap } from './GameMap';
 import { RoundResult } from './RoundResult';
-import { DailyEntryVeil } from './DailyEntryVeil';
+import { EntryVeil } from './EntryVeil';
 import type { ImageConfig, RoundResult as RoundResultType } from '../types';
 
 interface GameScreenProps {
@@ -26,6 +26,7 @@ interface GameScreenProps {
   headerTitle?: string;
   showEntryVeil?: boolean;
   onDismissVeil?: () => void;
+  veilMode?: 'free-play' | 'daily';
 }
 
 export function GameScreen({
@@ -44,6 +45,7 @@ export function GameScreen({
   headerTitle = 'What Mile?',
   showEntryVeil = false,
   onDismissVeil,
+  veilMode = 'free-play',
 }: GameScreenProps) {
   const [mapExpanded, setMapExpanded] = useState(false);
   const [photoZoom, setPhotoZoom] = useState(1);
@@ -322,9 +324,9 @@ export function GameScreen({
         <link rel="preload" as="image" href={nextImage.r2_url} />
       )}
 
-      {/* Daily challenge entry veil */}
+      {/* Entry veil — shown over the loading/loaded first round until dismissed */}
       {showEntryVeil && onDismissVeil && (
-        <DailyEntryVeil onStart={onDismissVeil} />
+        <EntryVeil mode={veilMode} onStart={onDismissVeil} imageUrl={currentImage?.r2_url} />
       )}
     </div>
   );

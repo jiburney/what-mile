@@ -1,5 +1,5 @@
+import { useEffect, useRef, useState } from 'react';
 import { useGame } from './hooks/useGame';
-import { StartScreen } from './components/StartScreen';
 import { GameSummary } from './components/GameSummary';
 import { GameScreen } from './components/GameScreen';
 
@@ -14,22 +14,21 @@ export default function App() {
     setGuess,
     lockInGuess,
     nextRound,
-    loading,
     error,
   } = useGame();
 
   const { phase, currentImage, pendingGuess, currentRound, rounds } = state;
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="app-layout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Loading photos...</div>
-        </div>
-      </div>
-    );
-  }
+  const [veilDismissed, setVeilDismissed] = useState(false);
+  const hasAutoStarted = useRef(false);
+
+  // Auto-start on mount so the first photo is loading behind the entry veil.
+  // Guarded against React StrictMode's dev-mode double-invoke.
+  useEffect(() => {
+    if (hasAutoStarted.current) return;
+    hasAutoStarted.current = true;
+    startGame();
+  }, [startGame]);
 
   // Error state
   if (error) {
@@ -41,10 +40,6 @@ export default function App() {
         </div>
       </div>
     );
-  }
-
-  if (phase === 'start') {
-    return <StartScreen onStart={startGame} />;
   }
 
   if (phase === 'summary') {
@@ -74,6 +69,9 @@ export default function App() {
         setGuess={setGuess}
         lockInGuess={lockInGuess}
         nextRound={nextRound}
+        showEntryVeil={!veilDismissed}
+        onDismissVeil={() => setVeilDismissed(true)}
+        veilMode="free-play"
       />
     </div>
   );

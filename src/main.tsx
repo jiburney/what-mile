@@ -10,7 +10,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<DailyChallenge />} />
+        <Route path="/play" element={<App />} />
         <Route path="/daily" element={<DailyChallenge />} />
         <Route path="/daily/:date" element={<DailyChallenge />} />
         <Route path="/admin/*" element={<AdminApp />} />
