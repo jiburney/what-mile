@@ -224,7 +224,7 @@ export function DailyChallenge() {
 
   // Daily challenge phases
   if (dailyPhase === 'start') {
-    return <DailyStartScreen onStart={handleStart} onViewLeaderboard={handleViewLeaderboard} />;
+    return <DailyStartScreen onStart={handleStart} onViewLeaderboard={handleViewLeaderboard} dailyPhotos={dailyPhotos} />;
   }
 
   if (dailyPhase === 'leaderboard') {

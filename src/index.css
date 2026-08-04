@@ -75,41 +75,6 @@ body { margin: 0; overscroll-behavior: none; }
 }
 .btn-primary.btn-lock:hover { background: var(--forest-mid); }
 
-/* ── Start Screen (Free Play) ─────────────────────────── */
-.start-screen {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--cream);
-  padding: 24px;
-}
-.start-content {
-  text-align: center;
-  max-width: 460px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-.start-title {
-  font-size: 42px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  color: var(--forest);
-  line-height: 1;
-}
-.start-subtitle {
-  font-size: 17px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-}
-.start-hint {
-  font-size: 14px;
-  color: var(--stone);
-  line-height: 1.5;
-}
-
 /* ── Daily Entry Veil ─────────────────────────────────── */
 /* The veil IS the round-1 photo — a single blurred cover backdrop (no sharp
    contain layer — that let landscape photos on tall viewports letterbox
@@ -1229,80 +1194,82 @@ body { margin: 0; overscroll-behavior: none; }
   filter: hue-rotate(200deg);
 }
 
-@media (min-width: 768px) {
-  .start-title { font-size: 56px; }
-}
-
 /* ── Daily Challenge Components ───────────────────────── */
 
-/* Daily Start Screen additions */
-.title {
-  font-size: 42px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  color: var(--forest);
-  line-height: 1;
+/* DailyStartScreen's already-played result stats — same structure/weight as
+   .result-stats/.stat-value (RoundResult), recolored for the dark veil
+   backdrop. Tier is rendered in cream text (guaranteed legible regardless of
+   photo content behind the scrim) with a small TIER_COLORS dot as an accent,
+   rather than coloring the text itself — several TIER_COLORS values (tuned
+   for the light cream .stat-value context) fail WCAG contrast against the
+   dark backdrop; see the dot instead. */
+.daily-entry-result-stats {
+  display: flex;
+  gap: 0;
+  border: 1px solid rgba(247,244,239,0.28);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
-.subtitle {
-  font-size: 17px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 8px;
-}
-
-.hint {
-  font-size: 14px;
-  color: var(--stone);
-  margin-top: 8px;
-}
-
-.daily-played-message,
-.daily-intro {
+.daily-entry-result-stat {
+  /* Sized to content, not stretched equally — "Section Hiker" needs a lot
+     more room than a 3-digit score, and forcing equal flex:1 widths made
+     the longer tier names wrap awkwardly. */
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
   align-items: center;
+  padding: 12px 18px;
+  gap: 4px;
+  border-right: 1px solid rgba(247,244,239,0.2);
+  min-width: 76px;
 }
 
-.start-button {
-  background: var(--cream);
-  color: var(--ink);
-  border: 1px solid var(--ink);
-  border-radius: var(--radius-sm);
-  font-size: 15px;
+.daily-entry-result-stat:last-child {
+  border-right: none;
+}
+
+.daily-entry-stat-label {
+  font-size: 10px;
   font-weight: 700;
-  padding: 16px 40px;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-  touch-action: manipulation;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-top: 8px;
+  color: rgba(247,244,239,0.6);
 }
 
-.start-button:hover {
-  background: var(--parchment);
+.daily-entry-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.start-button:active {
-  transform: scale(0.97);
+.daily-entry-tier-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.daily-nav {
-  margin-top: 24px;
+.daily-entry-tier-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
 }
 
-.link-button {
-  color: var(--forest);
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-  transition: color 0.15s;
+.daily-entry-unlock-note {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(247,244,239,0.55);
 }
 
-.link-button:hover {
-  color: var(--forest-mid);
+@media (max-width: 767px) {
+  .daily-entry-unlock-note {
+    font-size: 11px;
+  }
 }
 
 /* Modal Overlay */

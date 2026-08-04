@@ -116,7 +116,7 @@ export function DailyLeaderboard({ challengeId, onPlayAgain }: DailyLeaderboardP
           </button>
         ) : (
           <a href="/play" className="secondary-button">
-            Back to Free Play
+            Free play instead
           </a>
         )}
       </div>
