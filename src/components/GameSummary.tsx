@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { RoundResult } from '../types';
-import { TIER_COLORS, formatScore } from '../utils/scoring';
+import { TIER_COLORS, formatScore, MAX_SCORE, overallTier } from '../utils/scoring';
 import { getTrailSection, parseLocationName } from '../utils/trail-sections';
 
 interface Props {
@@ -10,15 +10,6 @@ interface Props {
   mode: 'daily' | 'free-play';
   challengeDate?: string;
 }
-
-function overallTier(score: number): string {
-  if (score >= 1760) return 'Thru-Hiker';
-  if (score >= 1100) return 'LASHer';
-  if (score >= 440) return 'Section Hiker';
-  return 'Day Hiker';
-}
-
-const MAX_SCORE = 2200;
 
 // Season boundaries by month (0-indexed): each spans exactly 3 months,
 // Winter wrapping across the year boundary (Dec of one year, Jan/Feb of the next).

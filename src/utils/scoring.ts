@@ -56,11 +56,11 @@ export function overallTier(totalScore: number): TierName {
   return 'Day Hiker';
 }
 
-// Display-time formatting: always exactly 1 decimal, comma-grouped for
-// readability. calculateScore() itself stays full-precision and unrounded —
-// this is the "later phase" rounding, applied only where a score is shown.
+// Display-time formatting: always exactly 1 decimal. calculateScore() itself
+// stays full-precision and unrounded — this is the "later phase" rounding,
+// applied only where a score is shown.
 export function formatScore(score: number): string {
-  return score.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return score.toFixed(1);
 }
 
 export const TIER_COLORS: Record<TierName, string> = {

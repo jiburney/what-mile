@@ -15,6 +15,7 @@ import {
   getDailyChallengeState,
   clearDailyChallengeGame,
 } from '../utils/daily-challenge-storage';
+import { overallTier } from '../utils/scoring';
 import type { ImageConfig } from '../types';
 
 type DailyPhase = 'start' | 'playing' | 'name-capture' | 'leaderboard';
@@ -151,7 +152,7 @@ export function DailyChallenge() {
 
     try {
       const fingerprint = getClientFingerprint();
-      const overallTier = determineOverallTier(totalScore);
+      const tier = overallTier(totalScore);
 
       const response = await fetch('/api/daily?action=submit-score', {
         method: 'POST',
@@ -159,7 +160,7 @@ export function DailyChallenge() {
         body: JSON.stringify({
           challengeId,
           totalScore,
-          overallTier,
+          overallTier: tier,
           roundScores: state.rounds.map(r => r.score),
           clientFingerprint: fingerprint,
           playerName,
@@ -176,7 +177,7 @@ export function DailyChallenge() {
       saveDailyChallengeState({
         finalScore: {
           total: totalScore,
-          tier: overallTier,
+          tier,
           playerName: playerName || undefined,
           yearHiked: yearHiked || undefined,
         },
@@ -193,13 +194,6 @@ export function DailyChallenge() {
   const handleSkipNameCapture = () => {
     handleSubmitScore(null, null);
   };
-
-  function determineOverallTier(score: number): 'Thru-Hiker' | 'LASHer' | 'Section Hiker' | 'Day Hiker' {
-    if (score >= 1760) return 'Thru-Hiker';
-    if (score >= 1100) return 'LASHer';
-    if (score >= 440) return 'Section Hiker';
-    return 'Day Hiker';
-  }
 
   // Loading/error states
   if (loading || !dailyPhotos) {

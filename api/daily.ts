@@ -184,23 +184,29 @@ async function handleSubmitScore(req: VercelRequest, res: VercelResponse) {
     yearHiked,
   } = req.body;
 
+  // Keep in sync with MAX_SCORE in src/utils/scoring.ts if that constant is
+  // ever updated (e.g. next year's official AT length) — this serverless
+  // function is a separate bundle and can't import from src/.
+  const MAX_SCORE = 2197.9;
+  const PER_ROUND_MAX = MAX_SCORE / 5; // 439.58
+
   // Validation
   if (!challengeId || !clientFingerprint) {
     return res.status(400).json({ error: 'Missing required fields: challengeId, clientFingerprint' });
   }
 
-  if (typeof totalScore !== 'number' || totalScore < 0 || totalScore > 2200) {
-    return res.status(400).json({ error: 'Invalid totalScore: must be 0-2200' });
+  if (typeof totalScore !== 'number' || totalScore < 0 || totalScore > MAX_SCORE) {
+    return res.status(400).json({ error: `Invalid totalScore: must be 0-${MAX_SCORE}` });
   }
 
   if (!Array.isArray(roundScores) || roundScores.length !== 5) {
     return res.status(400).json({ error: 'Invalid roundScores: must be array of 5 scores' });
   }
 
-  // Validate each round score ≤ 440
+  // Validate each round score ≤ PER_ROUND_MAX
   for (let i = 0; i < roundScores.length; i++) {
-    if (typeof roundScores[i] !== 'number' || roundScores[i] < 0 || roundScores[i] > 440) {
-      return res.status(400).json({ error: `Invalid round score at index ${i}: must be 0-440` });
+    if (typeof roundScores[i] !== 'number' || roundScores[i] < 0 || roundScores[i] > PER_ROUND_MAX) {
+      return res.status(400).json({ error: `Invalid round score at index ${i}: must be 0-${PER_ROUND_MAX}` });
     }
   }
 
