@@ -63,6 +63,7 @@ export function useGame(
         coordinates: [row.lat, row.lng],
         description: row.description ?? undefined,
         r2_url: row.r2_url,
+        taken_at: row.taken_at ?? undefined,
         times_shown: row.times_shown ?? 0,
         is_private: row.is_private ?? false,
       }));

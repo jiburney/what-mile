@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGame } from './hooks/useGame';
 import { GameSummary } from './components/GameSummary';
 import { GameScreen } from './components/GameScreen';
+import { SummaryCard } from './components/SummaryCard';
 
 export default function App() {
   const {
@@ -44,13 +45,13 @@ export default function App() {
 
   if (phase === 'summary') {
     return (
-      <div className="app-layout">
+      <SummaryCard>
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
           onPlayAgain={startGame}
         />
-      </div>
+      </SummaryCard>
     );
   }
 

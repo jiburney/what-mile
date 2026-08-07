@@ -1037,8 +1037,12 @@ body { margin: 0; overscroll-behavior: none; }
 }
 
 /* ── Game Summary ─────────────────────────────────────── */
+/* Floating light card over SummaryCard's dark .game-screen chrome — same
+   frame treatment .result-layout uses (border/radius/shadow), just without
+   the map side since there's nothing to split the frame with here. */
 .summary-screen {
-  flex: 1;
+  position: fixed;
+  inset: 50px;
   overflow-y: auto;
   padding: 26px 20px 32px;
   display: flex;
@@ -1046,12 +1050,23 @@ body { margin: 0; overscroll-behavior: none; }
   gap: 14px;
   align-items: center;
   background: var(--cream);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-hover);
 }
+
+@media (max-width: 767px) {
+  .summary-screen {
+    inset: 16px;
+    padding: 20px 16px 24px;
+  }
+}
+
 .summary-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 14px;
   text-align: center;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(26,26,24,0.18);
@@ -1064,91 +1079,245 @@ body { margin: 0; overscroll-behavior: none; }
   line-height: 1.05;
   color: var(--ink);
 }
-.summary-score-ring {
+
+/* Scoped override, not a change to .result-stat itself (shared with
+   RoundResult, off-limits to touch): equal flex:1 cells wrap long tier
+   names like "Section Hiker" onto two lines. Size cells to content here
+   instead, same fix as .daily-entry-result-stat used for the same problem. */
+.summary-header .result-stats {
+  display: inline-flex;
+}
+.summary-header .result-stat {
+  flex: 0 1 auto;
+  min-width: 76px;
+  white-space: nowrap;
+}
+
+/* Desktop: card grid (default visible). Mobile: expandable drawer rows
+   (default hidden) — see @media block below. Both render; CSS picks which
+   one shows, same pattern used for responsive photo treatments elsewhere. */
+.summary-rounds-grid {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  padding-top: 14px;
+}
+.summary-round-card {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-top: 4px;
+  flex-direction: column;
+  border: 1px solid rgba(26,26,24,0.2);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--parchment);
 }
-.summary-score-num {
-  font-size: 42px;
-  font-weight: 700;
-  line-height: 0.9;
-  color: var(--forest);
-  font-variant-numeric: tabular-nums;
+.summary-card-thumb {
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(26,26,24,0.2);
 }
-.summary-score-max {
-  font-size: 11px;
+.summary-card-body {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.summary-card-label {
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--stone);
 }
-.summary-tier {
-  font-size: 20px;
+.summary-card-location {
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: -0.3px;
+  color: var(--ink);
 }
-.summary-pct {
-  font-size: 14px;
-  color: var(--stone);
+.summary-card-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
 }
-
-.summary-rounds {
-  width: 100%;
-  max-width: 500px;
+.summary-card-footer {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+.summary-card-footer-group {
+  display: flex;
+  gap: 16px;
+}
+.summary-card-stat {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 14px;
+  gap: 2px;
+}
+
+.summary-rounds-list {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .summary-rounds-grid {
+    display: none;
+  }
+  .summary-rounds-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+    padding-top: 14px;
+  }
+}
+
+.summary-round-item {
+  border: 1px solid rgba(26,26,24,0.18);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--parchment);
 }
 .summary-round-row {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 10px;
-  border: 1px solid rgba(26,26,24,0.18);
-  border-radius: var(--radius-sm);
-  background: var(--parchment);
   font-size: 14px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
 }
 .summary-round-num {
-  width: 56px;
-  height: 44px;
-  border-radius: var(--radius-badge);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: var(--ink);
-  font-size: 13px;
+  font-size: 12px;
+  color: var(--cream);
+  background: var(--forest);
 }
-.summary-round-location {
+.summary-round-thumb {
+  width: 56px;
+  height: 44px;
+  border-radius: var(--radius-badge);
+  flex: none;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(26,26,24,0.15);
+}
+.summary-round-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.summary-round-location {
   font-weight: 700;
   color: var(--ink);
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.summary-round-dist {
-  font-size: 11px;
+.summary-round-meta {
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-tertiary);
   white-space: nowrap;
-}
-.summary-round-tier {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .summary-round-score {
+  flex: none;
   font-size: 17px;
   font-weight: 700;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+.summary-round-chevron {
+  flex: none;
+  color: var(--stone);
+  transition: transform 0.2s ease;
+}
+.summary-round-item.is-open .summary-round-chevron {
+  transform: rotate(180deg);
+}
+
+/* Grid-rows 0fr→1fr trick: animates to natural content height without
+   guessing a max-height, and being a normal block (not absolute/overlay)
+   it naturally pushes rows below it down as it opens. */
+.summary-round-drawer-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+.summary-round-item.is-open .summary-round-drawer-wrap {
+  grid-template-rows: 1fr;
+}
+.summary-round-drawer {
+  overflow: hidden;
+  min-height: 0;
+}
+.summary-round-drawer-inner {
+  padding: 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.summary-round-drawer-thumb {
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(26,26,24,0.15);
+}
+.summary-round-drawer-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 767px) {
+  .summary-round-row {
+    gap: 8px;
+    padding: 6px 8px;
+  }
+  .summary-round-num {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+  .summary-round-thumb {
+    width: 44px;
+    height: 38px;
+  }
+  .summary-round-location {
+    font-size: 13px;
+  }
+  .summary-round-meta {
+    font-size: 11px;
+  }
+  .summary-round-score {
+    font-size: 15px;
+  }
 }
 
 /* ── Trail error notice ───────────────────────────────── */

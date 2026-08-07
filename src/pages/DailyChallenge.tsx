@@ -4,6 +4,7 @@ import { useGame } from '../hooks/useGame';
 import { DailyStartScreen } from '../components/DailyStartScreen';
 import { GameScreen } from '../components/GameScreen';
 import { GameSummary } from '../components/GameSummary';
+import { SummaryCard } from '../components/SummaryCard';
 import { NameCaptureModal } from '../components/NameCaptureModal';
 import { DailyLeaderboard } from '../components/DailyLeaderboard';
 import {
@@ -238,7 +239,7 @@ export function DailyChallenge() {
 
   if (dailyPhase === 'name-capture') {
     return (
-      <>
+      <SummaryCard>
         <GameSummary
           rounds={state.rounds}
           totalScore={totalScore}
@@ -248,7 +249,7 @@ export function DailyChallenge() {
           onSubmit={handleSubmitScore}
           onSkip={handleSkipNameCapture}
         />
-      </>
+      </SummaryCard>
     );
   }
 
@@ -257,13 +258,13 @@ export function DailyChallenge() {
 
   if (phase === 'summary') {
     return (
-      <div className="app-layout">
+      <SummaryCard>
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
           onPlayAgain={() => {}} // Handled by name-capture modal
         />
-      </div>
+      </SummaryCard>
     );
   }
 

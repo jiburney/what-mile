@@ -199,6 +199,21 @@ This must be added to every new `api/` file that uses `process.env`. Do not skip
 
 ---
 
+## Standing rules for every task
+
+These apply automatically — no need to restate them in a prompt.
+
+- Keep the existing React components and rewrite their layout/styling to match a request. Do not replace files wholesale unless explicitly asked to.
+- Do not change game logic — `useGame.ts`, `scoring.ts`, or any Supabase/RPC calls — unless the task is specifically about game logic.
+- Do not add new dependencies without asking first.
+- Do not add trail-mile positions or elevation graphics anywhere in the UI. Neither is built. (`scripts/data/mile-calibration.json` has a known name-collision bug and a ~400-mile gap with no valid anchors — do not use it as a data source until that's fixed.)
+- Free Play (`/`) and Daily Challenge (`/daily`) are two separate route files but share UI components — `GameScreen.tsx` for the mid-game view, `SummaryCard.tsx` + `GameSummary.tsx` for the end screen. When a task touches either of those shared components, verify both routes still work, not just the one you were testing.
+- Tests must pass (Husky runs them on pre-commit) and `npm run build` must succeed before considering a task done.
+- Do NOT open a browser or run live verification (Chrome, Playwright, or similar) to test changes. Rely on typecheck, lint, tests, and `npm run build` passing. Visual verification is done by the user afterward — running a live browser session for this is a real resource cost on an older machine and duplicates work the user is doing anyway.
+- Explain your plan and wait for approval before changing any file, unless the task is explicitly small/mechanical enough that it says otherwise.
+
+---
+
 ## Roadmap
 
 See `.claude/roadmap.html` for the full visual roadmap. Current priorities:
