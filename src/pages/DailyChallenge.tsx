@@ -239,11 +239,13 @@ export function DailyChallenge() {
 
   if (dailyPhase === 'name-capture') {
     return (
-      <SummaryCard>
+      <SummaryCard totalRounds={totalRounds} totalScore={totalScore} headerTitle="Daily Challenge">
         <GameSummary
           rounds={state.rounds}
           totalScore={totalScore}
           onPlayAgain={() => {}} // No replay for daily mode
+          mode="daily"
+          challengeDate={targetDate}
         />
         <NameCaptureModal
           onSubmit={handleSubmitScore}
@@ -258,11 +260,13 @@ export function DailyChallenge() {
 
   if (phase === 'summary') {
     return (
-      <SummaryCard>
+      <SummaryCard totalRounds={totalRounds} totalScore={totalScore} headerTitle="Daily Challenge">
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
           onPlayAgain={() => {}} // Handled by name-capture modal
+          mode="daily"
+          challengeDate={targetDate}
         />
       </SummaryCard>
     );

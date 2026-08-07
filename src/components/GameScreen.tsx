@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Map as LeafletMap } from 'leaflet';
 import { GameMap } from './GameMap';
+import { GameHeader } from './GameHeader';
 import { RoundResult } from './RoundResult';
 import { EntryVeil } from './EntryVeil';
 import type { ImageConfig, RoundResult as RoundResultType } from '../types';
@@ -136,20 +137,13 @@ export function GameScreen({
   if (showResult && currentImage && currentResult) {
     return (
       <div className="game-screen">
-        <header className="game-header">
-          <span className="header-title">{headerTitle}</span>
-          <div className="round-pips">
-            {Array.from({ length: totalRounds }, (_, i) => (
-              <span
-                key={i}
-                className={`round-pip ${
-                  i < rounds.length ? 'pip-done' : i === currentRound ? 'pip-active' : 'pip-future'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="header-score">Round {currentRound + 1} · {totalScore.toLocaleString()}</span>
-        </header>
+        <GameHeader
+          title={headerTitle}
+          roundsCompleted={rounds.length}
+          currentRound={currentRound}
+          totalRounds={totalRounds}
+          score={totalScore}
+        />
 
         <div className="result-layout">
           <div className="result-map-container">
@@ -186,20 +180,13 @@ export function GameScreen({
   return (
     <div className="game-screen">
       {/* Header */}
-      <header className="game-header">
-        <span className="header-title">{headerTitle}</span>
-        <div className="round-pips">
-          {Array.from({ length: totalRounds }, (_, i) => (
-            <span
-              key={i}
-              className={`round-pip ${
-                i < rounds.length ? 'pip-done' : i === currentRound ? 'pip-active' : 'pip-future'
-              }`}
-            />
-          ))}
-        </div>
-        <span className="header-score">Round {currentRound + 1} · {totalScore.toLocaleString()}</span>
-      </header>
+      <GameHeader
+        title={headerTitle}
+        roundsCompleted={rounds.length}
+        currentRound={currentRound}
+        totalRounds={totalRounds}
+        score={totalScore}
+      />
 
       {currentImage && (
         <div className="game-panels">

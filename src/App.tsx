@@ -45,11 +45,12 @@ export default function App() {
 
   if (phase === 'summary') {
     return (
-      <SummaryCard>
+      <SummaryCard totalRounds={totalRounds} totalScore={totalScore}>
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
           onPlayAgain={startGame}
+          mode="free-play"
         />
       </SummaryCard>
     );
