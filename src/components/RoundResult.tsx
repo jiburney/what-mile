@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { RoundResult as RoundResultType } from '../types';
-import { TIER_COLORS } from '../utils/scoring';
+import { TIER_COLORS, formatScore } from '../utils/scoring';
 
 interface Props {
   result: RoundResultType;
@@ -98,7 +98,7 @@ export function RoundResult({ result, roundNumber, totalRounds, totalScore, onNe
           </div>
           <div className="result-stat">
             <span className="stat-label">Round</span>
-            <span className="stat-value stat-score">{result.score.toLocaleString()}</span>
+            <span className="stat-value stat-score">{formatScore(result.score)}</span>
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@ export function RoundResult({ result, roundNumber, totalRounds, totalScore, onNe
       <div className="result-footer">
         <div className="running-total">
           <span className="running-label">Total</span>
-          <span className="running-score">{totalScore.toLocaleString()}</span>
+          <span className="running-score">{formatScore(totalScore)}</span>
         </div>
         <button className="btn-primary btn-lock" onClick={onNext}>
           {isLastRound ? 'See Final Score' : `Round ${roundNumber + 1} →`}

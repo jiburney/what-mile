@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { canPlayToday, getDailyChallengeState, getTodayEastern } from '../utils/daily-challenge-storage';
-import { TIER_COLORS } from '../utils/scoring';
+import { TIER_COLORS, formatScore } from '../utils/scoring';
 import type { ImageConfig } from '../types';
 
 interface DailyStartScreenProps {
@@ -40,7 +40,7 @@ export function DailyStartScreen({ onStart, onViewLeaderboard, dailyPhotos }: Da
             <div className="daily-entry-result-stats">
               <div className="daily-entry-result-stat">
                 <span className="daily-entry-stat-label">Total</span>
-                <span className="daily-entry-stat-value">{finalScore.total.toLocaleString()}</span>
+                <span className="daily-entry-stat-value">{formatScore(finalScore.total)}</span>
               </div>
               <div className="daily-entry-result-stat">
                 <span className="daily-entry-stat-label">Tier</span>

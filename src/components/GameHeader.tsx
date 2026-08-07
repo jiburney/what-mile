@@ -1,3 +1,5 @@
+import { formatScore } from '../utils/scoring';
+
 interface GameHeaderProps {
   title: string;
   roundsCompleted: number;
@@ -26,7 +28,7 @@ export function GameHeader({ title, roundsCompleted, currentRound, totalRounds, 
           />
         ))}
       </div>
-      <span className="header-score">Round {currentRound + 1} · {score.toLocaleString()}</span>
+      <span className="header-score">Round {currentRound + 1} · {formatScore(score)}</span>
     </header>
   );
 }

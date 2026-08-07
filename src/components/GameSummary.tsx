@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { RoundResult } from '../types';
-import { TIER_COLORS } from '../utils/scoring';
+import { TIER_COLORS, formatScore } from '../utils/scoring';
 import { getTrailSection, parseLocationName } from '../utils/trail-sections';
 
 interface Props {
@@ -199,7 +199,7 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
           <div className="summary-header-right">
             <div className="summary-score-cta-row">
               <span className="summary-score-hero-label">Total Score</span>
-              <span className="summary-score-hero-value">{totalScore.toLocaleString()}</span>
+              <span className="summary-score-hero-value">{formatScore(totalScore)}</span>
               {mode === 'daily' ? (
                 <a href="/play" className="btn-primary btn-lock summary-header-action">Free Play →</a>
               ) : (
@@ -240,7 +240,7 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
                   <span className="summary-card-footer-dist">{distDisplay} off</span>
                   <span className="summary-card-footer-tier" style={{ color: TIER_COLORS[r.tier] }}>{r.tier}</span>
                 </div>
-                <span className="summary-card-footer-score">{r.score.toLocaleString()}</span>
+                <span className="summary-card-footer-score">{formatScore(r.score)}</span>
               </div>
             </div>
           </div>
@@ -269,7 +269,7 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
                     {distDisplay} · <span style={{ color: TIER_COLORS[r.tier] }}>{r.tier}</span>
                   </span>
                 </div>
-                <span className="summary-round-score">{r.score.toLocaleString()}</span>
+                <span className="summary-round-score">{formatScore(r.score)}</span>
                 <ChevronIcon />
               </button>
 

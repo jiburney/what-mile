@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getClientFingerprint } from '../utils/daily-challenge-storage';
+import { formatScore } from '../utils/scoring';
 
 interface LeaderboardEntry {
   rank: number;
@@ -76,7 +77,7 @@ export function DailyLeaderboard({ challengeId, onPlayAgain }: DailyLeaderboardP
           <div className="score-header">Your Score</div>
           <div className="score-details">
             <div className="rank">#{yourScore.rank}</div>
-            <div className="score">{yourScore.totalScore} points</div>
+            <div className="score">{formatScore(yourScore.totalScore)} points</div>
             <div className="player-name">
               {yourScore.playerName}
               {yourScore.yearHiked && ` (${yourScore.yearHiked})`}
@@ -98,7 +99,7 @@ export function DailyLeaderboard({ challengeId, onPlayAgain }: DailyLeaderboardP
                   {entry.playerName}
                   {entry.yearHiked && ` (${entry.yearHiked})`}
                 </span>
-                <span className="entry-score">{entry.totalScore}</span>
+                <span className="entry-score">{formatScore(entry.totalScore)}</span>
               </li>
             ))}
           </ol>
