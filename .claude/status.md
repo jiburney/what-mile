@@ -76,15 +76,39 @@ photo panel and `PhotoFullscreen.tsx` deleted.
 - Clamp pan offset after every zoom, pan, **and panel resize** — not just on drag.
 
 **Still stale / outstanding on this branch:**
-- Entry screen still needs polish
-- Round result screen still needs polish
-- Final summary + leaderboard not restyled
+- Final summary being actively restyled now (header personality copy, big score, mode-aware
+  CTA, flexible/responsive text sizing pass) — see prompt below
 - Collapsed map preview is still a hardcoded fake SVG squiggle
 - Nudge controls and reset-to-full-trail not built
 
+**Roadmap idea — not yet built:** if a player returns to `/daily` after already completing
+today's challenge, consider landing them on the full `GameSummary` (round-by-round card grid)
+instead of `DailyStartScreen`'s already-played branch, which currently only shows total/tier/
+accuracy. Not a small change — `GameSummary` is currently built from live `state.rounds` during
+an active session; showing it after a fresh page load would mean reconstructing that view from
+the saved `finalScore` in localStorage instead. Worth scoping properly when picked up, not a
+quick prop change.
+
 **Explicitly out of scope** (drawn in the Claude Design mockups, not built): trail-mile
-readouts, elevation graphics, share result, review rounds, daily countdown, geocoded
-place labels ("Near Bear Mountain, NY").
+readouts, elevation graphics, daily countdown, geocoded place labels ("Near Bear Mountain,
+NY"). "Review rounds" as a separate button/feature has been dropped for good — the summary
+screen's card grid (desktop) and expandable drawers (mobile) already do that job.
+
+**Share result — decided direction, not yet built.** A simple visual card (score, tier, one
+colored square per round like Wordle — tier-colored via `TIER_COLORS`, no photos or location
+names on the card itself, so it can't spoil the answer for whoever receives it). The shared
+link must send the recipient to play their OWN fresh daily challenge, never the sharer's —
+this already works for free, since `/daily` gates on the recipient's own `canPlayToday()` in
+their own localStorage, not anything tied to the link. Two ways to build the card itself, not
+yet chosen between:
+  - **Client-side canvas** — draws in-browser, `navigator.share` with an image file where
+    supported, clipboard/download fallback elsewhere. No new dependency, no new server function.
+  - **Server-rendered OG image** (`@vercel/og` or similar) — a Vercel Edge Function generates
+    the card from query params. Bigger payoff: the *link itself* shows a rich preview when
+    pasted anywhere (iMessage, Discord, Twitter), not just an attachment someone has to
+    remember to include — meaningfully better for the stated goal of this spreading and
+    crediting back to James. Costs a new dependency and a Vercel function slot (2 of 12
+    remain — see "Watch out" below).
 
 ### 1. Photo pipeline (ongoing)
 - 15 of 56 batches uploaded (~1,000 photos). Continuing batch-by-batch.

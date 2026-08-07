@@ -53,3 +53,57 @@ export function getTrailSection(lat: number, lng: number): string {
   // Outside known AT range
   return 'Unknown';
 }
+
+const STATE_ABBREVIATIONS: Record<string, string> = {
+  'Georgia': 'GA',
+  'Tennessee': 'TN',
+  'North Carolina': 'NC',
+  'Virginia': 'VA',
+  'West Virginia': 'WV',
+  'Maryland': 'MD',
+  'Pennsylvania': 'PA',
+  'New Jersey': 'NJ',
+  'New York': 'NY',
+  'Connecticut': 'CT',
+  'Massachusetts': 'MA',
+  'Vermont': 'VT',
+  'New Hampshire': 'NH',
+  'Maine': 'ME',
+};
+
+// For compact labels (card eyebrows, chips) where the full state name would
+// get truncated or force wrapping — "Massachusetts" and "North Carolina"
+// are the longest offenders. Falls back to the input unchanged for
+// 'Unknown' or anything not in the map, rather than guessing.
+export function abbreviateState(state: string): string {
+  return STATE_ABBREVIATIONS[state] ?? state;
+}
+
+const ABBREVIATION_TO_STATE: Record<string, string> = Object.fromEntries(
+  Object.entries(STATE_ABBREVIATIONS).map(([full, abbr]) => [abbr, full])
+);
+
+// Parses the trusted, geocoded locationName ("Madison County, NC") rather
+// than deriving state from lat/lng via getTrailSection(). The two CAN
+// disagree near a state border — getTrailSection is an approximate corridor
+// heuristic, locationName is real geocoding — and a photo like Carter
+// County, TN showing "NC" in one place and "TN" in another reads as broken
+// to anyone who actually knows the trail. Always deriving from the same
+// string the location name itself displays makes that disagreement
+// impossible by construction, not just unlikely.
+export function parseLocationName(locationName: string): {
+  place: string;
+  stateAbbr: string | null;
+  stateFull: string | null;
+} {
+  const match = locationName.match(/^(.*),\s*([A-Z]{2})$/);
+  if (!match) {
+    return { place: locationName, stateAbbr: null, stateFull: null };
+  }
+  const [, place, stateAbbr] = match;
+  return {
+    place,
+    stateAbbr,
+    stateFull: ABBREVIATION_TO_STATE[stateAbbr] ?? null,
+  };
+}
