@@ -282,6 +282,8 @@ body { margin: 0; overscroll-behavior: none; }
   height: 100dvh;
   overflow: hidden;
   background: #1a2810; /* Dark forest green */
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Game Header ──────────────────────────────────────── */
@@ -340,8 +342,8 @@ body { margin: 0; overscroll-behavior: none; }
 /* ── Two-Panel Layout ─────────────────────────────────── */
 .game-panels {
   display: flex;
-  height: calc(100vh - 60px);
-  height: calc(100dvh - 60px);
+  flex: 1;
+  min-height: 0;
   margin-top: 60px;
   gap: 16px;
   padding: 16px;
@@ -606,6 +608,7 @@ body { margin: 0; overscroll-behavior: none; }
 /* Persistent confirm/next action button - centered on bottom of map */
 .btn-persistent-action {
   display: block;
+  flex-shrink: 0;
   margin: 16px auto;
   padding: 16px 32px;
   font-size: 13px;
