@@ -143,7 +143,6 @@ export function GameScreen({
       />
 
       {currentImage && (
-        <>
         <div className={`game-panels ${showResult ? 'result-mode' : ''}`}>
           {/* Photo panel - visible during both guessing and result phases */}
           <div
@@ -237,22 +236,21 @@ export function GameScreen({
               <span className="map-trail-chip chip-bottom-left">
                 <span className="chip-arrow">↓</span>SOBO
               </span>
+
+              {/* Persistent confirm/next button - centered on map, changes based on phase */}
+              <button
+                className="btn-primary btn-persistent-action"
+                disabled={!showResult && !pendingGuess}
+                onClick={showResult ? nextRound : handleLockInGuess}
+              >
+                {showResult
+                  ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
+                  : 'Confirm guess'
+                }
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Persistent confirm/next button - normal flow, always present */}
-        <button
-          className="btn-primary btn-persistent-action"
-          disabled={!showResult && !pendingGuess}
-          onClick={showResult ? nextRound : handleLockInGuess}
-        >
-          {showResult
-            ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
-            : 'Confirm guess'
-          }
-        </button>
-        </>
       )}
 
       {/* Preload next round's photo */}

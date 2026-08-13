@@ -282,8 +282,6 @@ body { margin: 0; overscroll-behavior: none; }
   height: 100dvh;
   overflow: hidden;
   background: #1a2810; /* Dark forest green */
-  display: flex;
-  flex-direction: column;
 }
 
 /* ── Game Header ──────────────────────────────────────── */
@@ -342,8 +340,8 @@ body { margin: 0; overscroll-behavior: none; }
 /* ── Two-Panel Layout ─────────────────────────────────── */
 .game-panels {
   display: flex;
-  flex: 1;
-  min-height: 0;
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
   margin-top: 60px;
   gap: 16px;
   padding: 16px;
@@ -607,9 +605,11 @@ body { margin: 0; overscroll-behavior: none; }
 
 /* Persistent confirm/next action button - centered on bottom of map */
 .btn-persistent-action {
-  display: block;
-  flex-shrink: 0;
-  margin: 16px auto;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
   padding: 16px 32px;
   font-size: 13px;
   letter-spacing: 0.08em;
@@ -640,7 +640,7 @@ body { margin: 0; overscroll-behavior: none; }
     height: 46px;
     padding: 14px 28px;
     font-size: 12px;
-    margin: 12px auto;
+    bottom: 12px;
   }
 }
 /* ── Confirm Area ─────────────────────────────────────── */
