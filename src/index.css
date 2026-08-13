@@ -352,16 +352,15 @@ body { margin: 0; overscroll-behavior: none; }
   position: relative;
   background: #1a1a18;
   border-radius: var(--radius-card);
+  flex: 1;
+}
+
+/* Inner wrapper clips photo content only - allows result card to extend beyond */
+.photo-content-wrapper {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-}
-
-.photo-panel.normal {
-  flex: 1; /* Takes remaining space */
-}
-
-.photo-panel.minimized {
-  width: 280px;
-  flex-shrink: 0;
+  border-radius: var(--radius-card);
 }
 
 .photo-bg {
@@ -386,15 +385,8 @@ body { margin: 0; overscroll-behavior: none; }
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.map-panel.collapsed {
   width: 560px;
   flex-shrink: 0;
-}
-
-.map-panel.expanded {
-  flex: 1;
 }
 
 .map-container {
@@ -421,35 +413,16 @@ body { margin: 0; overscroll-behavior: none; }
     gap: 0;
   }
 
-  /* Result mode: map gets clamped height instead of flex: 1 when expanded */
-  .game-panels.result-mode .map-panel.expanded {
-    flex: 0 0 auto;
-    height: clamp(200px, 45%, 500px);
-  }
-
-  .photo-panel.normal {
+  .photo-panel {
     flex: 1;
     border-radius: 0;
   }
 
-  .photo-panel.minimized {
-    height: 120px;
-    width: auto;
-    flex: none;
-  }
-
-  .map-panel.collapsed {
+  .map-panel {
     width: auto;
     height: 320px;
     flex: none;
   }
-
-  .map-panel.expanded {
-    flex: 1;
-    width: auto;
-  }
-
-  /* Collapsed mobile map is now directly interactive - pointer-events rule removed */
 
   .trail-photo {
     inset: 12px;
@@ -512,21 +485,6 @@ body { margin: 0; overscroll-behavior: none; }
     bottom: 12px;
     right: 12px;
     padding: 6px;
-  }
-}
-
-/* ── Mobile Tap to Expand Overlay ─────────────────────── */
-.mobile-tap-overlay {
-  display: none; /* Hidden by default on desktop */
-}
-
-@media (max-width: 767px) {
-  .map-panel.collapsed .mobile-tap-overlay {
-    display: none;
-  }
-
-  .map-panel.expanded .mobile-tap-overlay {
-    display: none;
   }
 }
 
@@ -647,19 +605,18 @@ body { margin: 0; overscroll-behavior: none; }
 
 /* Persistent confirm/next action button - centered on bottom of map */
 .btn-persistent-action {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 900;
+  display: block;
+  margin: 16px auto;
   padding: 16px 32px;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.08em;
   background: var(--forest);
   color: var(--cream);
   border: 1px solid var(--ink);
   box-shadow: var(--shadow-md);
   width: 200px;
+  height: 48px;
+  white-space: nowrap;
   transition: background 0.15s, opacity 0.15s;
 }
 
@@ -677,57 +634,12 @@ body { margin: 0; overscroll-behavior: none; }
 @media (max-width: 767px) {
   .btn-persistent-action {
     width: 180px;
+    height: 46px;
     padding: 14px 28px;
-    font-size: 14px;
-    bottom: 12px;
+    font-size: 12px;
+    margin: 12px auto;
   }
 }
-
-/* Expand/collapse toggle — bottom-right corner (persistent button is centered, no overlap on desktop) */
-.map-expand-toggle {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 900;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: var(--radius-badge);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(26, 26, 24, 0.15);
-  box-shadow: var(--shadow-sm);
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.map-expand-toggle:hover {
-  background: var(--cream);
-}
-
-.map-expand-toggle.is-expanded {
-  background: var(--forest);
-  border-color: var(--ink);
-  color: var(--cream);
-  box-shadow: var(--shadow-md);
-}
-
-.map-expand-toggle.is-expanded:hover {
-  background: var(--forest-mid);
-}
-
-/* Mobile: move expand toggle above persistent button to avoid overlap */
-@media (max-width: 767px) {
-  .map-expand-toggle {
-    bottom: 60px;
-  }
-}
-
 /* ── Confirm Area ─────────────────────────────────────── */
 .confirm-area {
   display: flex;
@@ -780,6 +692,8 @@ body { margin: 0; overscroll-behavior: none; }
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 @keyframes result-slide-up {

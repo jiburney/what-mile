@@ -52,7 +52,6 @@ export function GameScreen({
   resumeRoundNumber,
   completedCount,
 }: GameScreenProps) {
-  const [mapExpanded, setMapExpanded] = useState(false);
   const [photoZoom, setPhotoZoom] = useState(1);
   const [photoPan, setPhotoPan] = useState({ x: 0, y: 0 });
   const mapRef = useRef<LeafletMap | null>(null);
@@ -63,16 +62,11 @@ export function GameScreen({
   const showResult = phase === 'result';
   const isLastRound = currentRound + 1 >= totalRounds;
 
-  // Reset photo to 1x on round change (map stays at user's chosen expand state)
+  // Reset photo to 1x on round change
   useEffect(() => {
     setPhotoZoom(1);
     setPhotoPan({ x: 0, y: 0 });
   }, [currentRound]);
-
-  // Re-clamp pan offset when panel resizes (map expand/collapse)
-  useEffect(() => {
-    setPhotoPan(current => clampPhotoPan(photoZoom, current));
-  }, [mapExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLockInGuess = () => {
     lockInGuess();
@@ -149,11 +143,12 @@ export function GameScreen({
       />
 
       {currentImage && (
+        <>
         <div className={`game-panels ${showResult ? 'result-mode' : ''}`}>
           {/* Photo panel - visible during both guessing and result phases */}
           <div
             ref={photoContainerRef}
-            className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}
+            className="photo-panel"
             onWheel={handlePhotoWheel}
             onMouseDown={handlePhotoMouseDown}
             onMouseMove={handlePhotoMouseMove}
@@ -164,6 +159,8 @@ export function GameScreen({
               order: 1
             }}
           >
+            {/* Photo content wrapper - clips photo/controls only, not result card */}
+            <div className="photo-content-wrapper">
               <div
                 className="photo-bg"
                 style={{ backgroundImage: `url(${currentImage.r2_url})` }}
@@ -203,23 +200,24 @@ export function GameScreen({
                   </button>
                 </div>
               )}
-
-              {/* Result card overlay - anchored to bottom of photo panel */}
-              {showResult && currentResult && (
-                <RoundResult
-                  result={currentResult}
-                  roundNumber={currentRound + 1}
-                  totalRounds={totalRounds}
-                  totalScore={totalScore}
-                  onNext={nextRound}
-                  isLastRound={isLastRound}
-                />
-              )}
             </div>
 
-          {/* Map panel - persistent across both phases, order always 2 */}
+            {/* Result card overlay - anchored to bottom of photo panel */}
+            {showResult && currentResult && (
+              <RoundResult
+                result={currentResult}
+                roundNumber={currentRound + 1}
+                totalRounds={totalRounds}
+                totalScore={totalScore}
+                onNext={nextRound}
+                isLastRound={isLastRound}
+              />
+            )}
+          </div>
+
+          {/* Map panel - persistent across both phases, fixed size always */}
           <div
-            className={`map-panel ${mapExpanded ? 'expanded' : 'collapsed'}`}
+            className="map-panel"
             style={{ order: 2 }}
           >
             <div className="map-container">
@@ -232,23 +230,6 @@ export function GameScreen({
                 showResult={showResult}
               />
 
-              {/* Persistent confirm/next button - fixed on map, changes based on phase */}
-              <button
-                className="btn-primary btn-persistent-action"
-                disabled={!showResult && !pendingGuess}
-                onClick={showResult ? nextRound : handleLockInGuess}
-              >
-                {showResult
-                  ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
-                  : 'Confirm guess'
-                }
-              </button>
-
-              {/* Mobile collapsed: tap to expand overlay (hidden per FIX 1) */}
-              <div className="mobile-tap-overlay" onClick={() => setMapExpanded(true)}>
-                Tap to expand map
-              </div>
-
               {/* Trail direction chips */}
               <span className="map-trail-chip chip-top-left">
                 <span className="chip-arrow">↑</span>NOBO
@@ -256,36 +237,22 @@ export function GameScreen({
               <span className="map-trail-chip chip-bottom-left">
                 <span className="chip-arrow">↓</span>SOBO
               </span>
-
-              {/* Expand/collapse toggle - hidden in result phase */}
-              {!showResult && (
-                <button
-                  type="button"
-                  className={`map-expand-toggle ${mapExpanded ? 'is-expanded' : ''}`}
-                  onClick={() => setMapExpanded((prev) => !prev)}
-                  aria-label={mapExpanded ? 'Collapse map' : 'Expand map'}
-                >
-                  {mapExpanded ? (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <polyline points="4 14 10 14 10 20" />
-                      <polyline points="20 10 14 10 14 4" />
-                      <line x1="14" y1="10" x2="21" y2="3" />
-                      <line x1="3" y1="21" x2="10" y2="14" />
-                    </svg>
-                  ) : (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <polyline points="15 3 21 3 21 9" />
-                      <polyline points="9 21 3 21 3 15" />
-                      <line x1="21" y1="3" x2="14" y2="10" />
-                      <line x1="3" y1="21" x2="10" y2="14" />
-                    </svg>
-                  )}
-                  {mapExpanded ? 'Collapse' : 'Expand'}
-                </button>
-              )}
             </div>
           </div>
         </div>
+
+        {/* Persistent confirm/next button - normal flow, always present */}
+        <button
+          className="btn-primary btn-persistent-action"
+          disabled={!showResult && !pendingGuess}
+          onClick={showResult ? nextRound : handleLockInGuess}
+        >
+          {showResult
+            ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
+            : 'Confirm guess'
+          }
+        </button>
+        </>
       )}
 
       {/* Preload next round's photo */}
