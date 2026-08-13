@@ -28,6 +28,8 @@ interface GameScreenProps {
   showEntryVeil?: boolean;
   onDismissVeil?: () => void;
   veilMode?: 'free-play' | 'daily';
+  resumeRoundNumber?: number;
+  completedCount?: number;
 }
 
 export function GameScreen({
@@ -47,6 +49,8 @@ export function GameScreen({
   showEntryVeil = false,
   onDismissVeil,
   veilMode = 'free-play',
+  resumeRoundNumber,
+  completedCount,
 }: GameScreenProps) {
   const [mapExpanded, setMapExpanded] = useState(false);
   const [photoZoom, setPhotoZoom] = useState(1);
@@ -296,7 +300,13 @@ export function GameScreen({
 
       {/* Entry veil — shown over the loading/loaded first round until dismissed */}
       {showEntryVeil && onDismissVeil && (
-        <EntryVeil mode={veilMode} onStart={onDismissVeil} imageUrl={currentImage?.r2_url} />
+        <EntryVeil
+          mode={veilMode}
+          onStart={onDismissVeil}
+          imageUrl={currentImage?.r2_url}
+          resumeRoundNumber={resumeRoundNumber}
+          completedCount={completedCount}
+        />
       )}
     </div>
   );

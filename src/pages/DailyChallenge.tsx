@@ -30,6 +30,7 @@ export function DailyChallenge() {
   const [dailyPhotos, setDailyPhotos] = useState<ImageConfig[] | null>(null);
   const [submittedScore, setSubmittedScore] = useState(false);
   const [showVeil, setShowVeil] = useState(false);
+  const [resumeRounds, setResumeRounds] = useState<typeof state.rounds | null>(null);
   const hasAutoStarted = useRef(false);
 
   const {
@@ -59,8 +60,8 @@ export function DailyChallenge() {
         setDailyPhotos(data.photos);
 
         if (isToday) {
-          // Resume mid-game — preserved exactly as before: no veil, no
-          // auto-start, just the existing local phase flag.
+          // Resume mid-game — show veil with resume-aware UI, auto-start
+          // will call startGame(resumeRounds) to restore progress.
           const savedState = getDailyChallengeState();
           if (
             savedState?.lastPlayedDate === targetDate &&
@@ -68,7 +69,8 @@ export function DailyChallenge() {
             savedState.completedRounds.length > 0 &&
             !savedState.finalScore
           ) {
-            startGame(); // Initialize useGame's internal state (restarts from round 1)
+            setResumeRounds(savedState.completedRounds);
+            setShowVeil(true);
             setDailyPhase('playing');
             return;
           }
@@ -132,17 +134,23 @@ export function DailyChallenge() {
     setDailyPhase('playing');
   };
 
-  // Auto-start behind the veil once fresh photos are loaded. Reuses
-  // handleStart() rather than calling startGame() directly, so the
-  // localStorage clear/save semantics for a fresh game match exactly what
-  // the button click used to do. Guarded against StrictMode's
-  // mount/cleanup/remount double-invoke in dev.
+  // Auto-start behind the veil once photos are loaded. For fresh starts,
+  // calls handleStart() for localStorage clear/save semantics. For resume,
+  // calls startGame(resumeRounds) directly to restore progress without
+  // clearing saved state. Guarded against StrictMode double-invoke.
   useEffect(() => {
     if (!showVeil || !dailyPhotos || hasAutoStarted.current) return;
     hasAutoStarted.current = true;
-    handleStart();
+
+    if (resumeRounds) {
+      // Resume: restore progress, don't clear localStorage
+      startGame(resumeRounds);
+    } else {
+      // Fresh start: clear and initialize
+      handleStart();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showVeil, dailyPhotos]);
+  }, [showVeil, dailyPhotos, resumeRounds]);
 
   const handleViewLeaderboard = () => {
     setDailyPhase('leaderboard');
@@ -286,6 +294,8 @@ export function DailyChallenge() {
         showEntryVeil={showVeil}
         onDismissVeil={() => setShowVeil(false)}
         veilMode="daily"
+        resumeRoundNumber={resumeRounds ? resumeRounds.length + 1 : undefined}
+        completedCount={resumeRounds ? resumeRounds.length : undefined}
       />
     </div>
   );

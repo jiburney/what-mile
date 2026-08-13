@@ -27,9 +27,38 @@ export function useGame(
   // so free-play never reuses the same 5 photos twice in a session.
   // Selection (random pool + 1-mile minimum distance apart) happens inside
   // Postgres via select_game_photos — same function Daily Challenge uses.
-  const startGame = useCallback(async () => {
+  const startGame = useCallback(async (resumeRounds?: RoundResult[]) => {
     if (mode === 'daily' && predeterminedPhotos) {
       setQueue(predeterminedPhotos);
+
+      // Resume case: restore progress from provided rounds
+      if (resumeRounds && resumeRounds.length > 0) {
+        const resumeIndex = resumeRounds.length;
+
+        // Edge case: already at or past final round (stale/corrupted storage)
+        if (resumeIndex >= ROUNDS_PER_GAME) {
+          setState({
+            phase: 'summary',
+            rounds: resumeRounds.slice(0, ROUNDS_PER_GAME),
+            currentRound: ROUNDS_PER_GAME - 1,
+            currentImage: null,
+            pendingGuess: null,
+          });
+          return;
+        }
+
+        // Resume at the next round after completed ones
+        setState({
+          phase: 'guessing',
+          rounds: resumeRounds,
+          currentRound: resumeIndex,
+          currentImage: predeterminedPhotos[resumeIndex],
+          pendingGuess: null,
+        });
+        return;
+      }
+
+      // Fresh start: begin at round 0
       setState({
         phase: 'guessing',
         rounds: [],
