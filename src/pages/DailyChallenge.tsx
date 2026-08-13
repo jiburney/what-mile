@@ -68,6 +68,7 @@ export function DailyChallenge() {
             savedState.completedRounds.length > 0 &&
             !savedState.finalScore
           ) {
+            startGame(); // Initialize useGame's internal state (restarts from round 1)
             setDailyPhase('playing');
             return;
           }
