@@ -72,6 +72,7 @@ interface MapControllerProps {
 
 function MapController({ mapRef, showResult, actualLocation, pendingGuess }: MapControllerProps) {
   const map = useMap();
+  const hasInitialFitRef = useRef(false);
 
   // Store map instance in ref
   useEffect(() => {
@@ -102,9 +103,10 @@ function MapController({ mapRef, showResult, actualLocation, pendingGuess }: Map
       const minZoom = Math.max(computedZoom, 4); // Safety floor
       map.setMinZoom(minZoom);
 
-      // Set initial view if not in result state
-      if (!showResult) {
+      // Set initial view exactly once on first mount, never again
+      if (!hasInitialFitRef.current) {
         map.fitBounds(AT_BOUNDS);
+        hasInitialFitRef.current = true;
       }
     };
 

@@ -59,9 +59,8 @@ export function GameScreen({
   const showResult = phase === 'result';
   const isLastRound = currentRound + 1 >= totalRounds;
 
-  // Reset map to collapsed and photo to 1x on round change
+  // Reset photo to 1x on round change (map stays at user's chosen expand state)
   useEffect(() => {
-    setMapExpanded(false);
     setPhotoZoom(1);
     setPhotoPan({ x: 0, y: 0 });
   }, [currentRound]);
@@ -72,6 +71,8 @@ export function GameScreen({
   }, [mapExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLockInGuess = () => {
+    // Expand map on mobile for result reveal
+    setMapExpanded(true);
     lockInGuess();
   };
 
@@ -133,50 +134,7 @@ export function GameScreen({
     isDraggingRef.current = false;
   };
 
-  // RESULT STATE - standalone layout
-  if (showResult && currentImage && currentResult) {
-    return (
-      <div className="game-screen">
-        <GameHeader
-          title={headerTitle}
-          roundsCompleted={rounds.length}
-          currentRound={currentRound}
-          totalRounds={totalRounds}
-          score={totalScore}
-        />
-
-        <div className="result-layout">
-          <div className="result-map-container">
-            <GameMap
-              key={currentRound}
-              mapRef={mapRef}
-              pendingGuess={pendingGuess}
-              actualLocation={currentResult.image.coordinates}
-              actualName={currentResult.image.locationName}
-              showResult={true}
-            />
-            <span className="map-trail-chip chip-top-left">
-              <span className="chip-arrow">↑</span>NOBO
-            </span>
-            <span className="map-trail-chip chip-bottom-left">
-              <span className="chip-arrow">↓</span>SOBO
-            </span>
-          </div>
-          <RoundResult
-            result={currentResult}
-            roundNumber={currentRound + 1}
-            totalRounds={totalRounds}
-            totalScore={totalScore}
-            onNext={nextRound}
-            isLastRound={isLastRound}
-          />
-        </div>
-
-      </div>
-    );
-  }
-
-  // NORMAL GAMEPLAY - two-panel layout
+  // UNIFIED LAYOUT - persistent map shared across guessing and result phases
   return (
     <div className="game-screen">
       {/* Header */}
@@ -189,69 +147,92 @@ export function GameScreen({
       />
 
       {currentImage && (
-        <div className="game-panels">
-          {/* Photo panel */}
-          <div
-            ref={photoContainerRef}
-            className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}
-            onWheel={handlePhotoWheel}
-            onMouseDown={handlePhotoMouseDown}
-            onMouseMove={handlePhotoMouseMove}
-            onMouseUp={handlePhotoMouseUp}
-            onMouseLeave={handlePhotoMouseUp}
-            style={{ cursor: photoZoom > 1 ? 'grab' : 'default' }}
-          >
+        <div className={`game-panels ${showResult ? 'result-mode' : ''}`}>
+          {/* Photo panel - guessing phase only, positioned left/top */}
+          {!showResult && (
             <div
-              className="photo-bg"
-              style={{ backgroundImage: `url(${currentImage.r2_url})` }}
-            />
-            <img
-              src={currentImage.r2_url}
-              alt="Somewhere on the Appalachian Trail"
-              className="trail-photo"
-              fetchPriority="high"
-              loading="eager"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              ref={photoContainerRef}
+              className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}
+              onWheel={handlePhotoWheel}
+              onMouseDown={handlePhotoMouseDown}
+              onMouseMove={handlePhotoMouseMove}
+              onMouseUp={handlePhotoMouseUp}
+              onMouseLeave={handlePhotoMouseUp}
               style={{
-                transform: `scale(${photoZoom}) translate(${photoPan.x / photoZoom}px, ${photoPan.y / photoZoom}px)`,
-                transformOrigin: 'center center',
-                transition: isDraggingRef.current ? 'none' : 'transform 0.1s ease-out'
+                cursor: photoZoom > 1 ? 'grab' : 'default',
+                order: 1
               }}
-              draggable={false}
-            />
+            >
+              <div
+                className="photo-bg"
+                style={{ backgroundImage: `url(${currentImage.r2_url})` }}
+              />
+              <img
+                src={currentImage.r2_url}
+                alt="Somewhere on the Appalachian Trail"
+                className="trail-photo"
+                fetchPriority="high"
+                loading="eager"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                style={{
+                  transform: `scale(${photoZoom}) translate(${photoPan.x / photoZoom}px, ${photoPan.y / photoZoom}px)`,
+                  transformOrigin: 'center center',
+                  transition: isDraggingRef.current ? 'none' : 'transform 0.1s ease-out'
+                }}
+                draggable={false}
+              />
 
-            {/* Photo zoom controls */}
-            <div className="photo-zoom-controls">
-              <button
-                className="zoom-btn"
-                onClick={() => handlePhotoZoom(0.25)}
-                disabled={photoZoom >= 3}
-              >
-                +
-              </button>
-              <div className="zoom-readout">{photoZoom.toFixed(1)}×</div>
-              <button
-                className="zoom-btn"
-                onClick={() => handlePhotoZoom(-0.25)}
-                disabled={photoZoom <= 1}
-              >
-                −
-              </button>
+              {/* Photo zoom controls */}
+              <div className="photo-zoom-controls">
+                <button
+                  className="zoom-btn"
+                  onClick={() => handlePhotoZoom(0.25)}
+                  disabled={photoZoom >= 3}
+                >
+                  +
+                </button>
+                <div className="zoom-readout">{photoZoom.toFixed(1)}×</div>
+                <button
+                  className="zoom-btn"
+                  onClick={() => handlePhotoZoom(-0.25)}
+                  disabled={photoZoom <= 1}
+                >
+                  −
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Map panel */}
-          <div className={`map-panel ${mapExpanded ? 'expanded' : 'collapsed'}`}>
+          {/* Result panel - result phase only, positioned right/bottom */}
+          {showResult && currentResult && (
+            <div style={{ order: 2 }}>
+              <RoundResult
+                result={currentResult}
+                roundNumber={currentRound + 1}
+                totalRounds={totalRounds}
+                totalScore={totalScore}
+                onNext={nextRound}
+                isLastRound={isLastRound}
+              />
+            </div>
+          )}
+
+          {/* Map panel - persistent across both phases */}
+          <div
+            className={`map-panel ${mapExpanded ? 'expanded' : 'collapsed'}`}
+            style={{ order: showResult ? 1 : 2 }}
+          >
             <div className="map-container">
               <GameMap
-                key={currentRound}
                 mapRef={mapRef}
                 pendingGuess={pendingGuess}
                 onGuess={setGuess}
-                showResult={false}
+                actualLocation={showResult && currentResult ? currentResult.image.coordinates : undefined}
+                actualName={showResult && currentResult ? currentResult.image.locationName : undefined}
+                showResult={showResult}
               />
 
-              {/* Mobile collapsed: tap to expand overlay */}
+              {/* Mobile collapsed: tap to expand overlay (hidden per FIX 1) */}
               <div className="mobile-tap-overlay" onClick={() => setMapExpanded(true)}>
                 Tap to expand map
               </div>
@@ -264,44 +245,46 @@ export function GameScreen({
                 <span className="chip-arrow">↓</span>SOBO
               </span>
 
-              {/* Expand/collapse — plain overlay button, sibling to the map,
-                  NOT a Leaflet control. Keeps it outside Leaflet's own
-                  stylesheet entirely so there's no specificity conflict. */}
-              <button
-                type="button"
-                className={`map-expand-toggle ${mapExpanded ? 'is-expanded' : ''}`}
-                onClick={() => setMapExpanded((prev) => !prev)}
-                aria-label={mapExpanded ? 'Collapse map' : 'Expand map'}
-              >
-                {mapExpanded ? (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="4 14 10 14 10 20" />
-                    <polyline points="20 10 14 10 14 4" />
-                    <line x1="14" y1="10" x2="21" y2="3" />
-                    <line x1="3" y1="21" x2="10" y2="14" />
-                  </svg>
-                ) : (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="15 3 21 3 21 9" />
-                    <polyline points="9 21 3 21 3 15" />
-                    <line x1="21" y1="3" x2="14" y2="10" />
-                    <line x1="3" y1="21" x2="10" y2="14" />
-                  </svg>
-                )}
-                {mapExpanded ? 'Collapse' : 'Expand'}
-              </button>
+              {/* Expand/collapse toggle - hidden in result phase */}
+              {!showResult && (
+                <button
+                  type="button"
+                  className={`map-expand-toggle ${mapExpanded ? 'is-expanded' : ''}`}
+                  onClick={() => setMapExpanded((prev) => !prev)}
+                  aria-label={mapExpanded ? 'Collapse map' : 'Expand map'}
+                >
+                  {mapExpanded ? (
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="4 14 10 14 10 20" />
+                      <polyline points="20 10 14 10 14 4" />
+                      <line x1="14" y1="10" x2="21" y2="3" />
+                      <line x1="3" y1="21" x2="10" y2="14" />
+                    </svg>
+                  ) : (
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="15 3 21 3 21 9" />
+                      <polyline points="9 21 3 21 3 15" />
+                      <line x1="21" y1="3" x2="14" y2="10" />
+                      <line x1="3" y1="21" x2="10" y2="14" />
+                    </svg>
+                  )}
+                  {mapExpanded ? 'Collapse' : 'Expand'}
+                </button>
+              )}
             </div>
 
-            {/* Confirm area */}
-            <div className="confirm-area">
-              <button
-                className="btn-primary btn-confirm"
-                disabled={!pendingGuess}
-                onClick={handleLockInGuess}
-              >
-                Confirm guess
-              </button>
-            </div>
+            {/* Confirm area - guessing phase only */}
+            {!showResult && (
+              <div className="confirm-area">
+                <button
+                  className="btn-primary btn-confirm"
+                  disabled={!pendingGuess}
+                  onClick={handleLockInGuess}
+                >
+                  Confirm guess
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -39,6 +39,7 @@
 body { margin: 0; overscroll-behavior: none; }
 
 #root {
+  height: 100vh;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -269,6 +270,7 @@ body { margin: 0; overscroll-behavior: none; }
 .app-layout {
   display: flex;
   flex-direction: column;
+  height: 100vh;
   height: 100dvh;
   overflow: hidden;
 }
@@ -276,6 +278,7 @@ body { margin: 0; overscroll-behavior: none; }
 .game-screen {
   position: relative;
   width: 100vw;
+  height: 100vh;
   height: 100dvh;
   overflow: hidden;
   background: #1a2810; /* Dark forest green */
@@ -337,6 +340,7 @@ body { margin: 0; overscroll-behavior: none; }
 /* ── Two-Panel Layout ─────────────────────────────────── */
 .game-panels {
   display: flex;
+  height: calc(100vh - 60px);
   height: calc(100dvh - 60px);
   margin-top: 60px;
   gap: 16px;
@@ -385,7 +389,7 @@ body { margin: 0; overscroll-behavior: none; }
 }
 
 .map-panel.collapsed {
-  width: 420px; /* Tall portrait card */
+  width: 560px;
   flex-shrink: 0;
 }
 
@@ -417,6 +421,12 @@ body { margin: 0; overscroll-behavior: none; }
     gap: 0;
   }
 
+  /* Result mode: map gets clamped height instead of flex: 1 when expanded */
+  .game-panels.result-mode .map-panel.expanded {
+    flex: 0 0 auto;
+    height: clamp(200px, 45%, 500px);
+  }
+
   .photo-panel.normal {
     flex: 1;
     border-radius: 0;
@@ -430,7 +440,7 @@ body { margin: 0; overscroll-behavior: none; }
 
   .map-panel.collapsed {
     width: auto;
-    height: 180px;
+    height: 320px;
     flex: none;
   }
 
@@ -439,10 +449,7 @@ body { margin: 0; overscroll-behavior: none; }
     width: auto;
   }
 
-  /* Collapsed mobile map: non-interactive */
-  .map-panel.collapsed .map-container {
-    pointer-events: none;
-  }
+  /* Collapsed mobile map is now directly interactive - pointer-events rule removed */
 
   .trail-photo {
     inset: 12px;
@@ -515,19 +522,7 @@ body { margin: 0; overscroll-behavior: none; }
 
 @media (max-width: 767px) {
   .map-panel.collapsed .mobile-tap-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(26, 26, 24, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.06em;
-    z-index: 1000;
-    cursor: pointer;
-    pointer-events: auto;
+    display: none;
   }
 
   .map-panel.expanded .mobile-tap-overlay {
@@ -760,7 +755,7 @@ body { margin: 0; overscroll-behavior: none; }
   }
 
   .result-map-container {
-    height: 400px;
+    height: clamp(180px, 40%, 400px);
     flex-shrink: 0;
     border-bottom: 1px solid rgba(26, 26, 24, 0.3);
   }
