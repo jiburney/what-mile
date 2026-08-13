@@ -75,8 +75,6 @@ export function GameScreen({
   }, [mapExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLockInGuess = () => {
-    // Expand map on mobile for result reveal
-    setMapExpanded(true);
     lockInGuess();
   };
 
@@ -152,21 +150,20 @@ export function GameScreen({
 
       {currentImage && (
         <div className={`game-panels ${showResult ? 'result-mode' : ''}`}>
-          {/* Photo panel - guessing phase only, positioned left/top */}
-          {!showResult && (
-            <div
-              ref={photoContainerRef}
-              className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}
-              onWheel={handlePhotoWheel}
-              onMouseDown={handlePhotoMouseDown}
-              onMouseMove={handlePhotoMouseMove}
-              onMouseUp={handlePhotoMouseUp}
-              onMouseLeave={handlePhotoMouseUp}
-              style={{
-                cursor: photoZoom > 1 ? 'grab' : 'default',
-                order: 1
-              }}
-            >
+          {/* Photo panel - visible during both guessing and result phases */}
+          <div
+            ref={photoContainerRef}
+            className={`photo-panel ${mapExpanded ? 'minimized' : 'normal'}`}
+            onWheel={handlePhotoWheel}
+            onMouseDown={handlePhotoMouseDown}
+            onMouseMove={handlePhotoMouseMove}
+            onMouseUp={handlePhotoMouseUp}
+            onMouseLeave={handlePhotoMouseUp}
+            style={{
+              cursor: photoZoom > 1 ? 'grab' : 'default',
+              order: 1
+            }}
+          >
               <div
                 className="photo-bg"
                 style={{ backgroundImage: `url(${currentImage.r2_url})` }}
@@ -186,45 +183,44 @@ export function GameScreen({
                 draggable={false}
               />
 
-              {/* Photo zoom controls */}
-              <div className="photo-zoom-controls">
-                <button
-                  className="zoom-btn"
-                  onClick={() => handlePhotoZoom(0.25)}
-                  disabled={photoZoom >= 3}
-                >
-                  +
-                </button>
-                <div className="zoom-readout">{photoZoom.toFixed(1)}×</div>
-                <button
-                  className="zoom-btn"
-                  onClick={() => handlePhotoZoom(-0.25)}
-                  disabled={photoZoom <= 1}
-                >
-                  −
-                </button>
-              </div>
-            </div>
-          )}
+              {/* Photo zoom controls - guessing phase only */}
+              {!showResult && (
+                <div className="photo-zoom-controls">
+                  <button
+                    className="zoom-btn"
+                    onClick={() => handlePhotoZoom(0.25)}
+                    disabled={photoZoom >= 3}
+                  >
+                    +
+                  </button>
+                  <div className="zoom-readout">{photoZoom.toFixed(1)}×</div>
+                  <button
+                    className="zoom-btn"
+                    onClick={() => handlePhotoZoom(-0.25)}
+                    disabled={photoZoom <= 1}
+                  >
+                    −
+                  </button>
+                </div>
+              )}
 
-          {/* Result panel - result phase only, positioned right/bottom */}
-          {showResult && currentResult && (
-            <div style={{ order: 2 }}>
-              <RoundResult
-                result={currentResult}
-                roundNumber={currentRound + 1}
-                totalRounds={totalRounds}
-                totalScore={totalScore}
-                onNext={nextRound}
-                isLastRound={isLastRound}
-              />
+              {/* Result card overlay - anchored to bottom of photo panel */}
+              {showResult && currentResult && (
+                <RoundResult
+                  result={currentResult}
+                  roundNumber={currentRound + 1}
+                  totalRounds={totalRounds}
+                  totalScore={totalScore}
+                  onNext={nextRound}
+                  isLastRound={isLastRound}
+                />
+              )}
             </div>
-          )}
 
-          {/* Map panel - persistent across both phases */}
+          {/* Map panel - persistent across both phases, order always 2 */}
           <div
             className={`map-panel ${mapExpanded ? 'expanded' : 'collapsed'}`}
-            style={{ order: showResult ? 1 : 2 }}
+            style={{ order: 2 }}
           >
             <div className="map-container">
               <GameMap
@@ -235,6 +231,18 @@ export function GameScreen({
                 actualName={showResult && currentResult ? currentResult.image.locationName : undefined}
                 showResult={showResult}
               />
+
+              {/* Persistent confirm/next button - fixed on map, changes based on phase */}
+              <button
+                className="btn-primary btn-persistent-action"
+                disabled={!showResult && !pendingGuess}
+                onClick={showResult ? nextRound : handleLockInGuess}
+              >
+                {showResult
+                  ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
+                  : 'Confirm guess'
+                }
+              </button>
 
               {/* Mobile collapsed: tap to expand overlay (hidden per FIX 1) */}
               <div className="mobile-tap-overlay" onClick={() => setMapExpanded(true)}>
@@ -276,19 +284,6 @@ export function GameScreen({
                 </button>
               )}
             </div>
-
-            {/* Confirm area - guessing phase only */}
-            {!showResult && (
-              <div className="confirm-area">
-                <button
-                  className="btn-primary btn-confirm"
-                  disabled={!pendingGuess}
-                  onClick={handleLockInGuess}
-                >
-                  Confirm guess
-                </button>
-              </div>
-            )}
           </div>
         </div>
       )}

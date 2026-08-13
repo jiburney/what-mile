@@ -70,6 +70,41 @@ interface MapControllerProps {
   pendingGuess: [number, number] | null;
 }
 
+// Reset view button component
+function ResetViewButton() {
+  const map = useMap();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleReset = () => {
+    map.fitBounds(AT_BOUNDS);
+  };
+
+  // Prevent click from propagating to map (which would place a guess pin)
+  useEffect(() => {
+    if (buttonRef.current) {
+      L.DomEvent.disableClickPropagation(buttonRef.current);
+    }
+  }, []);
+
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      className="map-reset-view"
+      onClick={handleReset}
+      aria-label="Reset view to full trail"
+      title="Reset view to full trail"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+        <path d="M21 3v5h-5" />
+        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+        <path d="M3 21v-5h5" />
+      </svg>
+    </button>
+  );
+}
+
 function MapController({ mapRef, showResult, actualLocation, pendingGuess }: MapControllerProps) {
   const map = useMap();
   const hasInitialFitRef = useRef(false);
@@ -218,6 +253,7 @@ export function GameMap({
         pendingGuess={pendingGuess}
       />
       <ClickHandler onGuess={onGuess} showResult={showResult} />
+      <ResetViewButton />
       {pendingGuess && (
         <Marker
           position={pendingGuess}
