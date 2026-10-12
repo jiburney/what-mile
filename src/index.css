@@ -533,7 +533,7 @@ body { margin: 0; overscroll-behavior: none; }
 .result-map-container .leaflet-control-zoom {
   border: none;
   box-shadow: none;
-  margin-bottom: 96px !important;
+  margin-bottom: 46px !important;
   margin-right: 10px !important;
   background: rgba(255, 255, 255, 0.82);
   border-radius: 6px;
@@ -545,7 +545,7 @@ body { margin: 0; overscroll-behavior: none; }
 /* Reset view button - positioned above zoom control */
 .map-reset-view {
   position: absolute;
-  bottom: 64px;
+  bottom: 14px;
   right: 10px;
   z-index: 1000;
   width: 32px;
@@ -625,6 +625,10 @@ body { margin: 0; overscroll-behavior: none; }
 
 .btn-persistent-action:not(:disabled):hover {
   background: var(--forest-mid);
+}
+
+.btn-persistent-action:not(:disabled):active {
+  transform: translateX(-50%) scale(0.97);
 }
 
 .btn-persistent-action:disabled {
