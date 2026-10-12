@@ -3,9 +3,11 @@ import { useState } from 'react';
 interface NameCaptureModalProps {
   onSubmit: (playerName: string | null, yearHiked: number | null) => void;
   onSkip: () => void;
+  error?: string;
+  submitting?: boolean;
 }
 
-export function NameCaptureModal({ onSubmit, onSkip }: NameCaptureModalProps) {
+export function NameCaptureModal({ onSubmit, onSkip, error, submitting }: NameCaptureModalProps) {
   const [playerName, setPlayerName] = useState('');
   const [yearHiked, setYearHiked] = useState('');
 
@@ -51,17 +53,29 @@ export function NameCaptureModal({ onSubmit, onSkip }: NameCaptureModalProps) {
           </select>
         </div>
 
+        {error && (
+          <div style={{
+            color: 'var(--error-color)',
+            fontSize: '0.875rem',
+            marginTop: '0.5rem',
+            marginBottom: '0.5rem',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
+
         <div className="modal-actions">
-          <button onClick={onSkip} className="secondary-button">
+          <button onClick={onSkip} className="secondary-button" disabled={submitting}>
             Skip
           </button>
-          <button onClick={handleSubmit} className="primary-button">
-            Submit Score
+          <button onClick={handleSubmit} className="primary-button" disabled={submitting}>
+            {submitting ? 'Submitting...' : 'Submit Score'}
           </button>
         </div>
 
         <p className="modal-note">
-          Your score will be saved either way. Adding your name helps build community!
+          Adding your name helps build community!
         </p>
       </div>
     </div>

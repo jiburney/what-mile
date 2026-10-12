@@ -31,6 +31,8 @@ export function DailyChallenge() {
   const [submittedScore, setSubmittedScore] = useState(false);
   const [showVeil, setShowVeil] = useState(false);
   const [resumeRounds, setResumeRounds] = useState<typeof state.rounds | null>(null);
+  const [submitError, setSubmitError] = useState<string | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const hasAutoStarted = useRef(false);
 
   const {
@@ -159,6 +161,9 @@ export function DailyChallenge() {
   const handleSubmitScore = async (playerName: string | null, yearHiked: number | null) => {
     if (!challengeId) return;
 
+    setIsSubmitting(true);
+    setSubmitError(undefined);
+
     try {
       const fingerprint = getClientFingerprint();
       const tier = overallTier(totalScore);
@@ -177,31 +182,93 @@ export function DailyChallenge() {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to submit score');
+      // Treat 409 (already submitted) as success
+      if (response.status === 409 || response.ok) {
+        // Save final score to localStorage
+        saveDailyChallengeState({
+          finalScore: {
+            total: totalScore,
+            tier,
+            playerName: playerName || undefined,
+            yearHiked: yearHiked || undefined,
+          },
+        });
+
+        setSubmittedScore(true);
+        setDailyPhase('leaderboard');
+        return;
       }
 
-      // Save final score to localStorage
-      saveDailyChallengeState({
-        finalScore: {
-          total: totalScore,
-          tier,
-          playerName: playerName || undefined,
-          yearHiked: yearHiked || undefined,
-        },
-      });
-
-      setSubmittedScore(true);
-      setDailyPhase('leaderboard');
+      // Other error
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to submit score');
     } catch (err) {
       console.error('Submit score error:', err);
-      alert('Failed to submit score. Please try again.');
+      setSubmitError('Couldn\'t save your score. Try again or skip.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleSkipNameCapture = () => {
-    handleSubmitScore(null, null);
+  const handleSkipNameCapture = async () => {
+    if (!challengeId) {
+      setDailyPhase('leaderboard');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const fingerprint = getClientFingerprint();
+      const tier = overallTier(totalScore);
+
+      const response = await fetch('/api/daily?action=submit-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          challengeId,
+          totalScore,
+          overallTier: tier,
+          roundScores: state.rounds.map(r => r.score),
+          clientFingerprint: fingerprint,
+          playerName: null,
+          yearHiked: null,
+        }),
+      });
+
+      if (response.status === 409 || response.ok) {
+        // Success or already submitted - save to localStorage
+        saveDailyChallengeState({
+          finalScore: {
+            total: totalScore,
+            tier,
+          },
+        });
+      } else {
+        // Failed but don't block - just log and save locally anyway
+        console.error('Anonymous submit failed, proceeding anyway');
+        saveDailyChallengeState({
+          finalScore: {
+            total: totalScore,
+            tier,
+          },
+        });
+      }
+    } catch (err) {
+      // Failed but don't block - log and save locally anyway
+      console.error('Anonymous submit error:', err);
+      saveDailyChallengeState({
+        finalScore: {
+          total: totalScore,
+          tier: overallTier(totalScore),
+        },
+      });
+    } finally {
+      setIsSubmitting(false);
+      // Always go to leaderboard regardless of success/failure
+      setSubmittedScore(true);
+      setDailyPhase('leaderboard');
+    }
   };
 
   // Loading/error states
@@ -253,6 +320,8 @@ export function DailyChallenge() {
         <NameCaptureModal
           onSubmit={handleSubmitScore}
           onSkip={handleSkipNameCapture}
+          error={submitError}
+          submitting={isSubmitting}
         />
       </SummaryCard>
     );
