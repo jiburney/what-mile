@@ -5,6 +5,7 @@ import {
   GeoJSON,
   Marker,
   useMapEvents,
+  useMap,
   Popup,
 } from 'react-leaflet';
 import L from 'leaflet';
@@ -61,6 +62,32 @@ function ClickHandler({ onGuess, disabled }: ClickHandlerProps) {
   return null;
 }
 
+// Keeps Leaflet's tile grid in sync with the container's actual size.
+// Must be a child of MapContainer so useMap() can reach the map via context —
+// reading mapRef.current from a parent useEffect(..., []) fails in react-leaflet 5
+// because the ref is populated after a re-render, not on the first effect run.
+function MapController() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize();
+    });
+    resizeObserver.observe(container);
+
+    // Correct for the address bar still settling right after mount.
+    const settleTimer = setTimeout(() => map.invalidateSize(), 300);
+
+    return () => {
+      resizeObserver.disconnect();
+      clearTimeout(settleTimer);
+    };
+  }, [map]);
+
+  return null;
+}
+
 interface Props {
   onGuess: (coords: [number, number]) => void;
   pendingGuess: [number, number] | null;
@@ -95,29 +122,6 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
     }
   }, [showResult, actualLocation, pendingGuess]);
 
-  // Keep Leaflet's internal tile grid in sync with the container's actual size.
-  // Mobile browsers resize the viewport (via 100dvh) as the address bar hides/shows
-  // while scrolling — Leaflet doesn't detect that on its own, which shows up as gray
-  // tile patches and a GeoJSON trail line that appears to shift off-canvas.
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    const container = map.getContainer();
-    const resizeObserver = new ResizeObserver(() => {
-      map.invalidateSize();
-    });
-    resizeObserver.observe(container);
-
-    // Also correct for the address bar still settling right after mount.
-    const settleTimer = setTimeout(() => map.invalidateSize(), 300);
-
-    return () => {
-      resizeObserver.disconnect();
-      clearTimeout(settleTimer);
-    };
-  }, []);
-
   const trailStyle: L.PathOptions = {
     color: '#2d5016',
     weight: 3,
@@ -144,6 +148,7 @@ export function GameMap({ onGuess, pendingGuess, actualLocation, actualName, sho
             Trail overlay not loaded — see README for setup
           </div>
         )}
+        <MapController />
         <ClickHandler onGuess={onGuess} disabled={showResult} />
         {pendingGuess && (
           <Marker position={pendingGuess} icon={guessIcon}>
