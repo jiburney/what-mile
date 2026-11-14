@@ -1604,139 +1604,165 @@ body { margin: 0; overscroll-behavior: none; }
   }
 }
 
-/* Desktop: card grid (default visible). Mobile: expandable drawer rows
-   (default hidden) — see @media block below. Both render; CSS picks which
-   one shows, same pattern used for responsive photo treatments elsewhere. */
-.summary-rounds-grid {
-  width: 100%;
-  max-width: 1200px;
+/* ── Photo Section ────────────────────────────────────── */
+.photo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.photo-section-heading {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+@media (max-width: 767px) {
+  .photo-section-heading {
+    font-size: 22px;
+  }
+}
+
+/* ── Photo Grid (Desktop) ─────────────────────────────── */
+.photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  padding-top: 14px;
 }
-.summary-round-card {
+
+@media (max-width: 767px) {
+  .photo-grid {
+    display: none;
+  }
+}
+
+.photo-grid-card {
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  border: 1px solid rgba(26,26,24,0.2);
-  border-radius: var(--radius-card);
+  gap: 12px;
+}
+
+.photo-grid-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  background: var(--parchment);
 }
-.summary-card-thumb {
-  height: 220px;
-  background-size: cover;
-  background-position: center;
-  border-bottom: 1px solid rgba(26,26,24,0.2);
+
+.photo-grid-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.summary-card-body {
-  flex: 1;
-  min-width: 0;
-  padding: 16px;
+
+.photo-grid-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.photo-grid-content {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 4px;
 }
-.summary-card-label {
+
+.photo-grid-state {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--stone);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-secondary);
 }
-.summary-card-label-state {
-  color: var(--ink);
-  font-weight: 800;
-  font-size: 12px;
-}
-.summary-card-location {
-  font-size: clamp(16px, 1.5vw, 20px);
+
+.photo-grid-place {
+  font-size: 16px;
   font-weight: 700;
   color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.summary-card-date {
+
+.photo-grid-season {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-tertiary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-/* Plain-text footer, matching the approved design spec — not a boxed
-   3-cell mini-table. That pattern (shared with RoundResult's dedicated
-   392px panel) never had room to breathe in a compact grid card, which is
-   why it needed ellipsis truncation even on short fixed words like "TIER"
-   and "SCORE". Plain text at normal size just fits. */
-.summary-card-footer {
-  margin-top: auto;
-  padding-top: 10px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 10px;
-  min-width: 0;
-}
-.summary-card-footer-meta {
+
+.photo-grid-meta {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  min-width: 0;
+  gap: 2px;
+  margin-top: 4px;
 }
-.summary-card-footer-dist {
+
+.photo-grid-distance {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-tertiary);
 }
-.summary-card-footer-tier {
+
+.photo-grid-tier {
   font-size: 13px;
   font-weight: 700;
 }
-.summary-card-footer-score {
-  flex: none;
+
+.photo-grid-score {
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 700;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
+  margin-top: 4px;
 }
 
-.summary-rounds-list {
+/* ── Photo List (Mobile) ──────────────────────────────── */
+.photo-list {
   display: none;
 }
 
 @media (max-width: 767px) {
-  .summary-rounds-grid {
-    display: none;
-  }
-  .summary-rounds-list {
+  .photo-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 500px;
-    padding-top: 14px;
+    gap: 12px;
   }
 }
 
-.summary-round-item {
+.photo-list-hint {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+@media (min-width: 768px) {
+  .photo-list-hint {
+    display: none;
+  }
+}
+
+.photo-list-item {
   border: 1px solid rgba(26,26,24,0.18);
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--parchment);
 }
-.summary-round-row {
+
+.photo-list-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 10px;
-  font-size: 14px;
+  padding: 10px;
   width: 100%;
   border: none;
   background: transparent;
@@ -1745,130 +1771,103 @@ body { margin: 0; overscroll-behavior: none; }
   color: inherit;
   cursor: pointer;
 }
-.summary-round-num {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  flex: none;
+
+.photo-list-thumb-wrapper {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.photo-list-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-list-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 12px;
+  background: var(--green);
   color: var(--cream);
-  background: var(--forest);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 50%;
 }
-.summary-round-thumb {
-  width: 56px;
-  height: 44px;
-  border-radius: var(--radius-badge);
-  flex: none;
-  background-size: cover;
-  background-position: center;
-  border: 1px solid rgba(26,26,24,0.15);
-}
-.summary-round-info {
+
+.photo-list-info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
-.summary-round-location {
+
+.photo-list-location {
+  font-size: 15px;
   font-weight: 700;
   color: var(--ink);
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.summary-round-meta {
-  font-size: 12px;
+
+.photo-list-season {
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-tertiary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.summary-round-score {
-  flex: none;
+
+.photo-list-meta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.photo-list-score {
   font-family: var(--font-display);
   font-size: 17px;
   font-weight: 700;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
-.summary-round-chevron {
-  flex: none;
+
+.photo-list-chevron {
+  flex-shrink: 0;
   color: var(--stone);
   transition: transform 0.2s ease;
 }
-.summary-round-item.is-open .summary-round-chevron {
+
+.photo-list-item.is-open .photo-list-chevron {
   transform: rotate(180deg);
 }
 
-/* Grid-rows 0fr→1fr trick: animates to natural content height without
-   guessing a max-height, and being a normal block (not absolute/overlay)
-   it naturally pushes rows below it down as it opens. */
-.summary-round-drawer-wrap {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.25s ease;
-}
-.summary-round-item.is-open .summary-round-drawer-wrap {
-  grid-template-rows: 1fr;
-}
-.summary-round-drawer {
-  overflow: hidden;
-  min-height: 0;
-}
-.summary-round-drawer-inner {
-  padding: 0 10px 10px;
+.photo-list-expanded {
+  padding: 16px;
+  border-top: 1px solid rgba(26,26,24,0.18);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-.summary-round-drawer-thumb {
-  width: 100%;
-  height: 160px;
-  border-radius: var(--radius-sm);
-  background-size: cover;
-  background-position: center;
-  border: 1px solid rgba(26,26,24,0.15);
-}
-.summary-round-drawer-date {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 12px;
+  background: var(--cream);
 }
 
-@media (max-width: 767px) {
-  .summary-round-row {
-    gap: 8px;
-    padding: 6px 8px;
-  }
-  .summary-round-num {
-    width: 22px;
-    height: 22px;
-    font-size: 10px;
-  }
-  .summary-round-thumb {
-    width: 44px;
-    height: 38px;
-  }
-  .summary-round-location {
-    font-size: 13px;
-  }
-  .summary-round-meta {
-    font-size: 11px;
-  }
-  .summary-round-score {
-    font-size: 15px;
-  }
+.photo-list-expanded-image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.photo-list-caption {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-tertiary);
 }
 
 /* ── Trail error notice ───────────────────────────────── */

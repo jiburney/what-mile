@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import type { RoundResult } from '../types';
-import { TIER_COLORS, formatScore } from '../utils/scoring';
 import { getTrailSection, parseLocationName } from '../utils/trail-sections';
 import { ShelterLog } from './ShelterLog';
 import { ScoreHero } from './ScoreHero';
 import { SummaryActions } from './SummaryActions';
+import { PhotoGrid } from './PhotoGrid';
+import { PhotoList } from './PhotoList';
 import { getTodayEastern } from '../utils/daily-challenge-storage';
 
 interface Props {
@@ -67,39 +67,7 @@ function seasonDateLabel(takenAt: string | undefined): string | null {
   return `${seasonLabel(date)} · ${monthYear}`;
 }
 
-function ChevronIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="summary-round-chevron"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
-
 export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDate, challengeId, submitStatus, onRetrySubmit }: Props) {
-  const [openRounds, setOpenRounds] = useState<Set<number>>(new Set());
-
-  const toggleRound = (i: number) => {
-    setOpenRounds(prev => {
-      const next = new Set(prev);
-      if (next.has(i)) {
-        next.delete(i);
-      } else {
-        next.add(i);
-      }
-      return next;
-    });
-  };
 
   const totalDistance = Math.round(rounds.reduce((sum, r) => sum + r.distanceMiles, 0));
   const bestRound = rounds.reduce((best, r) => (r.distanceMiles < best.distanceMiles ? r : best), rounds[0]);
@@ -166,77 +134,9 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
         </div>
       </div>
 
-      {/* Desktop: card grid. Mobile: expandable drawer rows below. Both
-          render — CSS media queries pick which one shows, matching how
-          responsive breakpoints work elsewhere in this app. */}
-      <div className="summary-rounds-grid">
-        {roundsWithMeta.map(({ round: r, index: i, distDisplay, place, stateAbbr, seasonDate }) => (
-          <div className="summary-round-card" key={r.image.id}>
-            <div
-              className="summary-card-thumb"
-              style={{ backgroundImage: `url(${r.image.r2_url})` }}
-            />
-            <div className="summary-card-body">
-              <span className="summary-card-label">
-                Round {i + 1} · <span className="summary-card-label-state">{stateAbbr}</span>
-              </span>
-              <span className="summary-card-location">{place}</span>
-              {seasonDate && <span className="summary-card-date">{seasonDate}</span>}
-              <div className="summary-card-footer">
-                <div className="summary-card-footer-meta">
-                  <span className="summary-card-footer-dist">{distDisplay} off</span>
-                  <span className="summary-card-footer-tier" style={{ color: TIER_COLORS[r.tier] }}>{r.tier}</span>
-                </div>
-                <span className="summary-card-footer-score">{formatScore(r.score)}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="summary-rounds-list">
-        {roundsWithMeta.map(({ round: r, index: i, distDisplay, seasonDate }) => {
-          const isOpen = openRounds.has(i);
-          return (
-            <div className={`summary-round-item ${isOpen ? 'is-open' : ''}`} key={r.image.id}>
-              <button
-                type="button"
-                className="summary-round-row"
-                onClick={() => toggleRound(i)}
-                aria-expanded={isOpen}
-              >
-                <span className="summary-round-num">{i + 1}</span>
-                <div
-                  className="summary-round-thumb"
-                  style={{ backgroundImage: `url(${r.image.r2_url})` }}
-                />
-                <div className="summary-round-info">
-                  <span className="summary-round-location">{r.image.locationName}</span>
-                  <span className="summary-round-meta">
-                    {distDisplay} · <span style={{ color: TIER_COLORS[r.tier] }}>{r.tier}</span>
-                  </span>
-                </div>
-                <span className="summary-round-score">{formatScore(r.score)}</span>
-                <ChevronIcon />
-              </button>
-
-              <div className="summary-round-drawer-wrap">
-                <div className="summary-round-drawer">
-                  <div className="summary-round-drawer-inner">
-                    <div
-                      className="summary-round-drawer-thumb"
-                      style={{ backgroundImage: `url(${r.image.r2_url})` }}
-                    />
-                    {seasonDate && (
-                      <span className="summary-round-drawer-date">{seasonDate}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {/* Photo grid (desktop) and photo list (mobile) */}
+      <PhotoGrid rounds={roundsWithMeta} />
+      <PhotoList rounds={roundsWithMeta} />
 
       {/* Shelter Log - only for today's daily challenge */}
       {mode === 'daily' && challengeId && challengeDate === getTodayEastern() && (
