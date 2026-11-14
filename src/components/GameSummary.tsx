@@ -5,6 +5,7 @@ import { ScoreHero } from './ScoreHero';
 import { SummaryActions } from './SummaryActions';
 import { PhotoGrid } from './PhotoGrid';
 import { PhotoList } from './PhotoList';
+import { RecapMap } from './RecapMap';
 import { getTodayEastern } from '../utils/daily-challenge-storage';
 
 interface Props {
@@ -126,11 +127,9 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
           </div>
         </div>
 
-        {/* Right column on desktop: Recap map placeholder */}
+        {/* Right column on desktop: Recap map */}
         <div className="summary-layout-right">
-          <div className="recap-map-placeholder">
-            {/* Recap map will go here in a later prompt */}
-          </div>
+          <RecapMap rounds={rounds} />
         </div>
       </div>
 
