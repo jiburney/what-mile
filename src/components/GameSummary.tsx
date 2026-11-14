@@ -12,6 +12,8 @@ interface Props {
   mode: 'daily' | 'free-play';
   challengeDate?: string;
   challengeId?: string;
+  submitStatus?: 'idle' | 'saving' | 'saved' | 'error';
+  onRetrySubmit?: () => void;
 }
 
 // Season boundaries by month (0-indexed): each spans exactly 3 months,
@@ -114,7 +116,7 @@ function ChevronIcon() {
   );
 }
 
-export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDate, challengeId }: Props) {
+export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDate, challengeId, submitStatus, onRetrySubmit }: Props) {
   const [openRounds, setOpenRounds] = useState<Set<number>>(new Set());
   const [countdownMs, setCountdownMs] = useState<number | null>(null);
   const tier = overallTier(totalScore);
@@ -287,7 +289,11 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
 
       {/* Shelter Log - only for today's daily challenge */}
       {mode === 'daily' && challengeId && challengeDate === getTodayEastern() && (
-        <ShelterLog challengeId={challengeId} />
+        <ShelterLog
+          challengeId={challengeId}
+          submitStatus={submitStatus}
+          onRetrySubmit={onRetrySubmit}
+        />
       )}
     </div>
   );

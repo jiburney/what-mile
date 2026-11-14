@@ -17,9 +17,90 @@ interface ShelterLogData {
 
 interface ShelterLogProps {
   challengeId: string;
+  submitStatus?: 'idle' | 'saving' | 'saved' | 'error';
+  onRetrySubmit?: () => void;
 }
 
-export function ShelterLog({ challengeId }: ShelterLogProps) {
+interface PlayerRowProps {
+  rank: number;
+  score: number;
+  playerName: string | null;
+  signingMode: boolean;
+  nameInput: string;
+  signError: string | null;
+  signing: boolean;
+  onSignClick: () => void;
+  onCancelSign: () => void;
+  onSign: () => void;
+  onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function PlayerRow({
+  rank,
+  score,
+  playerName,
+  signingMode,
+  nameInput,
+  signError,
+  signing,
+  onSignClick,
+  onCancelSign,
+  onSign,
+  onNameChange
+}: PlayerRowProps) {
+  return (
+    <li className="shelter-log-row is-you" aria-label="Your entry">
+      {/* Top line: 3-column grid */}
+      <div className="shelter-log-row-grid">
+        <span className="shelter-log-rank">#{rank}</span>
+        <span className="shelter-log-name">
+          {playerName ? `${playerName} (you)` : 'You'}
+        </span>
+        <span className="shelter-log-score">{formatScore(score)}</span>
+      </div>
+
+      {/* Unsigned: subtitle + button */}
+      {!playerName && !signingMode && (
+        <>
+          <div className="shelter-log-row-subtitle">Not in the log yet</div>
+          <button className="shelter-log-row-button" onClick={onSignClick}>
+            Sign the log
+          </button>
+        </>
+      )}
+
+      {/* Editing: form */}
+      {!playerName && signingMode && (
+        <div className="shelter-log-sign-form">
+          <label className="shelter-log-label">
+            Name or trail name
+            <input
+              className="shelter-log-input"
+              value={nameInput}
+              onChange={onNameChange}
+              maxLength={50}
+              autoFocus
+              disabled={signing}
+            />
+          </label>
+          <div className="shelter-log-button-row">
+            <button className="shelter-log-btn-cancel" onClick={onCancelSign} disabled={signing}>
+              Cancel
+            </button>
+            <button className="shelter-log-btn-sign" onClick={onSign} disabled={signing}>
+              {signing ? 'Signing...' : 'Sign'}
+            </button>
+          </div>
+          {signError && (
+            <div className="shelter-log-error" role="alert">{signError}</div>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
+export function ShelterLog({ challengeId, submitStatus = 'idle', onRetrySubmit }: ShelterLogProps) {
   const [data, setData] = useState<ShelterLogData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,12 +135,13 @@ export function ShelterLog({ challengeId }: ShelterLogProps) {
     }
   };
 
-  // Initial fetch - guard against StrictMode double-mount
+  // Fetch only after score is saved - guard against StrictMode
   useEffect(() => {
+    if (submitStatus !== 'saved') return;
     if (hasFetchedRef.current) return;
     hasFetchedRef.current = true;
     fetchLeaderboard();
-  }, [challengeId]);
+  }, [submitStatus, challengeId]);
 
   const handleSignClick = () => {
     setSigningMode(true);
@@ -115,18 +197,51 @@ export function ShelterLog({ challengeId }: ShelterLogProps) {
     }
   };
 
-  if (loading) {
+  // Show saving state
+  if (submitStatus === 'saving') {
     return (
       <div className="shelter-log">
-        <div className="shelter-log-loading">Loading shelter log...</div>
+        <div className="shelter-log-frame">
+          <div className="shelter-log-loading">Saving your score...</div>
+        </div>
       </div>
     );
   }
 
+  // Show error state with retry
+  if (submitStatus === 'error') {
+    return (
+      <div className="shelter-log">
+        <div className="shelter-log-frame">
+          <div className="shelter-log-error">
+            Couldn't save your score.
+            {onRetrySubmit && (
+              <button onClick={onRetrySubmit} className="shelter-log-retry-btn">Try again</button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Still loading after save
+  if (loading) {
+    return (
+      <div className="shelter-log">
+        <div className="shelter-log-frame">
+          <div className="shelter-log-loading">Loading shelter log...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Fetch error
   if (error || !data) {
     return (
       <div className="shelter-log">
-        <div className="shelter-log-error">{error || 'Failed to load shelter log'}</div>
+        <div className="shelter-log-frame">
+          <div className="shelter-log-error">{error || 'Failed to load shelter log'}</div>
+        </div>
       </div>
     );
   }
@@ -139,95 +254,70 @@ export function ShelterLog({ challengeId }: ShelterLogProps) {
 
   return (
     <div className="shelter-log">
-      <div className="shelter-log-header">
-        <h3 className="shelter-log-title">Shelter Log</h3>
-        <div className="shelter-log-count">{totalPlayers} {totalPlayers === 1 ? 'hiker' : 'hikers'} today</div>
-      </div>
+      <div className="shelter-log-frame">
+        <div className="shelter-log-header">
+          <h3 className="shelter-log-title">Shelter Log</h3>
+          <div className="shelter-log-count">{totalPlayers} {totalPlayers === 1 ? 'hiker' : 'hikers'} today</div>
+        </div>
 
-      <div className="shelter-log-page">
-        <div className="shelter-log-entries">
+        <ol className="shelter-log-page">
+          {/* Regular rows (non-player or player in top 5) */}
           {displayEntries.map((entry, idx) => {
             const isYou = entry.isYou;
-            const displayName = entry.playerName || 'Anonymous hiker';
 
+            if (isYou) {
+              // Player row in top 5
+              return (
+                <PlayerRow
+                  key={idx}
+                  rank={entry.rank}
+                  score={entry.totalScore}
+                  playerName={entry.playerName}
+                  signingMode={signingMode}
+                  nameInput={nameInput}
+                  signError={signError}
+                  signing={signing}
+                  onSignClick={handleSignClick}
+                  onCancelSign={handleCancelSign}
+                  onSign={handleSign}
+                  onNameChange={(e) => setNameInput(e.target.value)}
+                />
+              );
+            }
+
+            // Regular row (not player)
+            const displayName = entry.playerName || 'Anonymous hiker';
             return (
-              <div
-                key={idx}
-                className={`shelter-log-row ${isYou ? 'is-you' : ''}`}
-              >
-                <span className="shelter-log-rank">#{entry.rank}</span>
-                <span className="shelter-log-name">
-                  {isYou && !entry.playerName ? 'You' : displayName}
-                  {isYou && entry.playerName ? ' (you)' : ''}
-                </span>
-                <span className="shelter-log-score">{formatScore(entry.totalScore)}</span>
-                {isYou && !entry.playerName && !signingMode && (
-                  <button
-                    className="shelter-log-sign-btn"
-                    onClick={handleSignClick}
-                  >
-                    Sign the log
-                  </button>
-                )}
-              </div>
+              <li key={idx} className="shelter-log-row">
+                <div className="shelter-log-row-grid">
+                  <span className="shelter-log-rank">#{entry.rank}</span>
+                  <span className="shelter-log-name">{displayName}</span>
+                  <span className="shelter-log-score">{formatScore(entry.totalScore)}</span>
+                </div>
+              </li>
             );
           })}
 
-          {showTopThree && (
+          {/* Gap marker and player row when ranked > 5 */}
+          {showTopThree && yourScore && (
             <>
-              <div className="shelter-log-break">· · ·</div>
-              <div className="shelter-log-row is-you">
-                <span className="shelter-log-rank">#{yourScore.rank}</span>
-                <span className="shelter-log-name">
-                  {yourScore.playerName ? `${yourScore.playerName} (you)` : 'You'}
-                </span>
-                <span className="shelter-log-score">{formatScore(yourScore.totalScore)}</span>
-                {!yourScore.playerName && !signingMode && (
-                  <button
-                    className="shelter-log-sign-btn"
-                    onClick={handleSignClick}
-                  >
-                    Sign the log
-                  </button>
-                )}
-              </div>
+              <li className="shelter-log-break">· · ·</li>
+              <PlayerRow
+                rank={yourScore.rank}
+                score={yourScore.totalScore}
+                playerName={yourScore.playerName}
+                signingMode={signingMode}
+                nameInput={nameInput}
+                signError={signError}
+                signing={signing}
+                onSignClick={handleSignClick}
+                onCancelSign={handleCancelSign}
+                onSign={handleSign}
+                onNameChange={(e) => setNameInput(e.target.value)}
+              />
             </>
           )}
-        </div>
-
-        {signingMode && (
-          <div className="shelter-log-sign-form">
-            <input
-              type="text"
-              className="shelter-log-input"
-              placeholder="Name or trail name"
-              value={nameInput}
-              onChange={(e) => setNameInput(e.target.value)}
-              maxLength={50}
-              autoFocus
-              disabled={signing}
-            />
-            <div className="shelter-log-sign-actions">
-              <button
-                className="shelter-log-btn-cancel"
-                onClick={handleCancelSign}
-                disabled={signing}
-              >
-                Cancel
-              </button>
-              <button
-                className="shelter-log-btn-sign"
-                onClick={handleSign}
-                disabled={signing}
-              >
-                {signing ? 'Signing...' : 'Sign'}
-              </button>
-            </div>
-            {signError && (
-              <div className="shelter-log-sign-error">{signError}</div>
-            )}
-          </div>
-        )}
+        </ol>
       </div>
     </div>
   );

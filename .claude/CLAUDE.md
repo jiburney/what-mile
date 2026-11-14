@@ -2,8 +2,9 @@
 
 A GeoGuessr-style geography game for the Appalachian Trail. Players are shown a photo taken somewhere on the AT and must tap the map to guess where it was taken. Built with React 19, TypeScript, Vite, and React-Leaflet. Deployed on Vercel with a Supabase (Postgres) + Cloudflare R2 backend.
 
-**Production:** https://what-mile.vercel.app
-**Active branch:** `feat/core-redesign` (core UI/UX redesign — see status.md for current state; not yet merged to main)
+**Production:** https://what-mile.vercel.app  
+**Active branch:** `feat/core-redesign` (core UI/UX redesign — see status.md for current state; not yet merged to main)  
+**Design reference:** `.claude/design/daily-summary.md` (exported from Claude Design canvas, owner-only source at https://claude.ai/artifact/FNEu5GVAde5AEqn7h5MSff)
 
 ---
 

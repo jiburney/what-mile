@@ -28,6 +28,7 @@ export function DailyChallenge() {
   const [dailyPhotos, setDailyPhotos] = useState<ImageConfig[] | null>(null);
   const [showVeil, setShowVeil] = useState(false);
   const [resumeRounds, setResumeRounds] = useState<typeof state.rounds | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const hasAutoStarted = useRef(false);
   const hasAutoSubmittedRef = useRef(false);
 
@@ -114,6 +115,7 @@ export function DailyChallenge() {
       !hasAutoSubmittedRef.current
     ) {
       hasAutoSubmittedRef.current = true;
+      setSubmitStatus('saving');
 
       const autoSubmit = async () => {
         try {
@@ -135,6 +137,7 @@ export function DailyChallenge() {
 
           // Treat 409 (already submitted) as success
           if (response.status === 409 || response.ok) {
+            setSubmitStatus('saved');
             // Save final score to localStorage
             saveDailyChallengeState({
               finalScore: {
@@ -144,11 +147,11 @@ export function DailyChallenge() {
             });
           } else {
             console.error('Auto-submit failed:', response.status);
-            // Don't block UI - just log the error
+            setSubmitStatus('error');
           }
         } catch (err) {
           console.error('Auto-submit error:', err);
-          // Don't block UI - just log the error
+          setSubmitStatus('error');
         }
       };
 
@@ -196,6 +199,12 @@ export function DailyChallenge() {
     }
   };
 
+  const handleRetrySubmit = () => {
+    hasAutoSubmittedRef.current = false;
+    setSubmitStatus('idle');
+    // The useEffect will trigger again on next render
+  };
+
   // Loading/error states
   if (loading || !dailyPhotos) {
     return (
@@ -236,6 +245,8 @@ export function DailyChallenge() {
           mode="daily"
           challengeDate={targetDate}
           challengeId={challengeId || undefined}
+          submitStatus={submitStatus}
+          onRetrySubmit={handleRetrySubmit}
         />
       </SummaryCard>
     );

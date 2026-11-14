@@ -372,6 +372,7 @@ async function handleGetLeaderboard(req: VercelRequest, res: VercelResponse) {
     rank: s.rank,
     totalScore: s.totalScore,
     playerName: s.playerName,
+    isYou: s.isYou,
   }));
 
   return res.status(200).json({
