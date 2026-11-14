@@ -4,6 +4,7 @@ import { GameMap } from './GameMap';
 import { GameHeader } from './GameHeader';
 import { RoundResult } from './RoundResult';
 import { EntryVeil } from './EntryVeil';
+import { formatScore } from '../utils/scoring';
 import type { ImageConfig, RoundResult as RoundResultType } from '../types';
 
 interface GameScreenProps {
@@ -232,25 +233,63 @@ export function GameScreen({
                 showResult={showResult}
               />
 
-              {/* Trail direction chips */}
-              <span className="map-trail-chip chip-top-left">
-                <span className="chip-arrow">↑</span>NOBO
-              </span>
-              <span className="map-trail-chip chip-bottom-left">
-                <span className="chip-arrow">↓</span>SOBO
-              </span>
+              {/* Map overlays during result */}
+              {showResult && currentResult && (
+                <>
+                  {/* Legend chip - top left */}
+                  <div className="map-result-legend">
+                    <div className="map-legend-item">
+                      <span className="map-legend-dot map-legend-dot-photo"></span>
+                      Photo location
+                    </div>
+                    <div className="map-legend-item">
+                      <span className="map-legend-dot map-legend-dot-guess"></span>
+                      Your guess
+                    </div>
+                  </div>
+
+                  {/* Distance chip - center between pins */}
+                  <div className="map-distance-chip">
+                    {currentResult.distanceMiles < 1
+                      ? `${Math.round(currentResult.distanceMiles * 5280)} ft`
+                      : `${currentResult.distanceMiles.toFixed(0)} mi`}
+                  </div>
+                </>
+              )}
+
+              {/* Trail direction chips (shown when NOT in result mode) */}
+              {!showResult && (
+                <>
+                  <span className="map-trail-chip chip-top-left">
+                    <span className="chip-arrow">↑</span>NOBO
+                  </span>
+                  <span className="map-trail-chip chip-bottom-left">
+                    <span className="chip-arrow">↓</span>SOBO
+                  </span>
+                </>
+              )}
 
               {/* Persistent confirm/next button - centered on map, changes based on phase */}
-              <button
-                className="btn-primary btn-persistent-action"
-                disabled={!showResult && !pendingGuess}
-                onClick={showResult ? nextRound : handleLockInGuess}
-              >
-                {showResult
-                  ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
-                  : 'Confirm guess'
-                }
-              </button>
+              <div className="map-persistent-action-row">
+                {/* Mobile running total chip */}
+                {showResult && (
+                  <div className="map-running-total-chip">
+                    <span className="map-running-total-label">TOTAL</span>
+                    <span className="map-running-total-value">{formatScore(totalScore)}</span>
+                  </div>
+                )}
+
+                <button
+                  className="btn-primary btn-persistent-action"
+                  disabled={!showResult && !pendingGuess}
+                  onClick={showResult ? nextRound : handleLockInGuess}
+                >
+                  {showResult
+                    ? (isLastRound ? 'See Final Score' : `Round ${currentRound + 2} →`)
+                    : 'Confirm guess'
+                  }
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import {
   TileLayer,
   GeoJSON,
   Marker,
+  Polyline,
   useMapEvents,
   useMap,
   Popup,
@@ -20,25 +21,27 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const guessIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-  className: 'guess-marker',
+// Custom SVG icons for result pins with white outline
+const guessIcon = L.divIcon({
+  className: 'custom-guess-marker',
+  html: `<div style="position: relative; width: 30px; height: 41px;">
+    <svg width="30" height="41" viewBox="0 0 30 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 26 15 26s15-14.75 15-26c0-8.284-6.716-15-15-15z" fill="#a5561a" stroke="white" stroke-width="2"/>
+    </svg>
+  </div>`,
+  iconSize: [30, 41],
+  iconAnchor: [15, 41],
 });
 
-const actualIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-  className: 'actual-marker',
+const actualIcon = L.divIcon({
+  className: 'custom-actual-marker',
+  html: `<div style="position: relative; width: 30px; height: 41px;">
+    <svg width="30" height="41" viewBox="0 0 30 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 26 15 26s15-14.75 15-26c0-8.284-6.716-15-15-15z" fill="#2d5016" stroke="white" stroke-width="2"/>
+    </svg>
+  </div>`,
+  iconSize: [30, 41],
+  iconAnchor: [15, 41],
 });
 
 // AT bounding box
@@ -272,10 +275,22 @@ export function GameMap({
           <Popup>Your guess</Popup>
         </Marker>
       )}
-      {showResult && actualLocation && (
-        <Marker position={actualLocation} icon={actualIcon}>
-          <Popup>{actualName ?? 'Actual location'}</Popup>
-        </Marker>
+      {showResult && actualLocation && pendingGuess && (
+        <>
+          {/* Dashed line between guess and photo location */}
+          <Polyline
+            positions={[pendingGuess, actualLocation]}
+            pathOptions={{
+              color: '#1a1a18',
+              weight: 2,
+              dashArray: '4, 4',
+            }}
+          />
+          {/* Photo location marker */}
+          <Marker position={actualLocation} icon={actualIcon}>
+            <Popup>{actualName ?? 'Actual location'}</Popup>
+          </Marker>
+        </>
       )}
     </MapContainer>
   );
