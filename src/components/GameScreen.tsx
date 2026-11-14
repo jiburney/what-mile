@@ -25,6 +25,7 @@ interface GameScreenProps {
 
   // Display customization
   headerTitle?: string;
+  modeLabel?: string;
   showEntryVeil?: boolean;
   onDismissVeil?: () => void;
   veilMode?: 'free-play' | 'daily';
@@ -46,6 +47,7 @@ export function GameScreen({
   lockInGuess,
   nextRound,
   headerTitle = 'What Mile?',
+  modeLabel,
   showEntryVeil = false,
   onDismissVeil,
   veilMode = 'free-play',
@@ -140,6 +142,7 @@ export function GameScreen({
         currentRound={currentRound}
         totalRounds={totalRounds}
         score={totalScore}
+        modeLabel={modeLabel}
       />
 
       {currentImage && (

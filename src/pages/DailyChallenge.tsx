@@ -237,7 +237,7 @@ export function DailyChallenge() {
 
   if (phase === 'summary') {
     return (
-      <SummaryCard totalRounds={totalRounds} totalScore={totalScore} headerTitle="Daily Challenge">
+      <SummaryCard totalRounds={totalRounds} totalScore={totalScore} modeLabel="Daily Challenge">
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
@@ -267,7 +267,7 @@ export function DailyChallenge() {
         setGuess={setGuess}
         lockInGuess={lockInGuess}
         nextRound={nextRound}
-        headerTitle="Daily Challenge"
+        modeLabel="Daily Challenge"
         showEntryVeil={showVeil}
         onDismissVeil={() => setShowVeil(false)}
         veilMode="daily"

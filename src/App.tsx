@@ -45,7 +45,7 @@ export default function App() {
 
   if (phase === 'summary') {
     return (
-      <SummaryCard totalRounds={totalRounds} totalScore={totalScore}>
+      <SummaryCard totalRounds={totalRounds} totalScore={totalScore} modeLabel="Free Play">
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
@@ -71,6 +71,7 @@ export default function App() {
         setGuess={setGuess}
         lockInGuess={lockInGuess}
         nextRound={nextRound}
+        modeLabel="Free Play"
         showEntryVeil={!veilDismissed}
         onDismissVeil={() => setVeilDismissed(true)}
         veilMode="free-play"
