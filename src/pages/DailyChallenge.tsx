@@ -5,8 +5,6 @@ import { DailyStartScreen } from '../components/DailyStartScreen';
 import { GameScreen } from '../components/GameScreen';
 import { GameSummary } from '../components/GameSummary';
 import { SummaryCard } from '../components/SummaryCard';
-import { NameCaptureModal } from '../components/NameCaptureModal';
-import { DailyLeaderboard } from '../components/DailyLeaderboard';
 import {
   canPlayToday,
   getTodayEastern,
@@ -18,7 +16,7 @@ import {
 import { overallTier } from '../utils/scoring';
 import type { ImageConfig } from '../types';
 
-type DailyPhase = 'start' | 'playing' | 'name-capture' | 'leaderboard';
+type DailyPhase = 'start' | 'playing';
 
 export function DailyChallenge() {
   const { date } = useParams<{ date?: string }>();
@@ -28,12 +26,10 @@ export function DailyChallenge() {
   const [dailyPhase, setDailyPhase] = useState<DailyPhase>('start');
   const [challengeId, setChallengeId] = useState<string | null>(null);
   const [dailyPhotos, setDailyPhotos] = useState<ImageConfig[] | null>(null);
-  const [submittedScore, setSubmittedScore] = useState(false);
   const [showVeil, setShowVeil] = useState(false);
   const [resumeRounds, setResumeRounds] = useState<typeof state.rounds | null>(null);
-  const [submitError, setSubmitError] = useState<string | undefined>(undefined);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const hasAutoStarted = useRef(false);
+  const hasAutoSubmittedRef = useRef(false);
 
   const {
     state,
@@ -109,20 +105,58 @@ export function DailyChallenge() {
     }
   }, [state.rounds, state.phase, isToday, challengeId, targetDate]);
 
-  // Handle game completion
+  // Auto-submit score on completion (today's challenges only)
   useEffect(() => {
-    if (state.phase === 'summary' && !submittedScore && isToday) {
-      // Show name capture modal
-      setDailyPhase('name-capture');
+    if (
+      state.phase === 'summary' &&
+      isToday &&
+      challengeId &&
+      !hasAutoSubmittedRef.current
+    ) {
+      hasAutoSubmittedRef.current = true;
+
+      const autoSubmit = async () => {
+        try {
+          const fingerprint = getClientFingerprint();
+          const tier = overallTier(totalScore);
+
+          const response = await fetch('/api/daily?action=submit-score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              challengeId,
+              totalScore,
+              overallTier: tier,
+              roundScores: state.rounds.map(r => r.score),
+              clientFingerprint: fingerprint,
+              playerName: null, // Anonymous by default
+            }),
+          });
+
+          // Treat 409 (already submitted) as success
+          if (response.status === 409 || response.ok) {
+            // Save final score to localStorage
+            saveDailyChallengeState({
+              finalScore: {
+                total: totalScore,
+                tier,
+              },
+            });
+          } else {
+            console.error('Auto-submit failed:', response.status);
+            // Don't block UI - just log the error
+          }
+        } catch (err) {
+          console.error('Auto-submit error:', err);
+          // Don't block UI - just log the error
+        }
+      };
+
+      autoSubmit();
     }
-  }, [state.phase, submittedScore, isToday]);
+  }, [state.phase, isToday, challengeId, totalScore, state.rounds]);
 
   const handleStart = () => {
-    if (isToday && !canPlayToday()) {
-      setDailyPhase('leaderboard');
-      return;
-    }
-
     if (isToday) {
       clearDailyChallengeGame();
       saveDailyChallengeState({
@@ -154,120 +188,11 @@ export function DailyChallenge() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showVeil, dailyPhotos, resumeRounds]);
 
-  const handleViewLeaderboard = () => {
-    setDailyPhase('leaderboard');
-  };
-
-  const handleSubmitScore = async (playerName: string | null, yearHiked: number | null) => {
-    if (!challengeId) return;
-
-    setIsSubmitting(true);
-    setSubmitError(undefined);
-
-    try {
-      const fingerprint = getClientFingerprint();
-      const tier = overallTier(totalScore);
-
-      const response = await fetch('/api/daily?action=submit-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          challengeId,
-          totalScore,
-          overallTier: tier,
-          roundScores: state.rounds.map(r => r.score),
-          clientFingerprint: fingerprint,
-          playerName,
-          yearHiked,
-        }),
-      });
-
-      // Treat 409 (already submitted) as success
-      if (response.status === 409 || response.ok) {
-        // Save final score to localStorage
-        saveDailyChallengeState({
-          finalScore: {
-            total: totalScore,
-            tier,
-            playerName: playerName || undefined,
-            yearHiked: yearHiked || undefined,
-          },
-        });
-
-        setSubmittedScore(true);
-        setDailyPhase('leaderboard');
-        return;
-      }
-
-      // Other error
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to submit score');
-    } catch (err) {
-      console.error('Submit score error:', err);
-      setSubmitError('Couldn\'t save your score. Try again or skip.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleSkipNameCapture = async () => {
-    if (!challengeId) {
-      setDailyPhase('leaderboard');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const fingerprint = getClientFingerprint();
-      const tier = overallTier(totalScore);
-
-      const response = await fetch('/api/daily?action=submit-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          challengeId,
-          totalScore,
-          overallTier: tier,
-          roundScores: state.rounds.map(r => r.score),
-          clientFingerprint: fingerprint,
-          playerName: null,
-          yearHiked: null,
-        }),
-      });
-
-      if (response.status === 409 || response.ok) {
-        // Success or already submitted - save to localStorage
-        saveDailyChallengeState({
-          finalScore: {
-            total: totalScore,
-            tier,
-          },
-        });
-      } else {
-        // Failed but don't block - just log and save locally anyway
-        console.error('Anonymous submit failed, proceeding anyway');
-        saveDailyChallengeState({
-          finalScore: {
-            total: totalScore,
-            tier,
-          },
-        });
-      }
-    } catch (err) {
-      // Failed but don't block - log and save locally anyway
-      console.error('Anonymous submit error:', err);
-      saveDailyChallengeState({
-        finalScore: {
-          total: totalScore,
-          tier: overallTier(totalScore),
-        },
-      });
-    } finally {
-      setIsSubmitting(false);
-      // Always go to leaderboard regardless of success/failure
-      setSubmittedScore(true);
-      setDailyPhase('leaderboard');
+  const handleViewResults = () => {
+    const savedState = getDailyChallengeState();
+    if (savedState?.completedRounds && savedState.completedRounds.length === 5) {
+      // Load saved rounds into game state and show summary
+      startGame(savedState.completedRounds);
     }
   };
 
@@ -295,36 +220,7 @@ export function DailyChallenge() {
 
   // Daily challenge phases
   if (dailyPhase === 'start') {
-    return <DailyStartScreen onStart={handleStart} onViewLeaderboard={handleViewLeaderboard} dailyPhotos={dailyPhotos} />;
-  }
-
-  if (dailyPhase === 'leaderboard') {
-    return challengeId ? (
-      <DailyLeaderboard
-        challengeId={challengeId}
-        onPlayAgain={!isToday ? handleStart : undefined}
-      />
-    ) : null;
-  }
-
-  if (dailyPhase === 'name-capture') {
-    return (
-      <SummaryCard totalRounds={totalRounds} totalScore={totalScore} headerTitle="Daily Challenge">
-        <GameSummary
-          rounds={state.rounds}
-          totalScore={totalScore}
-          onPlayAgain={() => {}} // No replay for daily mode
-          mode="daily"
-          challengeDate={targetDate}
-        />
-        <NameCaptureModal
-          onSubmit={handleSubmitScore}
-          onSkip={handleSkipNameCapture}
-          error={submitError}
-          submitting={isSubmitting}
-        />
-      </SummaryCard>
-    );
+    return <DailyStartScreen onStart={handleStart} onViewResults={handleViewResults} dailyPhotos={dailyPhotos} />;
   }
 
   // Playing phase - use shared GameScreen component
@@ -336,9 +232,10 @@ export function DailyChallenge() {
         <GameSummary
           rounds={rounds}
           totalScore={totalScore}
-          onPlayAgain={() => {}} // Handled by name-capture modal
+          onPlayAgain={() => {}}
           mode="daily"
           challengeDate={targetDate}
+          challengeId={challengeId || undefined}
         />
       </SummaryCard>
     );

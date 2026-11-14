@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import type { RoundResult } from '../types';
 import { TIER_COLORS, formatScore, MAX_SCORE, overallTier } from '../utils/scoring';
 import { getTrailSection, parseLocationName } from '../utils/trail-sections';
+import { ShelterLog } from './ShelterLog';
+import { getTodayEastern } from '../utils/daily-challenge-storage';
 
 interface Props {
   rounds: RoundResult[];
@@ -9,6 +11,7 @@ interface Props {
   onPlayAgain: () => void;
   mode: 'daily' | 'free-play';
   challengeDate?: string;
+  challengeId?: string;
 }
 
 // Season boundaries by month (0-indexed): each spans exactly 3 months,
@@ -111,7 +114,7 @@ function ChevronIcon() {
   );
 }
 
-export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDate }: Props) {
+export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDate, challengeId }: Props) {
   const [openRounds, setOpenRounds] = useState<Set<number>>(new Set());
   const [countdownMs, setCountdownMs] = useState<number | null>(null);
   const tier = overallTier(totalScore);
@@ -281,6 +284,11 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
           );
         })}
       </div>
+
+      {/* Shelter Log - only for today's daily challenge */}
+      {mode === 'daily' && challengeId && challengeDate === getTodayEastern() && (
+        <ShelterLog challengeId={challengeId} />
+      )}
     </div>
   );
 }

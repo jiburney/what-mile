@@ -11,7 +11,6 @@ export interface DailyChallengeState {
     total: number;
     tier: TierName;
     playerName?: string;
-    yearHiked?: number;
   };
 }
 

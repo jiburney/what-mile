@@ -5,11 +5,11 @@ import type { ImageConfig } from '../types';
 
 interface DailyStartScreenProps {
   onStart: () => void;
-  onViewLeaderboard: () => void;
+  onViewResults: () => void;
   dailyPhotos: ImageConfig[] | null;
 }
 
-export function DailyStartScreen({ onStart, onViewLeaderboard, dailyPhotos }: DailyStartScreenProps) {
+export function DailyStartScreen({ onStart, onViewResults, dailyPhotos }: DailyStartScreenProps) {
   const [hasPlayed, setHasPlayed] = useState(false);
 
   useEffect(() => {
@@ -52,8 +52,8 @@ export function DailyStartScreen({ onStart, onViewLeaderboard, dailyPhotos }: Da
             </div>
 
             <div className="daily-entry-actions">
-              <button onClick={onViewLeaderboard} className="btn-primary">
-                View Leaderboard
+              <button onClick={onViewResults} className="btn-primary">
+                View Today's Results
               </button>
               <a href="/play" className="daily-entry-link">Free play instead</a>
               <div className="daily-entry-unlock-note">Tomorrow's challenge unlocks at midnight Eastern</div>

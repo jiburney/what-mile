@@ -48,9 +48,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return await handleSubmitScore(req, res);
       case 'get-leaderboard':
         return await handleGetLeaderboard(req, res);
+      case 'sign-log':
+        return await handleSignLog(req, res);
       default:
         return res.status(400).json({
-          error: 'Invalid action. Supported: get-challenge, submit-score, get-leaderboard'
+          error: 'Invalid action. Supported: get-challenge, submit-score, get-leaderboard, sign-log'
         });
     }
   } catch (error) {
@@ -322,7 +324,7 @@ async function handleGetLeaderboard(req: VercelRequest, res: VercelResponse) {
   // Fetch all scores for this challenge, ordered by score desc
   const { data: scores, error: scoresError } = await supabaseAdmin
     .from('daily_scores')
-    .select('id, total_score, player_name, year_hiked, client_fingerprint')
+    .select('id, total_score, player_name, client_fingerprint')
     .eq('challenge_id', challengeId)
     .order('total_score', { ascending: false });
 
@@ -355,8 +357,7 @@ async function handleGetLeaderboard(req: VercelRequest, res: VercelResponse) {
     rankedScores.push({
       rank: currentRank,
       totalScore: score.total_score,
-      playerName: score.player_name || 'Anonymous Hiker',
-      yearHiked: score.year_hiked,
+      playerName: score.player_name || null,
       isYou: clientFingerprint ? score.client_fingerprint === clientFingerprint : false,
     });
 
@@ -371,7 +372,6 @@ async function handleGetLeaderboard(req: VercelRequest, res: VercelResponse) {
     rank: s.rank,
     totalScore: s.totalScore,
     playerName: s.playerName,
-    yearHiked: s.yearHiked,
   }));
 
   return res.status(200).json({
@@ -379,9 +379,54 @@ async function handleGetLeaderboard(req: VercelRequest, res: VercelResponse) {
       rank: yourScore.rank,
       totalScore: yourScore.totalScore,
       playerName: yourScore.playerName,
-      yearHiked: yourScore.yearHiked,
     } : null,
     topFive,
     totalPlayers: scores.length,
   });
+}
+
+/**
+ * POST /api/daily?action=sign-log
+ * Body: { challengeId, clientFingerprint, playerName }
+ * Updates player_name for an existing score
+ */
+async function handleSignLog(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { challengeId, clientFingerprint, playerName } = req.body;
+
+  // Validation
+  if (!challengeId || !clientFingerprint) {
+    return res.status(400).json({ error: 'Missing required fields: challengeId, clientFingerprint' });
+  }
+
+  if (!playerName || typeof playerName !== 'string') {
+    return res.status(400).json({ error: 'playerName is required and must be a string' });
+  }
+
+  const trimmedName = playerName.trim();
+  if (trimmedName.length === 0 || trimmedName.length > 50) {
+    return res.status(400).json({ error: 'playerName must be 1-50 characters' });
+  }
+
+  // Update existing score
+  const { data, error: updateError } = await supabaseAdmin
+    .from('daily_scores')
+    .update({ player_name: trimmedName })
+    .eq('challenge_id', challengeId)
+    .eq('client_fingerprint', clientFingerprint)
+    .select()
+    .single();
+
+  if (updateError || !data) {
+    if (updateError?.code === 'PGRST116') { // No rows
+      return res.status(404).json({ error: 'Score not found - submit a score first' });
+    }
+    console.error('Update error:', updateError);
+    return res.status(500).json({ error: 'Failed to update player name' });
+  }
+
+  return res.status(200).json({ success: true });
 }
