@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { RoundResult } from '../types';
-import { TIER_COLORS, formatScore, MAX_SCORE, overallTier } from '../utils/scoring';
+import { TIER_COLORS, formatScore } from '../utils/scoring';
 import { getTrailSection, parseLocationName } from '../utils/trail-sections';
 import { ShelterLog } from './ShelterLog';
+import { ScoreHero } from './ScoreHero';
+import { SummaryActions } from './SummaryActions';
 import { getTodayEastern } from '../utils/daily-challenge-storage';
 
 interface Props {
@@ -65,38 +67,6 @@ function seasonDateLabel(takenAt: string | undefined): string | null {
   return `${seasonLabel(date)} · ${monthYear}`;
 }
 
-// "July 24" from a YYYY-MM-DD challenge date — parsed as UTC midnight so the
-// calendar day can't shift based on the viewer's local timezone.
-function formatChallengeDate(dateStr: string): string {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  const date = new Date(Date.UTC(y, m - 1, d));
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' });
-}
-
-// Ms remaining until the next America/New_York midnight, derived from the
-// current ET wall-clock time-of-day. DST-safe since it never reconstructs a
-// Date from a formatted string — only reads hour/minute/second parts.
-function msUntilNextEasternMidnight(): number {
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  });
-  const parts = formatter.formatToParts(new Date());
-  const get = (type: string) => Number(parts.find(p => p.type === type)?.value ?? 0);
-  const msSinceMidnight = ((get('hour') % 24 * 60 + get('minute')) * 60 + get('second')) * 1000;
-  return 24 * 60 * 60 * 1000 - msSinceMidnight;
-}
-
-function formatCountdown(ms: number): string {
-  const totalMinutes = Math.max(0, Math.ceil(ms / 60_000));
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return `${hours}h ${minutes}m`;
-}
-
 function ChevronIcon() {
   return (
     <svg
@@ -118,17 +88,6 @@ function ChevronIcon() {
 
 export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDate, challengeId, submitStatus, onRetrySubmit }: Props) {
   const [openRounds, setOpenRounds] = useState<Set<number>>(new Set());
-  const [countdownMs, setCountdownMs] = useState<number | null>(null);
-  const tier = overallTier(totalScore);
-  const pct = Math.round((totalScore / MAX_SCORE) * 100);
-
-  useEffect(() => {
-    if (mode !== 'daily') return;
-    const update = () => setCountdownMs(msUntilNextEasternMidnight());
-    update();
-    const id = setInterval(update, 60_000);
-    return () => clearInterval(id);
-  }, [mode]);
 
   const toggleRound = (i: number) => {
     setOpenRounds(prev => {
@@ -180,37 +139,29 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
 
   return (
     <div className="summary-screen">
-      <div className="summary-header">
-        <div className="summary-header-top">
-          <div className="summary-header-left">
-            {mode === 'daily' && challengeDate && (
-              <div className="summary-eyebrow">Daily Challenge · {formatChallengeDate(challengeDate)}</div>
-            )}
-            <h2 className="summary-title">You hiked like a {tier}.</h2>
-            <p className="summary-subline">
-              Five photos, {totalDistance.toLocaleString()} miles off in total · {pct}% accuracy.
-              {bestRoundDist && bestRoundState && ` Best round: ${bestRoundDist} in ${bestRoundState}.`}
-            </p>
+      {/* Desktop: two-column layout. Mobile: single column, different order */}
+      <div className="summary-layout">
+        {/* Left column on desktop: Score hero + Summary actions */}
+        <div className="summary-layout-left">
+          <ScoreHero
+            totalScore={totalScore}
+            mode={mode}
+            challengeDate={challengeDate}
+            totalDistance={totalDistance}
+            bestRoundDist={bestRoundDist}
+            bestRoundState={bestRoundState}
+          />
+
+          {/* Actions appear here on desktop, below Shelter Log on mobile */}
+          <div className="summary-actions-desktop">
+            <SummaryActions mode={mode} onPlayAgain={onPlayAgain} />
           </div>
-          <div className="summary-header-right">
-            <div className="summary-score-cta-row">
-              <span className="summary-score-hero-label">Total Score</span>
-              <span className="summary-score-hero-value">{formatScore(totalScore)}</span>
-              {mode === 'daily' ? (
-                <a href="/play" className="btn-primary btn-lock summary-header-action">Free Play →</a>
-              ) : (
-                <button
-                  type="button"
-                  className="btn-primary btn-lock summary-header-action"
-                  onClick={onPlayAgain}
-                >
-                  Hike Again
-                </button>
-              )}
-            </div>
-            {mode === 'daily' && countdownMs !== null && (
-              <div className="summary-countdown">Next Daily Challenge in {formatCountdown(countdownMs)}</div>
-            )}
+        </div>
+
+        {/* Right column on desktop: Recap map placeholder */}
+        <div className="summary-layout-right">
+          <div className="recap-map-placeholder">
+            {/* Recap map will go here in a later prompt */}
           </div>
         </div>
       </div>
@@ -295,6 +246,11 @@ export function GameSummary({ rounds, totalScore, onPlayAgain, mode, challengeDa
           onRetrySubmit={onRetrySubmit}
         />
       )}
+
+      {/* Actions appear here on mobile, after Shelter Log */}
+      <div className="summary-actions-mobile">
+        <SummaryActions mode={mode} onPlayAgain={onPlayAgain} />
+      </div>
     </div>
   );
 }
